@@ -22,7 +22,13 @@ const Hero = () => {
           encrypted, secure transactions powered by Zama FHE.
         </p>
         <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
-          <Button size="lg" className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-emerald-500/25 transition-all duration-200">
+          <Button 
+            size="lg" 
+            className="bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-emerald-500/25 transition-all duration-200"
+            onClick={() => {
+              document.getElementById('featured-markets')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+          >
             Start Predicting
           </Button>
           <Button size="lg" variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10 px-8 py-4 text-lg font-semibold">

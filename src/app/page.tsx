@@ -95,6 +95,9 @@ export default function HomePage() {
                   Oracles
                 </Link>
               </nav>
+              <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                Back to menu
+              </Button>
               <WalletButton />
             </div>
           </div>

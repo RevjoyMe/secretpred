@@ -65,7 +65,7 @@ const MarketCard = ({ market }: MarketCardProps) => {
           <div className="grid grid-cols-2 gap-4">
             <Button
               onClick={() => handleBet("yes")}
-              className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-0 shadow-lg hover:shadow-emerald-500/25 transition-all duration-200"
+              className="h-20 flex flex-col items-center justify-center gap-2 bg-green-500 hover:bg-green-600 text-white border-0 shadow-lg hover:shadow-green-500/25 transition-all duration-200"
               disabled={market.resolved}
             >
               <span className="text-sm font-semibold whitespace-nowrap">YES</span>
@@ -73,7 +73,7 @@ const MarketCard = ({ market }: MarketCardProps) => {
             </Button>
             <Button
               onClick={() => handleBet("no")}
-              className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-red-500/25 transition-all duration-200"
+              className="h-20 flex flex-col items-center justify-center gap-2 bg-red-500 hover:bg-red-600 text-white border-0 shadow-lg hover:shadow-red-500/25 transition-all duration-200"
               disabled={market.resolved}
             >
               <span className="text-sm font-semibold whitespace-nowrap">NO</span>

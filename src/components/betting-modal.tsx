@@ -161,7 +161,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
                   variant="outline"
                   size="sm"
                   onClick={() => setBetAmount(amount)}
-                  className="text-xs !text-gray-900 !border-gray-300 hover:!bg-gray-100"
+                  className="text-xs bg-gray-200 text-gray-700 border-gray-300 hover:bg-gray-300"
                 >
                   {amount} ETH
                 </Button>
@@ -228,7 +228,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             <Button
               variant="outline"
               onClick={() => onOpenChange(false)}
-              className="flex-1 !text-gray-900 !border-gray-300 hover:!bg-gray-100"
+              className="flex-1 bg-red-500 text-white border-red-500 hover:bg-red-600"
               disabled={isPlacingBet}
             >
               Cancel

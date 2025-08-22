@@ -1,209 +1,219 @@
 "use client"
-import { OracleDataDisplay, type OracleData } from "@/components/oracle-data-display"
-import { WalletButton } from "@/components/wallet-button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Badge } from "@/components/ui/badge"
-import { Activity, Database, TrendingUp, Shield } from "lucide-react"
 
-// Mock oracle data
-const mockOracleData: OracleData[] = [
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { WalletButton } from "@/components/wallet-button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { TrendingUp, Activity, Database, Shield } from "lucide-react"
+
+const oraclesData = [
   {
-    id: "oracle-1",
+    id: 1,
     name: "Bitcoin Price Feed",
+    status: "active",
     source: "Chainlink",
-    status: "active",
-    lastUpdate: new Date(Date.now() - 5 * 60 * 1000).toISOString(),
+    type: "PRICE",
+    value: "$67,500",
     confidence: 98,
-    value: 67500,
-    dataType: "price",
-    marketId: "1",
+    lastUpdate: "8/22/2025, 8:52:49 PM",
   },
   {
-    id: "oracle-2",
+    id: 2,
     name: "Ethereum Price Feed",
+    status: "active",
     source: "Band Protocol",
-    status: "active",
-    lastUpdate: new Date(Date.now() - 3 * 60 * 1000).toISOString(),
+    type: "PRICE",
+    value: "$3,200",
     confidence: 96,
-    value: 3200,
-    dataType: "price",
-    marketId: "2",
+    lastUpdate: "8/22/2025, 8:54:49 PM",
   },
   {
-    id: "oracle-3",
+    id: 3,
     name: "DeFi TVL Tracker",
+    status: "active",
     source: "DeFiLlama API",
-    status: "active",
-    lastUpdate: new Date(Date.now() - 15 * 60 * 1000).toISOString(),
+    type: "EVENT",
+    value: "185000000000",
     confidence: 94,
-    value: 185000000000,
-    dataType: "event",
-    marketId: "3",
+    lastUpdate: "8/22/2025, 8:42:49 PM",
   },
   {
-    id: "oracle-4",
+    id: 4,
     name: "Super Bowl Results",
-    source: "ESPN API",
     status: "inactive",
-    lastUpdate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
-    confidence: 100,
+    source: "ESPN API",
+    type: "SPORTS",
     value: "Chiefs Won",
-    dataType: "sports",
-    marketId: "4",
+    confidence: 100,
+    lastUpdate: "8/20/2025, 8:57:49 PM",
   },
   {
-    id: "oracle-5",
+    id: 5,
     name: "AI Development Tracker",
-    source: "Custom Oracle",
     status: "active",
-    lastUpdate: new Date(Date.now() - 30 * 60 * 1000).toISOString(),
-    confidence: 87,
+    source: "Custom Oracle",
+    type: "EVENT",
     value: "No AGI Yet",
-    dataType: "event",
-    marketId: "5",
+    confidence: 87,
+    lastUpdate: "8/22/2025, 8:27:49 PM",
   },
   {
-    id: "oracle-6",
+    id: 6,
     name: "Election Results Feed",
-    source: "AP News API",
     status: "active",
-    lastUpdate: new Date(Date.now() - 60 * 60 * 1000).toISOString(),
-    confidence: 92,
+    source: "AP News API",
+    type: "EVENT",
     value: "Pending",
-    dataType: "event",
-    marketId: "6",
+    confidence: 92,
+    lastUpdate: "8/22/2025, 7:57:49 PM",
   },
 ]
 
 export default function OraclesPage() {
-  const activeOracles = mockOracleData.filter((oracle) => oracle.status === "active")
-  const totalConfidence = activeOracles.reduce((sum, oracle) => sum + oracle.confidence, 0) / activeOracles.length
-
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="border-b border-border bg-card/50 backdrop-blur-sm">
+      <header className="border-b border-border bg-card/30 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-sm">SP</span>
+            <Link href="/" className="flex items-center space-x-2 hover:opacity-80 transition-opacity">
+              <div className="w-10 h-10 bg-gradient-to-br from-emerald-500 to-cyan-500 rounded-xl flex items-center justify-center shadow-lg">
+                <span className="text-white font-bold text-sm">SP</span>
               </div>
               <h1 className="text-xl font-bold text-foreground">SecretPredictions</h1>
+            </Link>
+            <div className="flex items-center space-x-4">
+              <Link href="/">
+                <Button variant="outline" className="border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/10">
+                  Back to main
+                </Button>
+              </Link>
+              <WalletButton />
             </div>
-            <WalletButton />
           </div>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h2 className="text-3xl font-bold mb-2">Oracle Network</h2>
-          <p className="text-muted-foreground">
-            Real-time data feeds powering our prediction markets with transparent, verifiable information
-          </p>
-        </div>
+      <main className="py-8 px-4">
+        <div className="container mx-auto">
+          <div className="mb-8">
+            <h2 className="text-3xl font-bold text-foreground mb-2">Oracle Network</h2>
+            <p className="text-muted-foreground">Real-time data feeds powering our prediction markets with transparent, verifiable information</p>
+          </div>
 
-        {/* Oracle Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Active Oracles</CardTitle>
-              <Activity className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-primary">{activeOracles.length}</div>
-              <p className="text-xs text-muted-foreground">of {mockOracleData.length} total</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Avg Confidence</CardTitle>
-              <Shield className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-secondary">{totalConfidence.toFixed(1)}%</div>
-              <p className="text-xs text-muted-foreground">across all feeds</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Data Sources</CardTitle>
-              <Database className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-accent">6</div>
-              <p className="text-xs text-muted-foreground">unique providers</p>
-            </CardContent>
-          </Card>
-
-          <Card>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Network Health</CardTitle>
-              <TrendingUp className="h-4 w-4 text-muted-foreground" />
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold text-green-400">99.2%</div>
-              <p className="text-xs text-muted-foreground">uptime</p>
-            </CardContent>
-          </Card>
-        </div>
-
-        {/* Oracle Data Display */}
-        <OracleDataDisplay oracleData={mockOracleData} />
-
-        {/* Oracle Network Info */}
-        <Card className="mt-8">
-          <CardHeader>
-            <CardTitle className="flex items-center space-x-2">
-              <Database className="w-5 h-5" />
-              <span>Oracle Network Information</span>
-            </CardTitle>
-            <CardDescription>Understanding our decentralized oracle infrastructure</CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-3">
-                <h4 className="font-medium">Supported Data Types</h4>
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="bg-blue-500/20 text-blue-400">
-                    Price Feeds
-                  </Badge>
-                  <Badge variant="outline" className="bg-purple-500/20 text-purple-400">
-                    Event Data
-                  </Badge>
-                  <Badge variant="outline" className="bg-orange-500/20 text-orange-400">
-                    Sports Results
-                  </Badge>
-                  <Badge variant="outline" className="bg-cyan-500/20 text-cyan-400">
-                    Weather Data
-                  </Badge>
+          {/* Stats */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-2">
+                  <Activity className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-2xl font-bold">5</p>
+                    <p className="text-sm text-muted-foreground">of 6 total</p>
+                  </div>
                 </div>
+                <p className="text-sm font-medium mt-2">Active Oracles</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-2">
+                  <TrendingUp className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-2xl font-bold">93.4%</p>
+                    <p className="text-sm text-muted-foreground">across all feeds</p>
+                  </div>
+                </div>
+                <p className="text-sm font-medium mt-2">Avg Confidence</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-2">
+                  <Database className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-2xl font-bold">6</p>
+                    <p className="text-sm text-muted-foreground">unique providers</p>
+                  </div>
+                </div>
+                <p className="text-sm font-medium mt-2">Data Sources</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="p-6">
+                <div className="flex items-center space-x-2">
+                  <Shield className="w-5 h-5 text-emerald-400" />
+                  <div>
+                    <p className="text-2xl font-bold">99.2%</p>
+                    <p className="text-sm text-muted-foreground">uptime</p>
+                  </div>
+                </div>
+                <p className="text-sm font-medium mt-2">Network Health</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Oracles Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {oraclesData.map((oracle) => (
+              <Card key={oracle.id} className="hover:shadow-lg transition-shadow">
+                <CardHeader className="pb-3">
+                  <div className="flex items-start justify-between">
+                    <CardTitle className="text-lg">{oracle.name}</CardTitle>
+                    <Badge 
+                      variant={oracle.status === "active" ? "default" : "secondary"}
+                      className={oracle.status === "active" ? "bg-green-500" : "bg-gray-500"}
+                    >
+                      {oracle.status}
+                    </Badge>
+                  </div>
+                  <p className="text-sm text-muted-foreground">Source: {oracle.source}</p>
+                </CardHeader>
+                <CardContent className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">{oracle.type}</span>
+                    <span className="font-semibold">{oracle.value}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">Confidence</span>
+                    <span className="font-semibold text-emerald-400">{oracle.confidence}%</span>
+                  </div>
+                  <div className="text-xs text-muted-foreground">
+                    Last update: {oracle.lastUpdate}
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+
+          {/* Oracle Network Information */}
+          <div className="mt-12">
+            <h3 className="text-2xl font-bold text-foreground mb-6">Oracle Network Information</h3>
+            <p className="text-muted-foreground mb-6">Understanding our decentralized oracle infrastructure</p>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Supported Data Types</h4>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• Price Feeds</li>
+                  <li>• Event Data</li>
+                  <li>• Sports Results</li>
+                  <li>• Weather Data</li>
+                </ul>
               </div>
-
-              <div className="space-y-3">
-                <h4 className="font-medium">Oracle Providers</h4>
-                <div className="space-y-2 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Chainlink:</span>
-                    <span>Price Feeds</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Band Protocol:</span>
-                    <span>Cross-chain Data</span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Custom APIs:</span>
-                    <span>Event Tracking</span>
-                  </div>
-                </div>
+              <div>
+                <h4 className="text-lg font-semibold mb-4">Oracle Providers</h4>
+                <ul className="space-y-2 text-muted-foreground">
+                  <li>• Chainlink: Price Feeds</li>
+                  <li>• Band Protocol: Cross-chain Data</li>
+                  <li>• Custom APIs: Event Tracking</li>
+                </ul>
               </div>
             </div>
-          </CardContent>
-        </Card>
+          </div>
+        </div>
       </main>
     </div>
   )
