@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { DM_Sans } from "next/font/google"
 import { Providers } from "@/components/providers/Providers"
 import { Toaster } from "sonner"
-import "./globals.css"
+import "./globals.css?v=2"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
