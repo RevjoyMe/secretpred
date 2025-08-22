@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useWallet } from "@/components/providers/Providers"
+import { useAccount, useBalance } from 'wagmi'
 import type { Market } from "./market-card"
 import { TrendingUp, AlertTriangle, Lock, Zap } from "lucide-react"
 
@@ -20,7 +20,8 @@ interface BettingModalProps {
 }
 
 export function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
-  const { isConnected, balance } = useWallet()
+  const { isConnected } = useAccount()
+  const { data: balance } = useBalance()
   const [betAmount, setBetAmount] = useState("")
   const [isPlacingBet, setIsPlacingBet] = useState(false)
   const [error, setError] = useState("")
@@ -59,7 +60,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
       return false
     }
 
-    const userBalance = Number.parseFloat(balance || "0")
+    const userBalance = Number.parseFloat(balance?.formatted || "0")
     if (totalCost > userBalance) {
       setError("Insufficient balance for this bet")
       return false
