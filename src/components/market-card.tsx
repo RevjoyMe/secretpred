@@ -5,7 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Progress } from "@/components/ui/progress"
-import { BettingModal } from "./betting-modal"
+import { BettingModal } from "./betting-modal-wrapper"
 import { Clock, Users, TrendingUp, DollarSign, Database } from "lucide-react"
 
 export interface Market {
