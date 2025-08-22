@@ -84,7 +84,7 @@ export default function HomePage() {
               <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
                 <span className="text-primary-foreground font-bold text-sm">SP</span>
               </div>
-              <h1 className="text-xl font-bold text-foreground">SecretPredictions v2</h1>
+              <h1 className="text-xl font-bold text-foreground">SecretPredictions</h1>
             </Link>
             <div className="flex items-center space-x-4">
               <nav className="hidden md:flex space-x-4">
