@@ -40,44 +40,44 @@ const MarketCard = ({ market }: MarketCardProps) => {
 
   return (
     <>
-      <Card className="bg-card border-border hover:border-primary/50 transition-all duration-200 hover:shadow-lg">
-        <CardHeader className="pb-3">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-semibold text-card-foreground text-sm leading-tight line-clamp-2">{market.question}</h3>
-            <Badge variant="secondary" className="text-xs shrink-0 bg-muted text-muted-foreground">
+      <Card className="bg-card/50 border-border hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 backdrop-blur-sm">
+        <CardHeader className="pb-4">
+          <div className="flex items-start justify-between gap-3">
+            <h3 className="font-semibold text-card-foreground text-base leading-tight line-clamp-2">{market.question}</h3>
+            <Badge variant="secondary" className="text-xs shrink-0 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
               {market.category}
             </Badge>
           </div>
         </CardHeader>
 
-        <CardContent className="space-y-4">
-          <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <div className="flex items-center gap-1">
-              <TrendingUp className="w-3 h-3" />
-              <span>{market.volume}</span>
+        <CardContent className="space-y-6">
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <span className="font-medium">{market.volume}</span>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              <span>{daysRemaining}d left</span>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-muted-foreground" />
+              <span className="font-medium">{daysRemaining}d left</span>
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-4">
             <Button
               onClick={() => handleBet("yes")}
-              className="h-16 flex flex-col items-center justify-center gap-1 bg-emerald-600 hover:bg-emerald-700 text-white border-0"
+              className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700 text-white border-0 shadow-lg hover:shadow-emerald-500/25 transition-all duration-200"
               disabled={market.resolved}
             >
-              <span className="text-xs font-medium whitespace-nowrap">YES</span>
-              <span className="text-lg font-bold">{yesPercentage}¢</span>
+              <span className="text-sm font-semibold whitespace-nowrap">YES</span>
+              <span className="text-2xl font-bold">{yesPercentage}¢</span>
             </Button>
             <Button
               onClick={() => handleBet("no")}
-              className="h-16 flex flex-col items-center justify-center gap-1 bg-red-600 hover:bg-red-700 text-white border-0"
+              className="h-20 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white border-0 shadow-lg hover:shadow-red-500/25 transition-all duration-200"
               disabled={market.resolved}
             >
-              <span className="text-xs font-medium whitespace-nowrap">NO</span>
-              <span className="text-lg font-bold">{noPercentage}¢</span>
+              <span className="text-sm font-semibold whitespace-nowrap">NO</span>
+              <span className="text-2xl font-bold">{noPercentage}¢</span>
             </Button>
           </div>
         </CardContent>
