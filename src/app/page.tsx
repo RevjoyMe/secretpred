@@ -1,7 +1,7 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { CustomWalletButton } from "@/components/custom-wallet-button"
+import { WalletButton } from "@/components/wallet-button"
 import Link from "next/link"
 import { Hero } from "@/components/layout/Hero"
 import { StatsCard } from "@/components/ui/StatsCard"
@@ -95,7 +95,7 @@ export default function HomePage() {
                   Oracles
                 </Link>
               </nav>
-              <CustomWalletButton />
+              <WalletButton />
             </div>
           </div>
         </div>

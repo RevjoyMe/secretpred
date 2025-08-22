@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { CustomWalletButton } from "@/components/custom-wallet-button"
+import { WalletButton } from "@/components/wallet-button"
 import { MarketCard } from "@/components/markets/MarketCard"
 
 const marketsData = [
@@ -177,7 +177,7 @@ export default function MarketsPage() {
                   Back to main
                 </Button>
               </Link>
-              <CustomWalletButton />
+              <WalletButton />
             </div>
           </div>
         </div>

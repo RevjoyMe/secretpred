@@ -19,6 +19,7 @@ export const config = getDefaultConfig({
     injected(),
     walletConnect({ projectId: process.env.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID || 'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4' }),
   ],
+  ssr: false,
 })
 
 export { chains }

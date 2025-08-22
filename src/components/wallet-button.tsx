@@ -11,7 +11,6 @@ export function WalletButton() {
         smallScreen: 'avatar',
         largeScreen: 'full',
       }}
-      modalSize="compact"
     />
   )
 }
