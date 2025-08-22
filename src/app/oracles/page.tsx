@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { WalletButton } from "@/components/wallet-button"
+import { MetaMaskButton } from "@/components/meta-mask-button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { TrendingUp, Activity, Database, Shield } from "lucide-react"
@@ -89,7 +89,7 @@ export default function OraclesPage() {
                   Back to main
                 </Button>
               </Link>
-              <WalletButton />
+              <MetaMaskButton />
             </div>
           </div>
         </div>
