@@ -12,6 +12,23 @@ const { wallets } = getDefaultWallets({
   chains,
 })
 
+// Принудительно добавляем MetaMask в список кошельков
+const walletsWithMetaMask = [
+  {
+    id: 'metaMask',
+    name: 'MetaMask',
+    iconUrl: 'https://cdn.rainbow.me/metamask.svg',
+    iconBackground: '#F6851B',
+    downloadUrls: {
+      chrome: 'https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn',
+      firefox: 'https://addons.mozilla.org/en-US/firefox/addon/ether-metamask/',
+      safari: 'https://apps.apple.com/app/metamask/id1438144202',
+      edge: 'https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm',
+    },
+  },
+  ...wallets,
+]
+
 const queryClient = new QueryClient()
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -20,7 +37,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
           chains={chains}
-          wallets={wallets}
+          wallets={walletsWithMetaMask}
           initialChain={chains[0]}
           showRecentTransactions={false}
         >
