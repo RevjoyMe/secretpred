@@ -2,41 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Force dark theme */
+/* Force light theme with beige gradient */
 html {
-  color-scheme: dark;
-  background-color: #0a0a0a !important;
+  color-scheme: light;
+  background: linear-gradient(135deg, #faf8f5 0%, #f5f5f0 50%, #e8e6e1 100%) !important;
 }
 
 html.dark {
-  color-scheme: dark;
-  background-color: #0a0a0a !important;
+  color-scheme: light;
+  background: linear-gradient(135deg, #faf8f5 0%, #f5f5f0 50%, #e8e6e1 100%) !important;
 }
 
 body {
-  background-color: #0a0a0a !important;
-  color: #ffffff !important;
+  background: linear-gradient(135deg, #faf8f5 0%, #f5f5f0 50%, #e8e6e1 100%) !important;
+  color: #2d2d2d !important;
 }
 
 :root {
-  --background: #0a0a0a;
-  --foreground: #ffffff;
-  --card: #1a1a1a;
-  --card-foreground: #ffffff;
-  --popover: #1a1a1a;
-  --popover-foreground: #ffffff;
+  --background: #faf8f5;
+  --foreground: #2d2d2d;
+  --card: #ffffff;
+  --card-foreground: #2d2d2d;
+  --popover: #ffffff;
+  --popover-foreground: #2d2d2d;
   --primary: #10b981;
-  --primary-foreground: #000000;
-  --secondary: #262626;
-  --secondary-foreground: #ffffff;
-  --muted: #404040;
-  --muted-foreground: #a3a3a3;
+  --primary-foreground: #ffffff;
+  --secondary: #f5f5f0;
+  --secondary-foreground: #2d2d2d;
+  --muted: #e8e6e1;
+  --muted-foreground: #6b7280;
   --accent: #10b981;
-  --accent-foreground: #000000;
+  --accent-foreground: #ffffff;
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
-  --border: #404040;
-  --input: #262626;
+  --border: #e5e7eb;
+  --input: #f9fafb;
   --ring: #10b981;
   --chart-1: #10b981;
   --chart-2: #ef4444;
@@ -44,13 +44,13 @@ body {
   --chart-4: #8b5cf6;
   --chart-5: #f59e0b;
   --radius: 0.5rem;
-  --sidebar: #0a0a0a;
-  --sidebar-foreground: #ffffff;
+  --sidebar: #faf8f5;
+  --sidebar-foreground: #2d2d2d;
   --sidebar-primary: #10b981;
-  --sidebar-primary-foreground: #000000;
+  --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: #10b981;
-  --sidebar-accent-foreground: #000000;
-  --sidebar-border: #404040;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #e5e7eb;
   --sidebar-ring: #10b981;
 }
 
