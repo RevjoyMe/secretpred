@@ -22,6 +22,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           chains={chains}
           wallets={wallets}
           initialChain={chains[0]}
+          showRecentTransactions={false}
         >
           {children}
         </RainbowKitProvider>
