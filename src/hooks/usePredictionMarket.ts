@@ -1,52 +1,79 @@
 "use client"
 
-import { useState } from "react"
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi'
+import { parseEther } from 'viem'
+import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 
-export function usePredictionMarket() {
-  const [isPending, setIsPending] = useState(false)
-  const [isConfirming, setIsConfirming] = useState(false)
-  const [isConfirmed, setIsConfirmed] = useState(false)
-  const [hash, setHash] = useState<string | undefined>()
+// ABI для функции placeBet
+const PREDICTION_MARKET_ABI = [
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bytes",
+        "name": "encryptedAmount",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "encryptedOutcome",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
+      }
+    ],
+    "name": "placeBet",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+] as const
 
-  const placeBet = async (marketId: number, outcome: boolean, amount: bigint) => {
-    try {
-      setIsPending(true)
-      // Mock transaction delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-      setHash("0x" + Math.random().toString(16).substr(2, 64))
-      setIsPending(false)
-      setIsConfirming(true)
+export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "no") {
+  // Для демонстрации используем простые зашифрованные данные
+  // В реальном приложении здесь была бы настоящая FHE шифрация
+  const mockEncryptedAmount = "0x" + "00".repeat(32) // Заглушка для зашифрованной суммы
+  const mockEncryptedOutcome = "0x" + "00".repeat(32) // Заглушка для зашифрованного исхода
+  const mockInputProof = "0x" + "00".repeat(32) // Заглушка для доказательства
 
-      // Mock confirmation delay
-      await new Promise((resolve) => setTimeout(resolve, 3000))
-      setIsConfirming(false)
-      setIsConfirmed(true)
-    } catch (error) {
-      console.error("Error placing bet:", error)
-      setIsPending(false)
-      setIsConfirming(false)
-      throw error
+  const { config } = usePrepareContractWrite({
+    address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+    abi: PREDICTION_MARKET_ABI,
+    functionName: 'placeBet',
+    args: [
+      BigInt(marketId),
+      mockEncryptedAmount as `0x${string}`,
+      mockEncryptedOutcome as `0x${string}`,
+      mockInputProof as `0x${string}`
+    ],
+    value: parseEther(betAmount),
+    enabled: !!marketId && !!betAmount && parseFloat(betAmount) > 0,
+  })
+
+  const { data, write, isLoading: isWriteLoading, error: writeError } = useContractWrite(config)
+
+  const { isLoading: isConfirming, isSuccess, error: confirmError } = useWaitForTransaction({
+    hash: data?.hash,
+  })
+
+  const placeBet = () => {
+    if (write) {
+      write()
     }
   }
 
-  // Mock market data
-  const marketData = [
-    {
-      id: 1,
-      question: "Will Bitcoin reach $100,000 by end of 2024?",
-      endTime: Math.floor(Date.now() / 1000) + 86400 * 30,
-      totalYesBets: BigInt("2500000000000000000"),
-      totalNoBets: BigInt("1500000000000000000"),
-      resolved: false,
-    },
-  ]
-
   return {
     placeBet,
-    marketData,
-    isPending,
-    isConfirming,
-    isConfirmed,
-    hash,
+    isLoading: isWriteLoading || isConfirming,
+    isSuccess,
+    error: writeError || confirmError,
+    hash: data?.hash,
   }
 }

@@ -11,7 +11,8 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAccount, useBalance } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import type { Market } from "./market-card"
-import { TrendingUp, AlertTriangle, Lock, Zap } from "lucide-react"
+import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
+import { usePlaceBet } from '@/hooks/usePredictionMarket'
 
 interface BettingModalProps {
   open: boolean
@@ -42,18 +43,40 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
       console.error('[DEBUG] Balance error:', balanceError)
     }
   }, [balance, balanceError, address])
+  
   const [betAmount, setBetAmount] = useState("")
-  const [isPlacingBet, setIsPlacingBet] = useState(false)
   const [error, setError] = useState("")
+  
+  // Используем хук для реальных транзакций
+  const { placeBet, isLoading: isPlacingBet, isSuccess, error: transactionError, hash } = usePlaceBet(
+    market?.id || 0,
+    betAmount,
+    side || "yes"
+  )
 
   // Reset state when modal opens/closes
   useEffect(() => {
     if (!open) {
       setBetAmount("")
       setError("")
-      setIsPlacingBet(false)
     }
   }, [open])
+
+  // Handle transaction success
+  useEffect(() => {
+    if (isSuccess) {
+      console.log('[SUCCESS] Bet placed successfully! Hash:', hash)
+      // Не закрываем модал сразу, показываем успех
+    }
+  }, [isSuccess, hash])
+
+  // Handle transaction errors
+  useEffect(() => {
+    if (transactionError) {
+      console.error('[ERROR] Transaction failed:', transactionError)
+      setError(`Transaction failed: ${transactionError.message}`)
+    }
+  }, [transactionError])
 
   if (!market || !side) return null
 
@@ -98,26 +121,15 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const handlePlaceBet = async () => {
     if (!validateBet()) return
 
-    setIsPlacingBet(true)
     setError("")
+    console.log(`[TRANSACTION] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
 
     try {
-      console.log(`[v0] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
-
-      // Simulate transaction delay
-      await new Promise((resolve) => setTimeout(resolve, 2000))
-
-      // Mock transaction success
-      console.log(`[v0] Bet placed successfully: ${betAmount} ETH on ${side}`)
-
-      onOpenChange(false)
-
-      // In a real app, this would trigger a success notification
+      // Вызываем реальную транзакцию
+      placeBet()
     } catch (err) {
       setError("Failed to place bet. Please try again.")
-      console.error("[v0] Bet placement failed:", err)
-    } finally {
-      setIsPlacingBet(false)
+      console.error("[TRANSACTION] Bet placement failed:", err)
     }
   }
 
@@ -232,6 +244,34 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             </div>
           )}
 
+          {/* Transaction Status */}
+          {isPlacingBet && (
+            <Alert>
+              <Zap className="h-4 w-4 animate-pulse" />
+              <AlertDescription>
+                Transaction is being processed... Please confirm in your wallet.
+              </AlertDescription>
+            </Alert>
+          )}
+
+          {isSuccess && hash && (
+            <Alert>
+              <TrendingUp className="h-4 w-4 text-green-500" />
+              <AlertDescription className="flex items-center gap-2">
+                <span>Bet placed successfully!</span>
+                <a
+                  href={`https://sepolia.etherscan.io/tx/${hash}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-500 hover:text-blue-600 flex items-center gap-1"
+                >
+                  View on Etherscan
+                  <ExternalLink className="w-3 h-3" />
+                </a>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Error Alert */}
           {error && (
             <Alert variant="destructive">
@@ -256,22 +296,24 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
               className="flex-1 bg-red-500 text-white border-red-500 hover:bg-red-600"
               disabled={isPlacingBet}
             >
-              Cancel
+              {isSuccess ? 'Close' : 'Cancel'}
             </Button>
-            <Button
-              onClick={handlePlaceBet}
-              disabled={!isConnected || betAmountNum <= 0 || isPlacingBet}
-              className="flex-1 crypto-glow"
-            >
-              {isPlacingBet ? (
-                <div className="flex items-center space-x-2">
-                  <Zap className="w-4 h-4 animate-pulse" />
-                  <span>Placing Bet...</span>
-                </div>
-              ) : (
-                `Place ${side.toUpperCase()} Bet`
-              )}
-            </Button>
+            {!isSuccess && (
+              <Button
+                onClick={handlePlaceBet}
+                disabled={!isConnected || betAmountNum <= 0 || isPlacingBet}
+                className="flex-1 crypto-glow"
+              >
+                {isPlacingBet ? (
+                  <div className="flex items-center space-x-2">
+                    <Zap className="w-4 h-4 animate-pulse" />
+                    <span>Confirming Transaction...</span>
+                  </div>
+                ) : (
+                  `Place ${side.toUpperCase()} Bet`
+                )}
+              </Button>
+            )}
           </div>
         </div>
       </DialogContent>
