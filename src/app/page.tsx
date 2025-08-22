@@ -1,12 +1,12 @@
 "use client"
 
-import { Button } from "@/src/components/ui/button"
-import { WalletButton } from "@/src/components/wallet-button"
+import { Button } from "@/components/ui/button"
+import { WalletButton } from "@/components/wallet-button"
 import Link from "next/link"
-import { Hero } from "@/src/components/layout/Hero"
-import { StatsCard } from "@/src/components/ui/StatsCard"
-import { MarketCard } from "@/src/components/markets/MarketCard"
-import { usePredictionMarket } from "@/src/hooks/usePredictionMarket"
+import { Hero } from "@/components/layout/Hero"
+import { StatsCard } from "@/components/ui/StatsCard"
+import { MarketCard } from "@/components/markets/MarketCard"
+import { usePredictionMarket } from "@/hooks/usePredictionMarket"
 
 export default function HomePage() {
   const { marketData } = usePredictionMarket()
