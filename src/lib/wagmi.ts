@@ -31,8 +31,10 @@ export const config = getDefaultConfig({
   queryClient: {
     defaultOptions: {
       queries: {
-        retry: 1,
-        refetchOnWindowFocus: false,
+        retry: 3,
+        refetchOnWindowFocus: true,
+        staleTime: 30 * 1000, // 30 seconds
+        gcTime: 5 * 60 * 1000, // 5 minutes
       },
     },
   },

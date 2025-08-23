@@ -26,6 +26,8 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const { data: balance, isLoading: balanceLoading, error: balanceError } = useBalance({
     address,
     chainId: sepolia.id,
+    watch: true,
+    enabled: !!address && isConnected,
   })
 
   // Debug logging
@@ -49,7 +51,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   
   // Используем хук для реальных транзакций
   const { placeBet, isLoading: isPlacingBet, isSuccess, error: transactionError, hash } = usePlaceBet(
-    market?.id || 0,
+    market?.id ? Number(market.id) : 0,
     betAmount,
     side || "yes"
   )
@@ -237,9 +239,20 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Wallet Balance:</span>
               <span className="font-medium !text-gray-900">
-                {balanceLoading ? 'Loading...' : 
-                 balanceError ? 'Error loading balance' :
-                 balance ? `${balance.formatted} ${balance.symbol}` : 'No balance data'}
+                {balanceLoading ? (
+                  <span className="flex items-center gap-2">
+                    <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
+                    Loading...
+                  </span>
+                ) : 
+                 balanceError ? (
+                   <span className="text-red-500">Error loading balance</span>
+                 ) :
+                 balance ? (
+                   `${balance.formatted} ${balance.symbol}`
+                 ) : (
+                   <span className="text-gray-500">No balance data</span>
+                 )}
               </span>
             </div>
           )}
