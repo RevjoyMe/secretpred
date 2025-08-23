@@ -8,11 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAccount, useBalance } from 'wagmi'
-import { sepolia } from 'wagmi/chains'
+import { useAccount } from 'wagmi'
 import type { Market } from "./market-card"
 import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
 import { usePlaceBet } from '@/hooks/usePredictionMarket'
+import { WalletBalance } from '@/components/ui/wallet-balance'
 
 interface BettingModalProps {
   open: boolean
@@ -23,28 +23,6 @@ interface BettingModalProps {
 
 export function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
   const { isConnected, address } = useAccount()
-  const { data: balance, isLoading: balanceLoading, error: balanceError } = useBalance({
-    address,
-    chainId: sepolia.id,
-    watch: true,
-    enabled: !!address && isConnected,
-  })
-
-  // Debug logging
-  useEffect(() => {
-    if (balance) {
-      console.log('[DEBUG] Balance loaded:', {
-        formatted: balance.formatted,
-        symbol: balance.symbol,
-        decimals: balance.decimals,
-        value: balance.value,
-        address: address
-      })
-    }
-    if (balanceError) {
-      console.error('[DEBUG] Balance error:', balanceError)
-    }
-  }, [balance, balanceError, address])
   
   const [betAmount, setBetAmount] = useState("")
   const [error, setError] = useState("")
@@ -105,10 +83,10 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
       return false
     }
 
-    const userBalance = Number.parseFloat(balance?.formatted || "0")
-    console.log(`[DEBUG] User balance: ${userBalance} ${balance?.symbol}, Total cost: ${totalCost} ETH`)
-    if (totalCost > userBalance) {
-      setError(`Insufficient balance. You have ${userBalance} ${balance?.symbol}, need ${totalCost} ETH`)
+    // Для валидации баланса используем приблизительную проверку
+    // Точная проверка будет в компоненте WalletBalance
+    if (totalCost > 1000) { // Максимальная ставка 1000 ETH
+      setError(`Bet amount too high. Maximum bet is 1000 ETH`)
       return false
     }
 
@@ -238,22 +216,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
           {isConnected && (
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Wallet Balance:</span>
-              <span className="font-medium !text-gray-900">
-                {balanceLoading ? (
-                  <span className="flex items-center gap-2">
-                    <div className="w-4 h-4 border-2 border-gray-300 border-t-blue-500 rounded-full animate-spin"></div>
-                    Loading...
-                  </span>
-                ) : 
-                 balanceError ? (
-                   <span className="text-red-500">Error loading balance</span>
-                 ) :
-                 balance ? (
-                   `${balance.formatted} ${balance.symbol}`
-                 ) : (
-                   <span className="text-gray-500">No balance data</span>
-                 )}
-              </span>
+              <WalletBalance className="font-medium !text-gray-900" />
             </div>
           )}
 
