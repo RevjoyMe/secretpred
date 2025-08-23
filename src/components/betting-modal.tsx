@@ -1,4 +1,5 @@
 "use client"
+// Updated betting modal with proper balance handling and emojis
 
 import { useState, useEffect } from "react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
@@ -207,9 +208,9 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             <div className="flex items-center justify-between text-sm">
               <span className="text-gray-600">Wallet Balance:</span>
               <span className="font-medium !text-gray-900">
-                {balanceLoading ? 'Loading balance...' : 
-                 balanceError ? 'Error loading balance' :
-                 balance ? `${balance.formatted} ${balance.symbol}` : 'No balance data'}
+                {balanceLoading ? '🔄 Loading balance...' : 
+                 balanceError ? '❌ Error loading balance' :
+                 balance ? `💰 ${balance.formatted} ${balance.symbol}` : '📊 No balance data'}
               </span>
             </div>
           )}
