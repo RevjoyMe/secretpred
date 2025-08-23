@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAccount } from 'wagmi'
-import type { Market } from "./market-card"
+import type { Market } from "@/types/market"
 import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
 import { usePlaceBet } from '@/hooks/usePredictionMarket'
 import { BalanceRefresh } from '@/components/ui/balance-refresh'
@@ -22,7 +22,7 @@ interface BettingModalProps {
   side: "yes" | "no" | null
 }
 
-export function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
+function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
   const { isConnected, address } = useAccount()
   
   const [betAmount, setBetAmount] = useState("")
@@ -303,3 +303,5 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     </Dialog>
   )
 }
+
+export default BettingModal
