@@ -287,20 +287,6 @@ Our FHE implementation provides cryptographic guarantees that:
 - **Government**: Private policy outcome predictions
 - **Media**: Unbiased event probability assessment
 
-## 👥 **Team & Community**
-
-### **Core Team**
-- **Lead Developer**: Full-stack blockchain development
-- **FHE Specialist**: Zama FHE implementation expert
-- **UI/UX Designer**: Modern, intuitive interface design
-- **Smart Contract Auditor**: Security and optimization
-
-### **Community**
-- **Discord**: [Join our community](https://discord.gg/secretpredictions)
-- **Twitter**: [@SecretPredictions](https://twitter.com/SecretPredictions)
-- **GitHub**: [Contribute to the project](https://github.com/RevjoyMe/secretpred)
-- **Documentation**: [Comprehensive guides](https://docs.secretpredictions.com)
-
 ## 🏆 **Awards & Recognition**
 
 - **Zama Bounty Program**: Featured project
