@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Clock, TrendingUp } from "lucide-react"
-import BettingModal from "@/components/betting-modal-wrapper"
+import SimpleBettingModal from "@/components/simple-betting-modal"
 import { useState } from "react"
 
 interface Market {
@@ -83,7 +83,7 @@ const MarketCard = ({ market }: MarketCardProps) => {
         </CardContent>
       </Card>
 
-      <BettingModal
+      <SimpleBettingModal
         open={showBettingModal}
         onOpenChange={setShowBettingModal}
         market={{
@@ -92,10 +92,6 @@ const MarketCard = ({ market }: MarketCardProps) => {
           description: market.question,
           yesPrice: yesPercentage,
           noPrice: noPercentage,
-          volume: market.volume,
-          participants: Math.floor(Math.random() * 1000) + 100,
-          timeRemaining: `${daysRemaining}d`,
-          category: market.category,
           status: market.resolved ? "resolved" : "active",
         }}
         side={selectedOutcome}
