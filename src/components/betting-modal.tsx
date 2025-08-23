@@ -12,7 +12,8 @@ import { useAccount } from 'wagmi'
 import type { Market } from "./market-card"
 import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
 import { usePlaceBet } from '@/hooks/usePredictionMarket'
-import { WalletBalance } from '@/components/ui/wallet-balance'
+import { BalanceRefresh } from '@/components/ui/balance-refresh'
+import { NetworkStatus } from '@/components/ui/network-status'
 
 interface BettingModalProps {
   open: boolean
@@ -212,11 +213,17 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             </div>
           )}
 
+          {/* Network Status */}
+          {isConnected && (
+            <div className="mb-4">
+              <NetworkStatus className="text-sm" />
+            </div>
+          )}
+
           {/* Wallet Balance */}
           {isConnected && (
             <div className="flex items-center justify-between text-sm">
-              <span className="text-gray-600">Wallet Balance:</span>
-              <WalletBalance className="font-medium !text-gray-900" />
+              <BalanceRefresh className="font-medium !text-gray-900" />
             </div>
           )}
 

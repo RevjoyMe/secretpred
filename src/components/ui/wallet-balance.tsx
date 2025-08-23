@@ -17,11 +17,33 @@ export function WalletBalance({ className = "" }: WalletBalanceProps) {
     chainId: sepolia.id,
     watch: true,
     enabled: !!address && isConnected,
+    query: {
+      retry: 3,
+      retryDelay: 1000,
+    },
   })
+
+  // Debug logging
+  useEffect(() => {
+    console.log('[WalletBalance Debug]', {
+      isConnected,
+      address,
+      balanceLoading,
+      balanceError,
+      balance: balance ? {
+        formatted: balance.formatted,
+        symbol: balance.symbol,
+        decimals: balance.decimals,
+        value: balance.value.toString(),
+      } : null,
+      retryCount
+    })
+  }, [isConnected, address, balanceLoading, balanceError, balance, retryCount])
 
   // Автоматический retry при ошибке
   useEffect(() => {
     if (balanceError && retryCount < 3) {
+      console.log(`[WalletBalance] Retrying balance fetch (${retryCount + 1}/3)`)
       const timer = setTimeout(() => {
         setRetryCount(prev => prev + 1)
         refetch()
