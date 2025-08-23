@@ -62,7 +62,8 @@
     "@rainbow-me/rainbowkit": "^2.0.0",
     "wagmi": "^2.0.0",
     "viem": "^2.0.0",
-    "@tanstack/react-query": "^5.0.0"
+    "@tanstack/react-query": "^5.0.0",
+    "pino-pretty": "^10.3.1"
   },
   "devDependencies": {
     "@types/node": "^22",

@@ -41,7 +41,15 @@ const walletsWithMetaMask = [
   ...wallets.filter(wallet => wallet.id !== 'metaMask'), // Убираем дубликаты
 ]
 
-const queryClient = new QueryClient()
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: 1,
+      refetchOnWindowFocus: false,
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    },
+  },
+})
 
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
@@ -52,6 +60,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
           wallets={walletsWithMetaMask}
           initialChain={chains[0]}
           showRecentTransactions={false}
+          locale="en-US"
         >
           {children}
         </RainbowKitProvider>
