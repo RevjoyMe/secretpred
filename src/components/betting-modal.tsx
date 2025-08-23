@@ -8,12 +8,11 @@ import { Label } from "@/components/ui/label"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { useAccount } from 'wagmi'
+import { useAccount, useBalance } from 'wagmi'
+import { sepolia } from 'wagmi/chains'
 import type { Market } from "@/types/market"
 import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
 import { usePlaceBet } from '@/hooks/usePredictionMarket'
-import { BalanceRefresh } from '@/components/ui/balance-refresh'
-import { NetworkStatus } from '@/components/ui/network-status'
 
 interface BettingModalProps {
   open: boolean
@@ -24,6 +23,12 @@ interface BettingModalProps {
 
 function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
   const { isConnected, address } = useAccount()
+  const { data: balance, isLoading: balanceLoading, error: balanceError } = useBalance({
+    address,
+    chainId: sepolia.id,
+    watch: true,
+    enabled: !!address && isConnected,
+  })
   
   const [betAmount, setBetAmount] = useState("")
   const [error, setError] = useState("")
@@ -213,17 +218,15 @@ function BettingModal({ open, onOpenChange, market, side }: BettingModalProps) {
             </div>
           )}
 
-          {/* Network Status */}
-          {isConnected && (
-            <div className="mb-4">
-              <NetworkStatus className="text-sm" />
-            </div>
-          )}
-
           {/* Wallet Balance */}
           {isConnected && (
             <div className="flex items-center justify-between text-sm">
-              <BalanceRefresh className="font-medium !text-gray-900" />
+              <span className="text-gray-600">Wallet Balance:</span>
+              <span className="font-medium !text-gray-900">
+                {balanceLoading ? 'Loading...' : 
+                 balanceError ? 'Error loading balance' :
+                 balance ? `${balance.formatted} ${balance.symbol}` : 'No balance data'}
+              </span>
             </div>
           )}
 
