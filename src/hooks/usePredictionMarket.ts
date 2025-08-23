@@ -2,7 +2,7 @@
 
 "use client"
 
-import { useContractWrite, useWaitForTransaction } from 'wagmi'
+import { useContractWrite, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 
@@ -39,8 +39,8 @@ const PREDICTION_MARKET_ABI = [
 ] as const
 
 export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "no") {
-  // Проверяем, что мы на клиенте
-  if (typeof window === 'undefined') {
+  // Проверяем, что мы на клиенте и есть window.ethereum
+  if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
     return {
       placeBet: () => {},
       isLoading: false,
@@ -66,10 +66,10 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
       mockEncryptedOutcome as `0x${string}`,
       mockInputProof as `0x${string}`
     ],
-    value: parseEther(betAmount),
+    value: parseEther(betAmount || "0"),
   })
 
-  const { isLoading: isConfirming, isSuccess, error: confirmError } = useWaitForTransaction({
+  const { isLoading: isConfirming, isSuccess, error: confirmError } = useWaitForTransactionReceipt({
     hash: data?.hash,
   })
 

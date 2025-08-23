@@ -6,10 +6,7 @@ import Link from "next/link"
 import { Hero } from "@/components/layout/Hero"
 import { StatsCard } from "@/components/ui/StatsCard"
 import { MarketCard } from "@/components/markets/MarketCard"
-import { usePredictionMarket } from "@/hooks/usePredictionMarket"
-
 export default function HomePage() {
-  const { marketData } = usePredictionMarket()
 
   const featuredMarkets = [
     {
