@@ -1,10 +1,9 @@
 "use client"
 
-"use client"
-
-import { useContractWrite, useWaitForTransactionReceipt } from 'wagmi'
+import { useContractWrite, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { parseEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
+import { useState } from 'react'
 
 // ABI для функции placeBet
 const PREDICTION_MARKET_ABI = [
@@ -39,6 +38,9 @@ const PREDICTION_MARKET_ABI = [
 ] as const
 
 export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "no") {
+  const { isConnected } = useAccount()
+  const [manualError, setManualError] = useState<string | null>(null)
+
   // Проверяем, что мы на клиенте и есть window.ethereum
   if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
     return {
@@ -56,7 +58,7 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
   const mockEncryptedOutcome = "0x" + "00".repeat(32) // Заглушка для зашифрованного исхода
   const mockInputProof = "0x" + "00".repeat(32) // Заглушка для доказательства
 
-  const { data, write, isLoading: isWriteLoading, error: writeError } = useContractWrite({
+  const { data, write, isLoading: isWriteLoading, error: writeError, reset } = useContractWrite({
     address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
     abi: PREDICTION_MARKET_ABI,
     functionName: 'placeBet',
@@ -73,17 +75,53 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
     hash: data?.hash,
   })
 
-  const placeBet = () => {
-    if (write) {
-      write()
+  const placeBet = async () => {
+    if (!isConnected) {
+      setManualError("Please connect your wallet first")
+      return
     }
+
+    if (!write) {
+      setManualError("Contract write function not available")
+      return
+    }
+
+    if (!betAmount || parseFloat(betAmount) <= 0) {
+      setManualError("Please enter a valid bet amount")
+      return
+    }
+
+    try {
+      setManualError(null)
+      console.log(`[TRANSACTION] Attempting to place bet:`, {
+        marketId,
+        betAmount,
+        side,
+        value: parseEther(betAmount).toString()
+      })
+
+      // Вызываем write функцию
+      write()
+      
+      console.log('[TRANSACTION] Write function called successfully')
+    } catch (error) {
+      console.error('[TRANSACTION] Error calling write:', error)
+      setManualError(`Failed to initiate transaction: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    }
+  }
+
+  // Сбрасываем ошибки при изменении параметров
+  const resetErrors = () => {
+    setManualError(null)
+    reset()
   }
 
   return {
     placeBet,
+    resetErrors,
     isLoading: isWriteLoading || isConfirming,
     isSuccess,
-    error: writeError || confirmError,
+    error: manualError || writeError || confirmError,
     hash: data?.hash,
   }
 }

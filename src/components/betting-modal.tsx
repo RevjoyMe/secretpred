@@ -40,7 +40,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const [error, setError] = useState("")
 
   // Используем хук для ончейн транзакций
-  const { placeBet, isLoading: isPlacingBet, isSuccess, error: txError, hash } = usePlaceBet(
+  const { placeBet, resetErrors, isLoading: isPlacingBet, isSuccess, error: txError, hash } = usePlaceBet(
     parseInt(String(market?.id || "0")), 
     betAmount, 
     side || "yes"
@@ -51,8 +51,9 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     if (!open) {
       setBetAmount("")
       setError("")
+      resetErrors() // Сбрасываем ошибки хука
     }
-  }, [open])
+  }, [open, resetErrors])
 
   // Handle successful transaction
   useEffect(() => {
@@ -70,7 +71,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   useEffect(() => {
     if (txError) {
       console.error('[ERROR] Transaction failed:', txError)
-      setError(`Transaction failed: ${txError.message}`)
+      setError(`Transaction failed: ${txError.message || txError}`)
     }
   }, [txError])
 
@@ -121,7 +122,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
 
     try {
       // Вызываем placeBet и ждем результат
-      placeBet()
+      await placeBet()
       
       // Не закрываем модал сразу, показываем статус транзакции
       console.log('[SUCCESS] Bet transaction initiated!')
@@ -278,6 +279,19 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
               Your bet will be encrypted on-chain until market resolution for maximum privacy and fairness.
             </AlertDescription>
           </Alert>
+
+          {/* Debug Info */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="text-xs text-gray-500 p-2 bg-gray-100 rounded">
+              <div>Debug: Connected={isConnected ? 'Yes' : 'No'}</div>
+              <div>Debug: Bet Amount={betAmount}</div>
+              <div>Debug: Market ID={market?.id}</div>
+              <div>Debug: Side={side}</div>
+              <div>Debug: Loading={isPlacingBet ? 'Yes' : 'No'}</div>
+              <div>Debug: Success={isSuccess ? 'Yes' : 'No'}</div>
+              {txError && <div>Debug: Error={txError.toString()}</div>}
+            </div>
+          )}
 
           {/* Action Buttons */}
           <div className="flex gap-3">
