@@ -32,15 +32,20 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   })
   
   const [betAmount, setBetAmount] = useState("")
-  const [isPlacingBet, setIsPlacingBet] = useState(false)
   const [error, setError] = useState("")
+
+  // Используем хук для ончейн транзакций
+  const { placeBet, isLoading: isPlacingBet, error: txError } = usePlaceBet(
+    parseInt(String(market?.id || "0")), 
+    betAmount, 
+    side || "yes"
+  )
 
   // Reset state when modal opens/closes
   useEffect(() => {
     if (!open) {
       setBetAmount("")
       setError("")
-      setIsPlacingBet(false)
     }
   }, [open])
 
@@ -87,20 +92,15 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     if (!validateBet()) return
 
     setError("")
-    setIsPlacingBet(true)
     console.log(`[TRANSACTION] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
 
     try {
-      // Здесь будет реальная транзакция
-      // Пока что просто симуляция
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      console.log('[SUCCESS] Bet placed successfully!')
+      placeBet()
+      console.log('[SUCCESS] Bet transaction initiated!')
       onOpenChange(false)
     } catch (err) {
       setError("Failed to place bet. Please try again.")
       console.error("[TRANSACTION] Bet placement failed:", err)
-    } finally {
-      setIsPlacingBet(false)
     }
   }
 
