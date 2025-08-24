@@ -2,10 +2,6 @@
 
 import { Button } from "@/components/ui/button"
 import { MetaMaskButton } from "@/components/meta-mask-button"
-import dynamic from 'next/dynamic'
-
-const NetworkStatus = dynamic(() => import("@/components/ui/network-status").then(mod => ({ default: mod.NetworkStatus })), { ssr: false })
-const ConnectionTest = dynamic(() => import("@/components/ui/connection-test").then(mod => ({ default: mod.ConnectionTest })), { ssr: false })
 import Link from "next/link"
 import { Hero } from "@/components/layout/Hero"
 import { StatsCard } from "@/components/ui/StatsCard"
@@ -95,6 +91,9 @@ export default function HomePage() {
                 <Link href="/oracles" className="text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-accent">
                   Oracles
                 </Link>
+                <Link href="/profile" className="text-muted-foreground hover:text-foreground transition-colors px-3 py-2 rounded-lg hover:bg-accent">
+                  Profile
+                </Link>
               </nav>
               <MetaMaskButton />
             </div>
@@ -104,23 +103,6 @@ export default function HomePage() {
 
       {/* Hero Section */}
       <Hero />
-
-      {/* Network Status Debug */}
-      <section className="py-8 px-4 bg-yellow-50/50 border-b border-yellow-200">
-        <div className="container mx-auto">
-          <h3 className="text-lg font-semibold text-yellow-800 mb-4">🔧 Network Diagnostics</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="bg-white p-4 rounded-lg border">
-              <h4 className="font-medium mb-2">Detailed Status</h4>
-              <NetworkStatus />
-            </div>
-            <div className="bg-white p-4 rounded-lg border">
-              <h4 className="font-medium mb-2">Quick Test</h4>
-              <ConnectionTest />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Featured Markets */}
       <section id="featured-markets" className="py-16 px-4 bg-gradient-to-b from-background to-card/20">

@@ -12,7 +12,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert"
 import { useAccount, useBalance } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import type { Market } from "@/types/market"
-import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink } from "lucide-react"
+import { TrendingUp, AlertTriangle, Lock, Zap, ExternalLink, CheckCircle } from "lucide-react"
 import { usePlaceBet } from '@/hooks/usePredictionMarket'
 
 interface BettingModalProps {
@@ -40,7 +40,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const [error, setError] = useState("")
 
   // Используем хук для ончейн транзакций
-  const { placeBet, isLoading: isPlacingBet, error: txError } = usePlaceBet(
+  const { placeBet, isLoading: isPlacingBet, isSuccess, error: txError, hash } = usePlaceBet(
     parseInt(String(market?.id || "0")), 
     betAmount, 
     side || "yes"
@@ -53,6 +53,26 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
       setError("")
     }
   }, [open])
+
+  // Handle successful transaction
+  useEffect(() => {
+    if (isSuccess && hash) {
+      console.log('[SUCCESS] Transaction confirmed! Hash:', hash)
+      setError("") // Очищаем ошибки
+      // Закрываем модал после успешного завершения
+      setTimeout(() => {
+        onOpenChange(false)
+      }, 2000) // Даем время пользователю увидеть успех
+    }
+  }, [isSuccess, hash, onOpenChange])
+
+  // Handle transaction errors
+  useEffect(() => {
+    if (txError) {
+      console.error('[ERROR] Transaction failed:', txError)
+      setError(`Transaction failed: ${txError.message}`)
+    }
+  }, [txError])
 
   if (!market || !side) return null
 
@@ -100,9 +120,17 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     console.log(`[TRANSACTION] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
 
     try {
+      // Вызываем placeBet и ждем результат
       placeBet()
+      
+      // Не закрываем модал сразу, показываем статус транзакции
       console.log('[SUCCESS] Bet transaction initiated!')
-      onOpenChange(false)
+      
+      // Показываем сообщение об успешной инициации транзакции
+      setError("") // Очищаем ошибки
+      
+      // Модал закроется только после успешного завершения транзакции
+      // или при ошибке
     } catch (err) {
       setError("Failed to place bet. Please try again.")
       console.error("[TRANSACTION] Bet placement failed:", err)
@@ -220,6 +248,21 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             </div>
           )}
 
+          {/* Success Alert */}
+          {isSuccess && hash && (
+            <Alert className="border-green-200 bg-green-50">
+              <CheckCircle className="h-4 w-4 text-green-600" />
+              <AlertDescription className="text-green-800">
+                <div className="space-y-1">
+                  <div>✅ Bet placed successfully!</div>
+                  <div className="text-xs font-mono">
+                    TX Hash: {hash.slice(0, 10)}...{hash.slice(-8)}
+                  </div>
+                </div>
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Error Alert */}
           {error && (
             <Alert variant="destructive">
@@ -254,7 +297,12 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
               {isPlacingBet ? (
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 animate-pulse" />
-                  <span>Placing Bet...</span>
+                  <span>Processing Transaction...</span>
+                </div>
+              ) : isSuccess ? (
+                <div className="flex items-center space-x-2">
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <span>Bet Placed Successfully!</span>
                 </div>
               ) : (
                 `Place ${side.toUpperCase()} Bet`
