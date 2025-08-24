@@ -18,8 +18,9 @@ export function WalletBalance({ className = "" }: WalletBalanceProps) {
     watch: true,
     enabled: !!address && isConnected,
     query: {
-      retry: 3,
-      retryDelay: 1000,
+      retry: 5,
+      retryDelay: 2000,
+      staleTime: 10 * 1000, // 10 seconds
     },
   })
 

@@ -29,6 +29,11 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     chainId: sepolia.id,
     watch: true,
     enabled: !!address && isConnected,
+    query: {
+      retry: 5,
+      retryDelay: 2000,
+      staleTime: 10 * 1000, // 10 seconds
+    },
   })
   
   const [betAmount, setBetAmount] = useState("")
