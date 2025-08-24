@@ -41,17 +41,6 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
   const { isConnected } = useAccount()
   const [manualError, setManualError] = useState<string | null>(null)
 
-  // Проверяем, что мы на клиенте и есть window.ethereum
-  if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
-    return {
-      placeBet: () => {},
-      isLoading: false,
-      isSuccess: false,
-      error: null,
-      hash: undefined,
-    }
-  }
-
   // Для демонстрации используем простые зашифрованные данные
   // В реальном приложении здесь была бы настоящая FHE шифрация
   const mockEncryptedAmount = "0x" + "00".repeat(32) // Заглушка для зашифрованной суммы
@@ -76,6 +65,12 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
   })
 
   const placeBet = async () => {
+    // Проверяем, что мы на клиенте и есть window.ethereum
+    if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
+      setManualError("Wallet not available in this environment")
+      return
+    }
+
     if (!isConnected) {
       setManualError("Please connect your wallet first")
       return
