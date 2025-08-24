@@ -115,17 +115,30 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   }
 
   const handlePlaceBet = async () => {
-    if (!validateBet()) return
+    console.log('[MODAL] handlePlaceBet called')
+    console.log('[MODAL] Current state:', { 
+      isConnected, 
+      betAmount, 
+      marketId: market?.id, 
+      side,
+      balance: balance?.formatted 
+    })
+    
+    if (!validateBet()) {
+      console.log('[MODAL] Validation failed')
+      return
+    }
 
     setError("")
-    console.log(`[TRANSACTION] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
+    console.log(`[MODAL] Placing ${side} bet of ${betAmount} ETH on market ${market.id}`)
 
     try {
+      console.log('[MODAL] About to call placeBet()')
       // Вызываем placeBet и ждем результат
       await placeBet()
       
       // Не закрываем модал сразу, показываем статус транзакции
-      console.log('[SUCCESS] Bet transaction initiated!')
+      console.log('[MODAL] placeBet() completed successfully')
       
       // Показываем сообщение об успешной инициации транзакции
       setError("") // Очищаем ошибки
@@ -133,8 +146,9 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
       // Модал закроется только после успешного завершения транзакции
       // или при ошибке
     } catch (err) {
+      console.error('[MODAL] placeBet() threw an error:', err)
       setError("Failed to place bet. Please try again.")
-      console.error("[TRANSACTION] Bet placement failed:", err)
+      console.error("[MODAL] Bet placement failed:", err)
     }
   }
 
