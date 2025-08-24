@@ -3,9 +3,10 @@
 import { useContractWrite, useWaitForTransactionReceipt, useAccount } from 'wagmi'
 import { parseEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { createInstance, createEncryptedInput, userDecrypt, publicDecrypt } from '@zama-fhe/relayer-sdk'
 
-// ABI для функции placeBet
+// ABI для функции placeBet с правильными FHE типами
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -38,19 +39,34 @@ const PREDICTION_MARKET_ABI = [
 ] as const
 
 export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "no") {
-  const { isConnected } = useAccount()
+  const { isConnected, address } = useAccount()
   const [manualError, setManualError] = useState<string | null>(null)
+  const [fheInstance, setFheInstance] = useState<any>(null)
 
   console.log('[HOOK] usePlaceBet called with:', { marketId, betAmount, side, isConnected })
 
-  // Для демонстрации используем простые зашифрованные данные
-  // В реальном приложении здесь была бы настоящая FHE шифрация
-  const mockEncryptedAmount = "0x" + "00".repeat(32) // Заглушка для зашифрованной суммы
-  const mockEncryptedOutcome = "0x" + "00".repeat(32) // Заглушка для зашифрованного исхода
-  const mockInputProof = "0x" + "00".repeat(32) // Заглушка для доказательства
+  // Инициализация FHE instance
+  useEffect(() => {
+    const initFHE = async () => {
+      try {
+        if (typeof window !== 'undefined' && window.ethereum) {
+          const instance = await createInstance({
+            chainId: 11155111, // Sepolia
+            publicKey: process.env.NEXT_PUBLIC_FHE_PUBLIC_KEY || '0x0000000000000000000000000000000000000000000000000000000000000000'
+          })
+          setFheInstance(instance)
+          console.log('[FHE] Instance created successfully')
+        }
+      } catch (error) {
+        console.error('[FHE] Failed to create instance:', error)
+        setManualError('Failed to initialize FHE encryption')
+      }
+    }
 
-  console.log('[HOOK] Contract address:', PREDICTION_MARKET_ADDRESS)
-  console.log('[HOOK] Parsed bet amount:', parseEther(betAmount || "0").toString())
+    if (isConnected && !fheInstance) {
+      initFHE()
+    }
+  }, [isConnected, fheInstance])
 
   const { data, write, isLoading: isWriteLoading, error: writeError, reset } = useContractWrite({
     address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
@@ -58,9 +74,9 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
     functionName: 'placeBet',
     args: [
       BigInt(marketId),
-      mockEncryptedAmount as `0x${string}`,
-      mockEncryptedOutcome as `0x${string}`,
-      mockInputProof as `0x${string}`
+      "0x" + "00".repeat(32), // Placeholder - will be replaced with real encrypted data
+      "0x" + "00".repeat(32), // Placeholder - will be replaced with real encrypted data
+      "0x" + "00".repeat(32)  // Placeholder - will be replaced with real proof
     ],
     value: parseEther(betAmount || "0"),
   })
@@ -86,7 +102,6 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
   const placeBet = async () => {
     console.log('[PLACEBET] Function called')
     
-    // Проверяем, что мы на клиенте и есть window.ethereum
     if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
       console.error('[PLACEBET] Window or ethereum not available')
       setManualError("Wallet not available in this environment")
@@ -96,6 +111,12 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
     if (!isConnected) {
       console.error('[PLACEBET] Wallet not connected')
       setManualError("Please connect your wallet first")
+      return
+    }
+
+    if (!fheInstance) {
+      console.error('[PLACEBET] FHE not initialized')
+      setManualError("FHE encryption not ready")
       return
     }
 
@@ -120,8 +141,28 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
         value: parseEther(betAmount).toString()
       })
 
-      // Вызываем write функцию
-      write()
+      // Создаем зашифрованные данные с помощью Zama SDK
+      const amountInWei = parseEther(betAmount)
+      const outcome = side === "yes" ? true : false
+
+      // Создаем зашифрованные входные данные
+      const encryptedAmount = await createEncryptedInput(fheInstance, amountInWei.toString(), 64)
+      const encryptedOutcome = await createEncryptedInput(fheInstance, outcome.toString(), 1) // boolean as 1 bit
+
+      console.log('[FHE] Encrypted data created:', {
+        amount: encryptedAmount,
+        outcome: encryptedOutcome
+      })
+
+      // Вызываем write функцию с реальными зашифрованными данными
+      write({
+        args: [
+          BigInt(marketId),
+          encryptedAmount,
+          encryptedOutcome,
+          "0x" + "00".repeat(32) // Proof placeholder - в реальном приложении нужен валидный proof
+        ]
+      })
       
       console.log('[PLACEBET] Write function called successfully')
     } catch (error) {
@@ -144,5 +185,6 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
     isSuccess,
     error: manualError || writeError || confirmError,
     hash: data?.hash,
+    fheReady: !!fheInstance,
   }
 }

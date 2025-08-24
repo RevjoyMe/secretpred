@@ -40,7 +40,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const [error, setError] = useState("")
 
   // Используем хук для ончейн транзакций
-  const { placeBet, resetErrors, isLoading: isPlacingBet, isSuccess, error: txError, hash } = usePlaceBet(
+  const { placeBet, resetErrors, isLoading, isSuccess, error: txError, hash, fheReady } = usePlaceBet(
     parseInt(String(market?.id || "0")), 
     betAmount, 
     side || "yes"
@@ -251,6 +251,16 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
             </div>
           )}
 
+          {/* FHE Status */}
+          {!fheReady && isConnected && (
+            <div className="mb-4 p-3 bg-yellow-50 border border-yellow-200 rounded-lg">
+              <div className="flex items-center">
+                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-yellow-600 mr-2"></div>
+                <span className="text-sm text-yellow-800">Initializing FHE encryption...</span>
+              </div>
+            </div>
+          )}
+
           {/* Wallet Balance */}
           {isConnected && (
             <div className="flex items-center justify-between text-sm">
@@ -301,7 +311,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
               <div>Debug: Bet Amount={betAmount}</div>
               <div>Debug: Market ID={market?.id}</div>
               <div>Debug: Side={side}</div>
-              <div>Debug: Loading={isPlacingBet ? 'Yes' : 'No'}</div>
+              <div>Debug: Loading={isLoading ? 'Yes' : 'No'}</div>
               <div>Debug: Success={isSuccess ? 'Yes' : 'No'}</div>
               {txError && <div>Debug: Error={txError.toString()}</div>}
             </div>
@@ -313,16 +323,16 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
               variant="outline"
               onClick={() => onOpenChange(false)}
               className="flex-1 !text-gray-900 !border-gray-300 hover:!bg-gray-100"
-              disabled={isPlacingBet}
+              disabled={isLoading}
             >
               Cancel
             </Button>
             <Button
               onClick={handlePlaceBet}
-              disabled={!isConnected || betAmountNum <= 0 || isPlacingBet}
+              disabled={isLoading || !isConnected || betAmountNum <= 0 || !fheReady}
               className="flex-1 crypto-glow"
             >
-              {isPlacingBet ? (
+              {isLoading ? (
                 <div className="flex items-center space-x-2">
                   <Zap className="w-4 h-4 animate-pulse" />
                   <span>Processing Transaction...</span>
