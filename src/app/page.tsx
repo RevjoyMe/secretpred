@@ -2,8 +2,10 @@
 
 import { Button } from "@/components/ui/button"
 import { MetaMaskButton } from "@/components/meta-mask-button"
-import { NetworkStatus } from "@/components/ui/network-status"
-import { ConnectionTest } from "@/components/ui/connection-test"
+import dynamic from 'next/dynamic'
+
+const NetworkStatus = dynamic(() => import("@/components/ui/network-status").then(mod => ({ default: mod.NetworkStatus })), { ssr: false })
+const ConnectionTest = dynamic(() => import("@/components/ui/connection-test").then(mod => ({ default: mod.ConnectionTest })), { ssr: false })
 import Link from "next/link"
 import { Hero } from "@/components/layout/Hero"
 import { StatsCard } from "@/components/ui/StatsCard"

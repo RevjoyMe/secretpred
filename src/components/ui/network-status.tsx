@@ -1,14 +1,13 @@
 "use client"
 
-import { useAccount, useNetwork, useBalance } from 'wagmi'
+import { useAccount, useBalance } from 'wagmi'
 import { sepolia } from 'wagmi/chains'
 import { useEffect, useState } from 'react'
 import { Alert, AlertDescription } from './alert'
 import { AlertTriangle, CheckCircle, Wifi, WifiOff } from 'lucide-react'
 
 export function NetworkStatus() {
-  const { isConnected, address } = useAccount()
-  const { chain, chains } = useNetwork()
+  const { isConnected, address, chainId } = useAccount()
   const [connectionStatus, setConnectionStatus] = useState<'checking' | 'connected' | 'error'>('checking')
   
   const { data: balance, isLoading: balanceLoading, error: balanceError } = useBalance({
@@ -54,7 +53,7 @@ export function NetworkStatus() {
     return null
   }
 
-  const isCorrectNetwork = chain?.id === sepolia.id
+  const isCorrectNetwork = chainId === sepolia.id
 
   return (
     <div className="space-y-2">
@@ -67,9 +66,9 @@ export function NetworkStatus() {
           ) : (
             <AlertTriangle className="w-4 h-4 text-red-500" />
           )}
-          <span className={isCorrectNetwork ? 'text-green-600' : 'text-red-600'}>
-            {isCorrectNetwork ? 'Sepolia Testnet' : `Wrong Network (${chain?.name || 'Unknown'})`}
-          </span>
+                     <span className={isCorrectNetwork ? 'text-green-600' : 'text-red-600'}>
+             {isCorrectNetwork ? 'Sepolia Testnet' : `Wrong Network (Chain ID: ${chainId || 'Unknown'})`}
+           </span>
         </div>
       </div>
 
@@ -126,20 +125,20 @@ export function NetworkStatus() {
         </div>
       </div>
 
-      {/* Debug Info */}
-      <div className="text-xs text-gray-500 space-y-1">
-        <div>Chain ID: {chain?.id || 'Unknown'}</div>
-        <div>Address: {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not connected'}</div>
-        <div>RPC URL: https://eth-sepolia.g.alchemy.com/v2/zgE0eizPW4otRHOQiyndZ</div>
-      </div>
+             {/* Debug Info */}
+       <div className="text-xs text-gray-500 space-y-1">
+         <div>Chain ID: {chainId || 'Unknown'}</div>
+         <div>Address: {address ? `${address.slice(0, 6)}...${address.slice(-4)}` : 'Not connected'}</div>
+         <div>RPC URL: https://eth-sepolia.g.alchemy.com/v2/zgE0eizPW4otRHOQiyndZ</div>
+       </div>
 
       {/* Error Alerts */}
       {!isCorrectNetwork && (
         <Alert variant="destructive">
           <AlertTriangle className="h-4 w-4" />
-          <AlertDescription>
-            Please switch to Sepolia Testnet in your wallet. Current network: {chain?.name || 'Unknown'}
-          </AlertDescription>
+                   <AlertDescription>
+           Please switch to Sepolia Testnet in your wallet. Current Chain ID: {chainId || 'Unknown'}
+         </AlertDescription>
         </Alert>
       )}
 
