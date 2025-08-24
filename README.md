@@ -1,318 +1,319 @@
-# 🔮 SecretPredictions - Revolutionary Privacy-Preserving Prediction Markets
+# 🔐 Secret Predictions - Zama FHEVM Integration
 
-> **The world's first fully homomorphic encrypted prediction market platform** powered by Zama FHE technology. Bet on real-world events with complete confidentiality and zero information leakage.
+Complete E2E flow for private betting using official Zama FHEVM libraries.
 
-![SecretPredictions Live Demo](https://img.shields.io/badge/Live%20Demo-Online-brightgreen?style=for-the-badge&logo=vercel)
-![Zama FHE](https://img.shields.io/badge/Powered%20by-Zama%20FHE-blue?style=for-the-badge&logo=ethereum)
-![Sepolia Testnet](https://img.shields.io/badge/Network-Sepolia%20Testnet-orange?style=for-the-badge&logo=ethereum)
+## 🚀 Quick Start
 
-## 🌐 **Live Demo**
-**Experience the future of prediction markets:** [https://secretpred-qxjx.vercel.app/](https://secretpred-qxjx.vercel.app/)
-
-## 🚀 **Revolutionary Technology Stack**
-
-### **🔐 Fully Homomorphic Encryption (FHE)**
-- **Zama FHEVM**: First-ever FHE-enabled blockchain integration
-- **Encrypted Betting**: All positions hidden until market resolution
-- **Zero-Knowledge Proofs**: Mathematical guarantees of privacy
-- **Quantum-Resistant**: Future-proof cryptography
-
-### **🏗️ Advanced Architecture**
-```mermaid
-graph TB
-    subgraph "Frontend Layer"
-        UI[Next.js 14 + TypeScript]
-        RK[RainbowKit + Wagmi]
-        TW[Tailwind CSS + Framer Motion]
-    end
-    
-    subgraph "Smart Contract Layer"
-        PM[PredictionMarket.sol]
-        EB[EncryptedBetting.sol]
-        OI[OracleIntegration.sol]
-    end
-    
-    subgraph "FHE Layer"
-        FHE[Zama FHEVM]
-        EINT[euint64 Operations]
-        EBOOL[ebool Logic]
-    end
-    
-    subgraph "Blockchain Layer"
-        SEP[Sepolia Testnet]
-        ETH[Ethereum L2]
-    end
-    
-    UI --> RK
-    RK --> PM
-    PM --> EB
-    EB --> FHE
-    FHE --> SEP
-    OI --> SEP
+### 1. Install dependencies
+```bash
+npm install
 ```
 
-## 🌟 **What Makes Us Revolutionary**
+### 2. Environment setup
+```bash
+# Copy env.example to .env.local
+cp env.example .env.local
 
-### **🔒 Unprecedented Privacy**
-Unlike traditional prediction markets (Polymarket, Kalshi, Manifold), **SecretPredictions** offers:
+# Fill in environment variables:
+# - SEPOLIA_RPC_URL (Alchemy/Infura)
+# - SEPOLIA_PRIVATE_KEY (your private key)
+# - NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID
+# - ETHERSCAN_API_KEY (for contract verification)
+```
 
-- **Complete Position Anonymity**: Your betting strategy is mathematically impossible to discover
-- **Hidden Liquidity**: Market makers can provide liquidity without revealing their positions
-- **Anti-Front-Running**: No one can see your bets before you place them
-- **Whale Protection**: Large positions can't manipulate market sentiment through visibility
+### 3. Compile contracts
+```bash
+npm run compile
+```
 
-### **⚡ Technical Innovations**
+### 4. Deploy to Sepolia
+```bash
+npm run deploy:sepolia
+```
 
-#### **1. FHE-Encrypted Smart Contracts**
+### 5. Update contract addresses
+After deployment, update `NEXT_PUBLIC_BETTING_VAULT_ADDRESS` and `NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS` in `.env.local`
+
+### 6. Start frontend
+```bash
+npm run dev
+```
+
+### 7. Test E2E
+```bash
+npm run test:e2e
+```
+
+## 📁 Project Structure
+
+```
+secret-predictions/
+├── contracts/
+│   ├── BettingVault.sol          # Simple FHE betting vault
+│   └── PredictionMarket.sol      # Advanced prediction market
+├── scripts/
+│   ├── deploy.ts                 # Deployment script
+│   └── test-e2e.ts              # E2E test
+├── src/
+│   ├── lib/
+│   │   └── fhe-utils.ts         # FHE utilities
+│   └── hooks/
+│       └── useSecretPredictions.ts # React hook
+├── hardhat.config.ts            # Hardhat configuration
+├── package.json                 # Dependencies
+└── env.example                  # Environment variables example
+```
+
+## 🔒 FHE Architecture
+
+### BettingVault Contract (Simple)
+
 ```solidity
-// Revolutionary encrypted betting structure
-struct EncryptedPosition {
-    euint64 yesAmount;      // Fully encrypted amount
-    euint64 noAmount;       // Fully encrypted amount
-    euint32 betCount;       // Encrypted bet count
-    ebool hasPosition;      // Encrypted position flag
+// Correct Zama imports
+import { FHE, euint64, externalEuint64, ebool } from "@fhevm/solidity/lib/FHE.sol";
+
+contract BettingVault is Ownable, ReentrancyGuard {
+    euint64 private totalPot;                    // Encrypted total pool
+    mapping(address => euint64) private bets;    // Encrypted user bets
+    ebool private resultComputed;                // Encrypted computation flag
+    
+    // Place encrypted bet
+    function placeBet(externalEuint64 encAmount) external nonReentrant {
+        euint64 amount = FHE.asEuint64(encAmount);
+        totalPot = FHE.add(totalPot, amount);
+        bets[msg.sender] = FHE.add(bets[msg.sender], amount);
+        
+        // Permissions for future computations
+        FHE.allowThis(totalPot);
+        FHE.allowThis(bets[msg.sender]);
+    }
+    
+    // Public reveal of pool
+    function makePotPublic() external onlyOwner {
+        FHE.makePubliclyDecryptable(totalPot);
+    }
 }
 ```
 
-#### **2. Zero-Knowledge Market Resolution**
-- **Private Outcome Verification**: Winners can prove they won without revealing their bet amount
-- **Encrypted Payout Calculation**: All reward calculations happen in encrypted space
-- **Anonymous Claims**: Claim winnings without revealing your identity
+### PredictionMarket Contract (Advanced)
 
-#### **3. Advanced Oracle Integration**
-- **Multi-Oracle Consensus**: Chainlink, API, Manual, and Community voting
-- **Dispute Resolution**: Decentralized governance for contested outcomes
-- **Real-Time Data**: Live market updates with encrypted volume
+```solidity
+// Correct Zama imports
+import { FHE, euint64, euint32, ebool, externalEuint64, externalEbool } from '@fhevm/solidity/lib/FHE.sol';
 
-## 🎯 **Core Features**
+contract PredictionMarket is Ownable, ReentrancyGuard {
+    // Encrypted position data
+    struct EncryptedPosition {
+        euint64 yesAmount;      // Encrypted YES bet amount
+        euint64 noAmount;       // Encrypted NO bet amount
+        euint32 betCount;       // Encrypted bet count
+        ebool hasPosition;      // Encrypted position flag
+        ebool hasClaimed;       // Encrypted claim flag
+    }
+    
+    // Place encrypted prediction bet
+    function placeBet(
+        uint256 marketId,
+        externalEuint64 encryptedAmount,
+        externalEbool encryptedOutcome
+    ) external payable {
+        euint64 amount = FHE.asEuint64(encryptedAmount);
+        ebool outcome = FHE.asEbool(encryptedOutcome);
+        
+        // Update encrypted position
+        _updatePosition(marketId, msg.sender, amount, outcome);
+    }
+}
+```
 
-### **🎮 User Experience**
-- **Intuitive Betting Interface**: One-click encrypted betting
-- **Real-Time Market Data**: Live odds and volume updates
-- **Mobile-Responsive Design**: Seamless experience across all devices
-- **Wallet Integration**: MetaMask, WalletConnect, and more
+### Frontend (fhe-utils.ts)
 
-### **📊 Market Types**
-- **Binary Outcomes**: YES/NO predictions on any event
-- **Time-Limited Markets**: Automatic resolution at specified deadlines
-- **Category Organization**: Politics, Sports, Crypto, Entertainment, Technology
-- **Community-Driven**: User-created markets with governance
+```typescript
+import { createInstance, SepoliaConfig } from "@zama-fhe/relayer-sdk";
 
-### **🔧 Technical Features**
-- **Gas Optimization**: Efficient FHE operations for cost-effective betting
-- **Batch Processing**: Multiple bets in single transaction
-- **Emergency Pause**: Circuit breakers for security incidents
-- **Upgradeable Contracts**: Future-proof architecture
+// Initialize FHE
+export async function initFHE() {
+    const instance = await createInstance(SepoliaConfig);
+    const publicKey = instance.getPublicKey();
+    return { instance, publicKey };
+}
 
-## 🏆 **Live Markets on Sepolia Testnet**
+// Encrypt bet amount
+export async function encryptBet(amount: bigint | number): Promise<string> {
+    const { instance, publicKey } = await initFHE();
+    return await instance.createEncryptedInput(publicKey, amount, "euint64");
+}
 
-### **Current Active Markets**
-- **"Was Kanye hacked?"** - Entertainment ($641k volume)
-- **"Democratic Presidential Nominee 2028"** - Politics ($13m volume)
-- **"Presidential Election Winner 2028"** - Politics ($11m volume)
-- **"Russia x Ukraine ceasefire in 2025?"** - Geopolitics ($18m volume)
-- **"Will Putin meet with Zelenskyy in 2025?"** - Geopolitics ($1m volume)
-- **"Fed decision in September?"** - Economics ($37m volume)
+// Encrypt outcome
+export async function encryptOutcome(outcome: boolean): Promise<string> {
+    const { instance, publicKey } = await initFHE();
+    return await instance.createEncryptedInput(publicKey, outcome ? 1 : 0, "ebool");
+}
 
+// Public decryption
+export async function publicDecryptPot(ciphertextHandle: string): Promise<number> {
+    const { instance } = await initFHE();
+    return await instance.publicDecrypt(ciphertextHandle);
+}
+```
 
-## 🛠️ **Technology Stack**
+### React Hook (useSecretPredictions.ts)
 
-### **Frontend Technologies**
-- **Next.js 14**: Latest React framework with App Router
-- **TypeScript**: Type-safe development for reliability
-- **Tailwind CSS**: Utility-first styling for modern UI
-- **Framer Motion**: Smooth animations and transitions
-- **RainbowKit**: Professional Web3 wallet connections
+```typescript
+export function useSecretPredictions(contractAddress: string) {
+    // FHE state
+    const [isFHEReady, setIsFHEReady] = useState(false);
+    
+    // Actions
+    const placeBet = useCallback(async (amount: bigint | number) => {
+        const encryptedBet = await encryptBet(amount);
+        await submitBet(encryptedBet, contractAddress);
+    }, [contractAddress]);
+    
+    const revealPot = useCallback(async () => {
+        await publicReveal(contractAddress);
+    }, [contractAddress]);
+    
+    return { placeBet, revealPot, isFHEReady };
+}
+```
 
-### **Blockchain Integration**
-- **Wagmi v2**: Latest React hooks for Ethereum
-- **Viem**: TypeScript-first Ethereum library
-- **Zama FHEVM**: Fully homomorphic encryption virtual machine
-- **Sepolia Testnet**: Ethereum testnet with FHE support
+## 🔄 E2E Flow
 
-### **Smart Contracts**
-- **Solidity 0.8.24**: Latest stable compiler
-- **OpenZeppelin**: Industry-standard security libraries
-- **Hardhat**: Professional development environment
-- **FHE Libraries**: Zama's audited encryption libraries
+### 1. Get FHE Public Key
+```typescript
+const { publicKey } = await initFHE();
+// Get key from Sepolia Gateway
+```
 
-## 🚀 **Quick Start**
+### 2. Encrypt bet
+```typescript
+const encryptedBet = await encryptBet(100); // 100 wei
+// Bet encrypted in browser
+```
 
-### **Prerequisites**
+### 3. Submit to contract
+```typescript
+await contract.placeBet(encryptedBet);
+// Encrypted value sent to smart contract
+```
+
+### 4. Verify privacy
+```typescript
+const encryptedData = await contract.getEncryptedBet(userAddress);
+// Data remains encrypted, plaintext not accessible
+```
+
+### 5. Public reveal
+```typescript
+await contract.makePotPublic(); // Contract
+const plaintext = await publicDecryptPot(encryptedData); // Frontend
+// Data now publicly accessible
+```
+
+## ✅ Compliance Check
+
+| Rule | Status | Description |
+|------|--------|-------------|
+| Correct imports | ✅ | `@fhevm/solidity/lib/FHE.sol` |
+| FHE not in view/pure | ✅ | All operations in state-changing functions |
+| FHE arithmetic | ✅ | `FHE.add`, `FHE.gt`, etc. |
+| euint256 no arithmetic | ✅ | euint256 not used |
+| Correct permissions | ✅ | `FHE.allowThis`, `FHE.makePubliclyDecryptable` |
+| Official SDK | ✅ | `@zama-fhe/relayer-sdk` |
+| Public reveal | ✅ | `makePubliclyDecryptable` + `publicDecrypt` |
+| Private access | ✅ | `userDecrypt` with EIP-712 |
+
+## 🧪 Testing
+
+### Local testing
 ```bash
-Node.js 18+
-pnpm (recommended) or npm
-MetaMask wallet with Sepolia ETH
+npm run test
 ```
 
-### **Installation**
+### E2E test on Sepolia
 ```bash
-# Clone the repository
-git clone https://github.com/RevjoyMe/secretpred.git
-cd secret-predictions
-
-# Install dependencies
-pnpm install
-
-# Set up environment variables
-cp env.example .env.local
+npm run test:e2e
 ```
 
-### **Environment Variables**
-```env
-NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID=your_walletconnect_project_id
-NEXT_PUBLIC_SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
-NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS=0xF4B4B18645c810195ef7a9bF768A0242A8325D7c
-NEXT_PUBLIC_ENCRYPTED_BETTING_ADDRESS=0xB9C509d0aA9ca8B083E73531Ab06Fb81B26DC918
-NEXT_PUBLIC_ORACLE_INTEGRATION_ADDRESS=0xc5cb86FfDae958B566E0587B513DC67003fefDa0
+### Expected E2E test output
+```
+🧪 Starting E2E test for Secret Predictions...
+🔑 Step 1: Getting public key from Sepolia Gateway...
+✅ Public Key obtained: 0x...
+🔒 Step 2: Encrypting 3 bets...
+✅ Bet 1 encrypted: 0x...
+✅ Bet 2 encrypted: 0x...
+✅ Bet 3 encrypted: 0x...
+📤 Step 3: Submitting bets to contract...
+✅ Bet 1 submitted successfully!
+✅ Bet 2 submitted successfully!
+✅ Bet 3 submitted successfully!
+🔍 Step 4: Checking that direct reading doesn't reveal plaintext...
+✅ Confirmed: Direct reading shows encrypted data, not plaintext
+🔓 Step 5: Making pot publicly decryptable...
+✅ Pot made publicly decryptable!
+🔓 Step 6: Getting plaintext through publicDecrypt...
+✅ Total pot decrypted: 850 wei
+✅ SUCCESS: Decrypted total matches expected sum!
 ```
 
-### **Development**
+## 🔧 Commands
+
 ```bash
-# Start development server
-pnpm dev
+# Development
+npm run dev              # Start frontend
+npm run build            # Build project
+npm run lint             # Code linting
 
-# Build for production
-pnpm build
+# Contracts
+npm run compile          # Compile contracts
+npm run deploy:sepolia   # Deploy to Sepolia
+npm run test             # Contract tests
 
-# Start production server
-pnpm start
+# E2E testing
+npm run test:e2e         # Full E2E test
 ```
 
-## 🔐 **Privacy Guarantees**
+## 🚨 Important Limitations
 
-### **What's Completely Hidden**
-- ✅ Individual bet amounts and sizes
-- ✅ User betting strategies and patterns
-- ✅ Win/loss ratios per user
-- ✅ Position timing and market impact
-- ✅ Whale identification and tracking
+1. **FHE operations only in state-changing functions**
+   - Cannot use FHE in `view`/`pure` functions
+   - View functions can only return handles
 
-### **What's Publicly Visible**
-- ✅ Market questions and descriptions
-- ✅ Total market volume and liquidity
-- ✅ Aggregate odds percentages
-- ✅ Market resolution outcomes
-- ✅ Community governance decisions
+2. **Correct arithmetic**
+   - Always use `FHE.add()`, `FHE.sub()`, `FHE.mul()`
+   - Never use `+`, `-`, `*` directly with `euintX`
 
-### **Mathematical Proof**
-Our FHE implementation provides cryptographic guarantees that:
-- **Information Theoretic Security**: No amount of computation can reveal private data
-- **Zero-Knowledge Properties**: Winners can prove victory without revealing bets
-- **Collusion Resistance**: Even multiple parties cannot combine information
+3. **euint256 limitations**
+   - `euint256` only for comparisons and bitwise operations
+   - Arithmetic with `euint256` not supported
 
-## 📈 **Tokenomics & Economics**
+4. **FHE permissions**
+   - Use `FHE.allowThis()` for contract access to its own data
+   - Use `FHE.makePubliclyDecryptable()` for public reveal
 
-### **Platform Fees**
-- **Market Creation**: Free (encouraging market diversity)
-- **Betting Fee**: 3% of winnings (competitive with traditional platforms)
-- **Oracle Resolution**: 0.1% of market volume (incentivizing accurate oracles)
+## 🔗 Useful Links
 
-### **Revenue Distribution**
-- **Platform Development**: 60% (continuous innovation)
-- **Oracle Incentives**: 25% (data quality)
-- **Community Treasury**: 15% (governance and grants)
+- [Zama FHEVM Documentation](https://docs.zama.ai/fhevm)
+- [Relayer SDK Guide](https://github.com/zama-ai/fhevm-react-template)
+- [FHE Types Reference](https://docs.zama.ai/fhevm/developers/solidity/types)
+- [Sepolia Testnet](https://sepolia.etherscan.io/)
 
-### **Economic Benefits**
-- **Liquidity Efficiency**: Hidden positions prevent market manipulation
-- **Fair Price Discovery**: True market sentiment without whale influence
-- **Reduced Slippage**: Encrypted orders prevent front-running
+## 🎯 Conclusion
 
-## 🛣️ **Development Roadmap**
+Secret Predictions project fully complies with Zama FHEVM requirements:
 
-### **Phase 1: MVP** ✅ **COMPLETED**
-- [x] Core FHE smart contracts deployed on Sepolia
-- [x] Encrypted betting implementation
-- [x] Modern Next.js frontend with TypeScript
-- [x] RainbowKit wallet integration
-- [x] Live demo deployment on Vercel
+✅ **Uses only official libraries**  
+✅ **Correctly applies FHE types and operations**  
+✅ **Complies with view/pure function limitations**  
+✅ **Implements correct permission model**  
+✅ **Ensures complete data privacy**  
 
-### **Phase 2: Enhancement** 🚧 **IN PROGRESS**
-- [ ] Advanced oracle integration (Chainlink, API feeds)
-- [ ] Mobile app development (React Native)
-- [ ] Market analytics dashboard
-- [ ] Social prediction features
+**Ready for production use on Sepolia testnet!** 🚀
 
-### **Phase 3: Scaling** 📋 **PLANNED**
-- [ ] Cross-chain deployment (Polygon, Arbitrum, Base)
-- [ ] Institutional trading features
-- [ ] API for third-party integration
-- [ ] Governance token launch
-- [ ] DAO governance implementation
+## 📚 Additional Documentation
 
-### **Phase 4: Enterprise** 🔮 **FUTURE**
-- [ ] White-label solutions
-- [ ] Custom market creation tools
-- [ ] Advanced analytics and reporting
-- [ ] Compliance and KYC integration
-
-## 🔍 **Security & Audits**
-
-### **Security Measures**
-- **FHE Implementation**: Using Zama's audited and battle-tested libraries
-- **Smart Contract Security**: OpenZeppelin standards and best practices
-- **Multi-Signature Governance**: Admin functions require multiple signatures
-- **Emergency Pause**: Circuit breakers for security incidents
-- **Upgradeable Architecture**: Future-proof contract design
-
-## 🌍 **Use Cases & Applications**
-
-### **Traditional Prediction Markets**
-- **Political Elections**: Anonymous polling without influence
-- **Sports Betting**: Fair odds without insider information
-- **Financial Markets**: Price predictions without manipulation
-- **Entertainment**: Award show and event predictions
-
-### **Novel Applications**
-- **Corporate Decision Making**: Private employee sentiment
-- **Research Funding**: Anonymous expert predictions
-- **Insurance Markets**: Private risk assessment
-- **Gaming**: Fair competition without cheating
-
-### **Institutional Use**
-- **Hedge Funds**: Private position building
-- **Research Institutions**: Anonymous data collection
-- **Government**: Private policy outcome predictions
-- **Media**: Unbiased event probability assessment
-
-### **User Experience**
-- **Wallet Connection**: <3 seconds
-- **Bet Placement**: <5 seconds
-- **Market Loading**: <1 second
-- **Mobile Performance**: 95+ Lighthouse score
-
-## 🔮 **Future Vision**
-
-SecretPredictions is not just a prediction market—it's the foundation for a new era of private, fair, and efficient information markets. Our vision includes:
-
-- **Global Adoption**: Prediction markets for every major event
-- **Institutional Integration**: Professional trading tools and APIs
-- **Cross-Chain Ecosystem**: Multi-chain liquidity and markets
-- **AI Integration**: Machine learning for market prediction
-- **Regulatory Compliance**: KYC/AML while maintaining privacy
-
-## 📄 **License**
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 **Acknowledgments**
-
-- **[Zama](https://zama.ai)**: Revolutionary FHE technology and support
-- **[Ethereum Foundation](https://ethereum.org)**: Blockchain infrastructure
-- **[Vercel](https://vercel.com)**: Deployment and hosting platform
-- **[RainbowKit](https://rainbowkit.com)**: Professional Web3 UI components
-- **[OpenZeppelin](https://openzeppelin.com)**: Security standards and libraries
-
----
-
-## 🌟 **Try It Now**
-
-**Experience the future of prediction markets:** [https://secretpred-qxjx.vercel.app/](https://secretpred-qxjx.vercel.app/)
-
-**Built with ❤️ for the Zama Bounty Program**
-
-*"The future of prediction markets is private, fair, and encrypted"* 🔮🔒
-
----
-
-*Last updated: December 2024 - Ready for Guild consideration! 🚀*
+- [Deployment Guide](DEPLOYMENT_GUIDE.md) - Detailed deployment instructions
+- [Compliance Check](COMPLIANCE_CHECK.md) - FHE compliance verification
+- [FHE Setup](FHE_SETUP.md) - FHE configuration details
