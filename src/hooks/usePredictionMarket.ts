@@ -135,7 +135,7 @@ export function usePredictionMarket() {
     hash: betData,
   })
 
-  // Функция для размещения ставки
+  // Функция для размещения ставки с Zama Relayer SDK
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -147,9 +147,24 @@ export function usePredictionMarket() {
 
     try {
       // Для демонстрации используем простые зашифрованные данные
-      // В реальном приложении здесь была бы FHE шифрация
+      // В реальном приложении здесь была бы FHE шифрация через Relayer SDK
+      
+      // Имитируем данные от Relayer SDK
       const encryptedAmount = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
       const encryptedOutcome = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
+
+      // В реальном приложении здесь был бы код:
+      /*
+      import { createInstance, SepoliaConfig } from "@zama-fhe/relayer-sdk";
+      
+      const instance = await createInstance(SepoliaConfig);
+      const input = await instance.createEncryptedInput(contractAddress, address);
+      input.add64(BigInt(parseFloat(amount) * 1e18)); // Convert to wei
+      input.addBool(outcome);
+      const encryptedData = await input.encrypt();
+      
+      // Используем encryptedData.handles[0] и encryptedData.inputProof
+      */
 
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
