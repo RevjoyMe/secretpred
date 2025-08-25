@@ -7,7 +7,7 @@ import { FeaturedMarkets } from "@/components/featured-markets"
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-background">
+    <div style={{ minHeight: '100vh', backgroundColor: '#ffffff' }}>
       <Header />
       <main>
         <HeroSection />

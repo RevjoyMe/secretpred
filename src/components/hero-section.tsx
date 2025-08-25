@@ -1,5 +1,3 @@
-import { Button } from "@/components/ui/button"
-
 export function HeroSection() {
   return (
     <section className="py-20 lg:py-32" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #ecfeff 50%, #f1f5f9 100%)' }}>
