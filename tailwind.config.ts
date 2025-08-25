@@ -9,87 +9,77 @@ const config: Config = {
     "./src/**/*.{js,ts,jsx,tsx,mdx}"
   ],
   theme: {
-  	extend: {
-  		colors: {
-  			background: 'var(--background)',
-  			foreground: 'var(--foreground)',
-  			card: {
-  				DEFAULT: 'var(--card)',
-  				foreground: 'var(--card-foreground)'
-  			},
-  			popover: {
-  				DEFAULT: 'var(--popover)',
-  				foreground: 'var(--popover-foreground)'
-  			},
-  			primary: {
-  				DEFAULT: 'var(--primary)',
-  				foreground: 'var(--primary-foreground)'
-  			},
-  			secondary: {
-  				DEFAULT: 'var(--secondary)',
-  				foreground: 'var(--secondary-foreground)'
-  			},
-  			muted: {
-  				DEFAULT: 'var(--muted)',
-  				foreground: 'var(--muted-foreground)'
-  			},
-  			accent: {
-  				DEFAULT: 'var(--accent)',
-  				foreground: 'var(--accent-foreground)'
-  			},
-  			destructive: {
-  				DEFAULT: 'var(--destructive)',
-  				foreground: 'var(--destructive-foreground)'
-  			},
-  			border: 'var(--border)',
-  			input: 'var(--input)',
-  			ring: 'var(--ring)',
-  			chart: {
-  				'1': 'var(--chart-1)',
-  				'2': 'var(--chart-2)',
-  				'3': 'var(--chart-3)',
-  				'4': 'var(--chart-4)',
-  				'5': 'var(--chart-5)'
-  			},
-  			sidebar: {
-  				DEFAULT: 'var(--sidebar)',
-  				foreground: 'var(--sidebar-foreground)',
-  				primary: 'var(--sidebar-primary)',
-  				'primary-foreground': 'var(--sidebar-primary-foreground)',
-  				accent: 'var(--sidebar-accent)',
-  				'accent-foreground': 'var(--sidebar-accent-foreground)',
-  				border: 'var(--sidebar-border)',
-  				ring: 'var(--sidebar-ring)'
-  			}
-  		},
-  		borderRadius: {
-  			lg: 'var(--radius)',
-  			md: 'calc(var(--radius) - 2px)',
-  			sm: 'calc(var(--radius) - 4px)'
-  		},
-  		keyframes: {
-  			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
-  			},
-  			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
-  			}
-  		},
-  		animation: {
-  			'accordion-down': 'accordion-down 0.2s ease-out',
-  			'accordion-up': 'accordion-up 0.2s ease-out'
-  		}
-  	}
+    extend: {
+      colors: {
+        background: '#faf8f5',
+        foreground: '#2d2d2d',
+        card: {
+          DEFAULT: '#ffffff',
+          foreground: '#2d2d2d'
+        },
+        popover: {
+          DEFAULT: '#ffffff',
+          foreground: '#2d2d2d'
+        },
+        primary: {
+          DEFAULT: '#10b981',
+          foreground: '#ffffff'
+        },
+        secondary: {
+          DEFAULT: '#f5f5f0',
+          foreground: '#2d2d2d'
+        },
+        muted: {
+          DEFAULT: '#e8e6e1',
+          foreground: '#6b7280'
+        },
+        accent: {
+          DEFAULT: '#10b981',
+          foreground: '#ffffff'
+        },
+        destructive: {
+          DEFAULT: '#ef4444',
+          foreground: '#ffffff'
+        },
+        border: '#e5e7eb',
+        input: '#f9fafb',
+        ring: '#10b981',
+        chart: {
+          '1': '#10b981',
+          '2': '#ef4444',
+          '3': '#3b82f6',
+          '4': '#8b5cf6',
+          '5': '#f59e0b'
+        }
+      },
+      borderRadius: {
+        lg: '0.5rem',
+        md: '0.375rem',
+        sm: '0.25rem'
+      },
+      keyframes: {
+        'accordion-down': {
+          from: {
+            height: '0'
+          },
+          to: {
+            height: 'var(--radix-accordion-content-height)'
+          }
+        },
+        'accordion-up': {
+          from: {
+            height: 'var(--radix-accordion-content-height)'
+          },
+          to: {
+            height: '0'
+          }
+        }
+      },
+      animation: {
+        'accordion-down': 'accordion-down 0.2s ease-out',
+        'accordion-up': 'accordion-up 0.2s ease-out'
+      }
+    }
   },
   plugins: [require("tailwindcss-animate")],
 };
