@@ -20,9 +20,9 @@ module.exports = {
       chainId: 11155111,
     },
     "fhe-sepolia": {
-      url: "https://eth-sepolia.public.blastapi.io",
+      url: "https://rpc.fhe-sepolia.zama.ai", // Правильный RPC для FHE Sepolia
       accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : [],
-      chainId: 11155111,
+      chainId: 11155420, // Правильный chain ID для FHE Sepolia
       gasPrice: 1000000000, // 1 gwei
     },
     hardhat: {
