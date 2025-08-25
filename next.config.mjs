@@ -12,6 +12,8 @@ const nextConfig = {
   experimental: {
     esmExternals: 'loose',
   },
+  // Ensure PostCSS and Tailwind are properly configured
+  postcss: true,
   webpack: (config) => {
     config.resolve.fallback = {
       ...config.resolve.fallback,
