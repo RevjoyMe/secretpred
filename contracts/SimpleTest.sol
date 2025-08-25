@@ -8,7 +8,7 @@ contract SimpleTest {
     ebool private testBool;
     
     constructor() {
-        // Инициализация с правильным синтаксисом
+        // Initialization with correct syntax
         testValue = FHE.asEuint64(0);
         testBool = FHE.asEbool(false);
     }
@@ -21,7 +21,7 @@ contract SimpleTest {
         euint64 encryptedA = FHE.asEuint64(a);
         euint64 encryptedB = FHE.asEuint64(b);
         
-        // Правильная арифметика с FHE типами
+        // Correct arithmetic with FHE types
         testValue = FHE.add(encryptedA, encryptedB);
     }
     
@@ -29,7 +29,7 @@ contract SimpleTest {
         euint64 encryptedA = FHE.asEuint64(a);
         euint64 encryptedB = FHE.asEuint64(b);
         
-        // Правильное сравнение
+        // Correct comparison
         return FHE.gt(encryptedA, encryptedB);
     }
 }

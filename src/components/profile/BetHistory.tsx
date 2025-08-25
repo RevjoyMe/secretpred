@@ -39,7 +39,7 @@ export function BetHistory({ address }: BetHistoryProps) {
   const [searchTerm, setSearchTerm] = useState("")
   const [filter, setFilter] = useState<"all" | "won" | "lost" | "pending">("all")
 
-  // Mock data - в реальном приложении это будет загружаться из блокчейна
+  // Mock data - in a real application this would be loaded from blockchain
   const betHistory: BetHistoryItem[] = [
     {
       id: "bet_001",

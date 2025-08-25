@@ -41,14 +41,14 @@ export function WalletBalance({ className = "" }: WalletBalanceProps) {
     })
   }, [isConnected, address, balanceLoading, balanceError, balance, retryCount])
 
-  // Автоматический retry при ошибке
+  // Automatic retry on error
   useEffect(() => {
     if (balanceError && retryCount < 3) {
       console.log(`[WalletBalance] Retrying balance fetch (${retryCount + 1}/3)`)
       const timer = setTimeout(() => {
         setRetryCount(prev => prev + 1)
         refetch()
-      }, 2000 * (retryCount + 1)) // Увеличиваем задержку с каждым retry
+      }, 2000 * (retryCount + 1)) // Increase delay with each retry
       
       return () => clearTimeout(timer)
     }

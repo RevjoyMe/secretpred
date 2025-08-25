@@ -16,22 +16,22 @@ export function MetaMaskButton() {
     setError(null)
     
     try {
-      // Проверяем, установлен ли MetaMask
+      // Check if MetaMask is installed
       if (typeof window !== 'undefined' && window.ethereum) {
-        // Запрашиваем подключение к MetaMask
+        // Request connection to MetaMask
         const accounts = await window.ethereum.request({
           method: 'eth_requestAccounts'
         })
         
         if (accounts && accounts.length > 0) {
-          // Переключаемся на Sepolia если нужно
+          // Switch to Sepolia if needed
           try {
             await window.ethereum.request({
               method: 'wallet_switchEthereumChain',
               params: [{ chainId: '0xaa36a7' }], // Sepolia chainId
             })
           } catch (switchError: any) {
-            // Если сеть не добавлена, добавляем её
+            // If network is not added, add it
             if (switchError.code === 4902) {
               await window.ethereum.request({
                 method: 'wallet_addEthereumChain',
@@ -50,17 +50,17 @@ export function MetaMaskButton() {
             }
           }
           
-          // Подключаемся через wagmi
+          // Connect through wagmi
           const metaMaskConnector = connectors.find(c => c.id === 'metaMask')
           if (metaMaskConnector) {
             connect({ connector: metaMaskConnector })
           }
         }
       } else {
-        setError('MetaMask не установлен! Установите MetaMask и попробуйте снова.')
+        setError('MetaMask is not installed! Please install MetaMask and try again.')
       }
     } catch (err: any) {
-      setError(err.message || 'Ошибка подключения к MetaMask')
+      setError(err.message || 'Error connecting to MetaMask')
     } finally {
       setIsConnecting(false)
     }
@@ -76,7 +76,7 @@ export function MetaMaskButton() {
           onClick={() => disconnect()}
           className="bg-red-500 hover:bg-red-600 text-white font-medium px-4 py-2 rounded-lg transition-colors"
         >
-          Отключить
+          Disconnect
         </button>
       </div>
     )
@@ -94,7 +94,7 @@ export function MetaMaskButton() {
           alt="MetaMask" 
           className="w-5 h-5"
         />
-        {isConnecting ? 'Подключение...' : 'Подключить MetaMask'}
+        {isConnecting ? 'Connecting...' : 'Connect MetaMask'}
       </button>
       
       {error && (

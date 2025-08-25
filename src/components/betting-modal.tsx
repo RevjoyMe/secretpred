@@ -39,7 +39,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   const [betAmount, setBetAmount] = useState("")
   const [error, setError] = useState("")
 
-  // Используем хук для ончейн транзакций
+  // Use hook for on-chain transactions
   const { placeBet, resetErrors, isLoading, isSuccess, error: txError, hash, fheReady } = usePlaceBet(
     parseInt(String(market?.id || "0")), 
     betAmount, 
@@ -51,7 +51,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
     if (!open) {
       setBetAmount("")
       setError("")
-      resetErrors() // Сбрасываем ошибки хука
+      resetErrors() // Reset hook errors
     }
   }, [open, resetErrors])
 
@@ -59,11 +59,11 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
   useEffect(() => {
     if (isSuccess && hash) {
       console.log('[SUCCESS] Transaction confirmed! Hash:', hash)
-      setError("") // Очищаем ошибки
-      // Закрываем модал после успешного завершения
+      setError("") // Clear errors
+      // Close modal after successful completion
       setTimeout(() => {
         onOpenChange(false)
-      }, 2000) // Даем время пользователю увидеть успех
+              }, 2000) // Give user time to see success
     }
   }, [isSuccess, hash, onOpenChange])
 
@@ -134,7 +134,7 @@ export function BettingModal({ open, onOpenChange, market, side }: BettingModalP
 
     try {
       console.log('[MODAL] About to call placeBet()')
-      // Вызываем placeBet и ждем результат
+      // Call placeBet and wait for result
       await placeBet()
       
       // Не закрываем модал сразу, показываем статус транзакции

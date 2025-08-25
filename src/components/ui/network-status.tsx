@@ -19,7 +19,7 @@ export function NetworkStatus() {
   useEffect(() => {
     const checkConnection = async () => {
       try {
-        // Проверяем подключение к RPC
+        // Check RPC connection
         const response = await fetch('https://eth-sepolia.g.alchemy.com/v2/zgE0eizPW4otRHOQiyndZ', {
           method: 'POST',
           headers: {

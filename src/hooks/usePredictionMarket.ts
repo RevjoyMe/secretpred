@@ -6,7 +6,7 @@ import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 import { useState, useEffect } from 'react'
 import { createInstance, createEncryptedInput, userDecrypt, publicDecrypt } from '@zama-fhe/relayer-sdk'
 
-// ABI для функции placeBet с правильными FHE типами
+// ABI for placeBet function with correct FHE types
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -45,7 +45,7 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
 
   console.log('[HOOK] usePlaceBet called with:', { marketId, betAmount, side, isConnected })
 
-  // Инициализация FHE instance
+  // Initialize FHE instance
   useEffect(() => {
     const initFHE = async () => {
       try {
@@ -141,11 +141,11 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
         value: parseEther(betAmount).toString()
       })
 
-      // Создаем зашифрованные данные с помощью Zama SDK
+      // Create encrypted data using Zama SDK
       const amountInWei = parseEther(betAmount)
       const outcome = side === "yes" ? true : false
 
-      // Создаем зашифрованные входные данные
+      // Create encrypted input data
       const encryptedAmount = await createEncryptedInput(fheInstance, amountInWei.toString(), 64)
       const encryptedOutcome = await createEncryptedInput(fheInstance, outcome.toString(), 1) // boolean as 1 bit
 
@@ -154,13 +154,13 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
         outcome: encryptedOutcome
       })
 
-      // Вызываем write функцию с реальными зашифрованными данными
+      // Call write function with real encrypted data
       write({
         args: [
           BigInt(marketId),
           encryptedAmount,
           encryptedOutcome,
-          "0x" + "00".repeat(32) // Proof placeholder - в реальном приложении нужен валидный proof
+          "0x" + "00".repeat(32) // Proof placeholder - in real application, valid proof would be needed
         ]
       })
       
@@ -171,7 +171,7 @@ export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "
     }
   }
 
-  // Сбрасываем ошибки при изменении параметров
+  // Reset errors when parameters change
   const resetErrors = () => {
     console.log('[HOOK] Resetting errors')
     setManualError(null)

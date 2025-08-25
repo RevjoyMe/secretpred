@@ -35,7 +35,7 @@ interface ClaimableReward {
 export function ClaimableRewards({ address }: ClaimableRewardsProps) {
   const [isClaiming, setIsClaiming] = useState<string | null>(null)
 
-  // Mock data - в реальном приложении это будет загружаться из блокчейна
+  // Mock data - in a real application this would be loaded from blockchain
   const claimableRewards: ClaimableReward[] = [
     {
       id: "reward_001",
@@ -134,7 +134,7 @@ export function ClaimableRewards({ address }: ClaimableRewardsProps) {
       // Simulate claim transaction
       await new Promise(resolve => setTimeout(resolve, 2000))
       console.log(`Claiming reward ${rewardId}`)
-      // В реальном приложении здесь будет вызов смарт-контракта
+      // In a real application, here would be a smart contract call
     } catch (error) {
       console.error("Failed to claim reward:", error)
     } finally {
@@ -148,7 +148,7 @@ export function ClaimableRewards({ address }: ClaimableRewardsProps) {
       // Simulate batch claim transaction
       await new Promise(resolve => setTimeout(resolve, 3000))
       console.log("Claiming all rewards")
-      // В реальном приложении здесь будет вызов смарт-контракта
+      // In a real application, here would be a smart contract call
     } catch (error) {
       console.error("Failed to claim all rewards:", error)
     } finally {

@@ -32,7 +32,7 @@ interface ActiveBet {
 }
 
 export function ActiveBets({ address }: ActiveBetsProps) {
-  // Mock data - в реальном приложении это будет загружаться из блокчейна
+  // Mock data - in a real application this would be loaded from blockchain
   const activeBets: ActiveBet[] = [
     {
       id: "bet_001",

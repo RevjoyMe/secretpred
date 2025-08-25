@@ -12,7 +12,7 @@ const { wallets } = getDefaultWallets({
   chains,
 })
 
-// Создаем кастомный MetaMask кошелек с правильной структурой
+// Create custom MetaMask wallet with correct structure
 const metaMaskWallet = {
   id: 'metaMask',
   name: 'MetaMask',
@@ -24,9 +24,9 @@ const metaMaskWallet = {
     safari: 'https://apps.apple.com/app/metamask/id1438144202',
     edge: 'https://microsoftedge.microsoft.com/addons/detail/metamask/ejbalbakoplchlghecdalmeeeajnimhm',
   },
-  // Принудительно показываем как установленный
+  // Force show as installed
   installed: true,
-  // Добавляем функцию для проверки установки
+  // Add function to check installation
   getWalletClient: async () => {
     if (typeof window !== 'undefined' && window.ethereum) {
       return window.ethereum
@@ -35,10 +35,10 @@ const metaMaskWallet = {
   }
 }
 
-// Принудительно добавляем MetaMask первым в список
+// Force add MetaMask first in the list
 const walletsWithMetaMask = [
   metaMaskWallet,
-  ...wallets.filter(wallet => wallet.id !== 'metaMask'), // Убираем дубликаты
+  ...wallets.filter(wallet => wallet.id !== 'metaMask'), // Remove duplicates
 ]
 
 const queryClient = new QueryClient({

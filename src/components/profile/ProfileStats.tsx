@@ -18,7 +18,7 @@ interface ProfileStatsProps {
 }
 
 export function ProfileStats({ address }: ProfileStatsProps) {
-  // Mock data - в реальном приложении это будет загружаться из блокчейна
+  // Mock data - in a real application this would be loaded from blockchain
   const stats = {
     totalBets: 24,
     activeBets: 3,
