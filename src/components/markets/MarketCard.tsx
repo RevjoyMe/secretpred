@@ -40,24 +40,24 @@ const MarketCard = ({ market }: MarketCardProps) => {
 
   return (
     <>
-      <Card className="bg-card/50 border-border hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1 backdrop-blur-sm">
+      <Card className="bg-white border-gray-200 hover:border-emerald-500/50 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
         <CardHeader className="pb-4">
           <div className="flex items-start justify-between gap-3">
-            <h3 className="font-semibold text-card-foreground text-base leading-tight line-clamp-2">{market.question}</h3>
-            <Badge variant="secondary" className="text-xs shrink-0 bg-emerald-500/20 text-emerald-400 border-emerald-500/30">
+            <h3 className="font-semibold text-gray-900 text-base leading-tight line-clamp-2">{market.question}</h3>
+            <Badge variant="secondary" className="text-xs shrink-0 bg-emerald-500/20 text-emerald-600 border-emerald-500/30">
               {market.category}
             </Badge>
           </div>
         </CardHeader>
 
         <CardContent className="space-y-6">
-          <div className="flex items-center justify-between text-sm text-muted-foreground">
+          <div className="flex items-center justify-between text-sm text-gray-600">
             <div className="flex items-center gap-2">
-              <TrendingUp className="w-4 h-4 text-emerald-400" />
+              <TrendingUp className="w-4 h-4 text-emerald-500" />
               <span className="font-medium">{market.volume}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-muted-foreground" />
+              <Clock className="w-4 h-4 text-gray-500" />
               <span className="font-medium">{daysRemaining}d left</span>
             </div>
           </div>
