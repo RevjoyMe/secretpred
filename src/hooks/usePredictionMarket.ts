@@ -6,7 +6,7 @@ import { parseEther, formatEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 import { createEncryptedBetData } from '@/lib/fhe-utils'
 
-// Правильный ABI для FHE контракта с externalEuint64 и externalEbool
+// Correct ABI for FHE contract with externalEuint64 and externalEbool
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -92,7 +92,7 @@ export function usePredictionMarket() {
   const [betAmount, setBetAmount] = useState<string>('0.01')
   const [betOutcome, setBetOutcome] = useState<boolean | null>(null)
 
-  // Чтение данных рынка
+  // Read market data
   const { data: marketData, refetch: refetchMarket } = useReadContract({
     address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
     abi: PREDICTION_MARKET_ABI,
@@ -103,7 +103,7 @@ export function usePredictionMarket() {
     },
   })
 
-  // Функция для размещения ставки
+  // Function to place bet
   const { 
     data: betData, 
     writeContract, 
@@ -111,12 +111,12 @@ export function usePredictionMarket() {
     error: betError 
   } = useWriteContract()
 
-  // Ожидание транзакции
+  // Waiting for transaction
   const { isLoading: isWaitingForBet, isSuccess: betSuccess } = useWaitForTransactionReceipt({
     hash: betData,
   })
 
-  // Функция для размещения ставки (TEMPORARY: No FHE)
+  // Function to place bet (TEMPORARY: No FHE)
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -129,24 +129,24 @@ export function usePredictionMarket() {
     try {
       console.log('Placing bet (temporary no FHE):', { marketId, outcome, amount })
       
-      // ВРЕМЕННО: Прямой вызов без FHE для тестирования
+      // TEMPORARY: Direct call without FHE for testing
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
         args: [
           BigInt(marketId), 
-          outcome  // Просто boolean вместо зашифрованных данных
+          outcome  // Simply boolean instead of encrypted data
         ],
         value: parseEther(amount),
       })
     } catch (error) {
       console.error('placeBet failed:', error)
       
-      // Расширенная диагностика ошибок
+      // Enhanced error diagnosis
       if (error && typeof error === 'object' && 'data' in error) {
         try {
-          // Попытка декодировать ошибку контракта
+          // Attempt to decode contract error
           const { decodeErrorResult } = await import('viem')
           const decodedError = decodeErrorResult({ 
             abi: PREDICTION_MARKET_ABI, 
@@ -162,11 +162,11 @@ export function usePredictionMarket() {
     }
   }
 
-  // Функция для получения данных рынка
+  // Function to get market data
   const getMarketData = async (marketId: number): Promise<MarketData | null> => {
     try {
-      // В реальном приложении здесь был бы вызов контракта
-      // Для демонстрации возвращаем моковые данные
+      // In a real application, this would be a contract call
+      // For demonstration, we return mock data
       return {
         id: marketId,
         question: "Demo Market Question",
@@ -183,7 +183,7 @@ export function usePredictionMarket() {
     }
   }
 
-  // Эффект для обновления данных после успешной ставки
+  // Effect to update data after successful bet
   useEffect(() => {
     if (betSuccess && selectedMarket) {
       refetchMarket()
@@ -193,24 +193,24 @@ export function usePredictionMarket() {
   }, [betSuccess, selectedMarket, refetchMarket])
 
   return {
-    // Состояние
+    // State
     selectedMarket,
     betAmount,
     betOutcome,
     isConnected,
     address,
     
-    // Данные
+    // Data
     marketData,
     
-    // Функции
+    // Functions
     setSelectedMarket,
     setBetAmount,
     setBetOutcome,
     handlePlaceBet,
     getMarketData,
     
-    // Статус транзакций
+    // Transaction status
     isPlacingBet,
     isWaitingForBet,
     betSuccess,

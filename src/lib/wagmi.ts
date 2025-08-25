@@ -3,7 +3,7 @@ import { sepolia } from 'wagmi/chains'
 import { http } from 'wagmi'
 
 const chains = [
-  sepolia, // Используем обычный Sepolia для тестирования
+  sepolia, // Using regular Sepolia for testing
 ] as const
 
 export const config = getDefaultConfig({

@@ -20,9 +20,9 @@ module.exports = {
       chainId: 11155111,
     },
     "fhe-sepolia": {
-      url: "https://fhe-sepolia.zama.ai", // Альтернативный RPC для FHE Sepolia
+      url: "https://fhe-sepolia.zama.ai", // Alternative RPC for FHE Sepolia
       accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : [],
-      chainId: 11155420, // Правильный chain ID для FHE Sepolia
+      chainId: 11155420, // Correct chain ID for FHE Sepolia
       gasPrice: 1000000000, // 1 gwei
     },
     hardhat: {

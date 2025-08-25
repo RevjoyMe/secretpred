@@ -14,11 +14,11 @@ export async function createEncryptedBetData(
   outcome: boolean
 ): Promise<EncryptedBetData> {
   try {
-    // ВРЕМЕННО: Для тестирования на обычном Sepolia используем заглушки
-    // TODO: Включить обратно когда FHE Sepolia будет доступен
+    // TEMPORARY: Using mock data for testing on regular Sepolia
+    // TODO: Re-enable when FHE Sepolia becomes available
     console.log('⚠️ FHE temporarily disabled for testing on regular Sepolia')
     
-    // Заглушки для тестирования
+    // Mock data for testing
     const mockEncryptedAmount = `0x${'00'.repeat(32)}` as `0x${string}`
     const mockEncryptedOutcome = `0x${'00'.repeat(32)}` as `0x${string}`
     const mockAttestationProof = `0x${'00'.repeat(32)}` as `0x${string}`
@@ -37,30 +37,30 @@ export async function createEncryptedBetData(
       attestationProof: mockAttestationProof
     }
     
-    /* РЕАЛЬНЫЙ FHE КОД (закомментирован для тестирования):
-    // Динамический импорт SDK
+    /* REAL FHE CODE (commented for testing):
+    // Dynamic SDK import
     const { createInstance, SepoliaConfig } = await import('@zama-fhe/relayer-sdk')
     
-    // Создаем инстанс SDK и инициализируем
+    // Create SDK instance and initialize
     const instance = await createInstance(SepoliaConfig)
-    await instance.initSDK() // Браузерные бандлеры требуют инициализации
+    await instance.initSDK() // Browser bundlers require initialization
     
-    // Создаем зашифрованный input
+    // Create encrypted input
     const input = await instance.createEncryptedInput(contractAddress, userAddress)
     
-    // Используем parseEther для точности (возвращает bigint)
+    // Use parseEther for precision (returns bigint)
     const wei = parseEther(amount)
     
-    // Проверяем, что сумма не превышает uint64
+    // Check that amount doesn't exceed uint64
     if (wei > maxUint64) {
       throw new Error('Amount too large for euint64 (max ~18.4467 ETH)')
     }
     
-    // Добавляем данные в правильном порядке (amount, затем outcome)
-    input.add64(wei)  // Используем parseEther вместо BigInt(parseFloat(amount) * 1e18)
+    // Add data in correct order (amount, then outcome)
+    input.add64(wei)  // Use parseEther instead of BigInt(parseFloat(amount) * 1e18)
     input.addBool(outcome)
     
-    // Шифруем данные
+    // Encrypt data
     const encryptedData = await input.encrypt()
     
     const result = {
@@ -69,7 +69,7 @@ export async function createEncryptedBetData(
       attestationProof: encryptedData.inputProof
     }
     
-    // Диагностика - проверяем длины (обрезаем для читаемости)
+    // Diagnostics - check lengths (truncate for readability)
     console.log('FHE Data lengths:', {
       amountLen: result.encryptedAmount.length,
       outcomeLen: result.encryptedOutcome.length,
