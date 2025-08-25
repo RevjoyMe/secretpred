@@ -6,6 +6,7 @@ import Link from "next/link"
 import { Hero } from "@/components/layout/Hero"
 import { StatsCard } from "@/components/ui/StatsCard"
 import { MarketCard } from "@/components/markets/MarketCard"
+import { MarketsList } from "@/components/markets/MarketsList"
 
 export default function HomePage() {
   const featuredMarkets = [
@@ -73,6 +74,17 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-[#faf8f5] via-[#f5f5f0] to-[#e8e6e1]">
+      {/* Test elements to verify CSS loading */}
+      <div className="test-red">
+        <h1>TEST RED - If you see this red, CSS is loading!</h1>
+      </div>
+      <div className="test-blue">
+        <h1>TEST BLUE - If you see this blue, CSS is loading!</h1>
+      </div>
+      <div className="test-green">
+        <h1>TEST GREEN - If you see this green, CSS is loading!</h1>
+      </div>
+      
       {/* Header */}
       <header className="border-b border-gray-200 bg-white/80 backdrop-blur-sm sticky top-0 z-50 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">

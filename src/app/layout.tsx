@@ -4,6 +4,7 @@ import { DM_Sans } from "next/font/google"
 import { Providers } from "@/components/providers/Providers"
 import { Toaster } from "sonner"
 import "./globals.css"
+import "./test-styles.css"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -23,7 +24,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className="light">
       <head>
         <style>{`
 html {
@@ -32,10 +33,10 @@ html {
 }
         `}</style>
       </head>
-      <body className={`${dmSans.variable} antialiased bg-background text-foreground`}>
+      <body className={`${dmSans.variable} antialiased bg-gray-50 text-gray-900`}>
         <Providers>
           {children}
-          <Toaster theme="dark" />
+          <Toaster theme="light" />
         </Providers>
       </body>
     </html>
