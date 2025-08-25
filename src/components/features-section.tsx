@@ -21,17 +21,17 @@ export function FeaturesSection() {
   ]
 
   return (
-    <section className="py-16 bg-muted/30">
+    <section className="py-16 bg-gradient-to-br from-muted/50 via-background to-card/50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map((feature, index) => (
-            <Card key={index} className="border-0 shadow-sm hover:shadow-md transition-shadow">
-              <CardContent className="p-6 text-center">
-                <div className="inline-flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary mb-4">
-                  <feature.icon className="h-6 w-6" />
+            <Card key={index} className="border-0 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 bg-gradient-to-br from-card to-background">
+              <CardContent className="p-8 text-center">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary/20 to-secondary/20 text-primary mb-6 shadow-lg">
+                  <feature.icon className="h-8 w-8" />
                 </div>
-                <h3 className="font-work-sans font-semibold text-lg text-foreground mb-2">{feature.title}</h3>
-                <p className="text-muted-foreground leading-relaxed">{feature.description}</p>
+                <h3 className="font-work-sans font-semibold text-xl text-foreground mb-4">{feature.title}</h3>
+                <p className="text-muted-foreground leading-relaxed text-base">{feature.description}</p>
               </CardContent>
             </Card>
           ))}

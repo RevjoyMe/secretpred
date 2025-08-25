@@ -11,51 +11,51 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: "#ffffff",
+        foreground: "#164e63",
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#ecfeff",
+          foreground: "#475569"
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "#ffffff",
+          foreground: "#164e63"
         },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#164e63",
+          foreground: "#ffffff"
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "#8b5cf6",
+          foreground: "#ffffff"
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#f1f5f9",
+          foreground: "#6b7280"
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "#8b5cf6",
+          foreground: "#ffffff"
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#e53e3e",
+          foreground: "#ffffff"
         },
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
+        border: "#d1d5db",
+        input: "#f9fafb",
+        ring: "rgba(22, 78, 99, 0.5)",
         chart: {
-          "1": "hsl(var(--chart-1))",
-          "2": "hsl(var(--chart-2))",
-          "3": "hsl(var(--chart-3))",
-          "4": "hsl(var(--chart-4))",
-          "5": "hsl(var(--chart-5))",
-        },
+          "1": "#a16207",
+          "2": "#1f2937",
+          "3": "#164e63",
+          "4": "#8b5cf6",
+          "5": "#ecfeff"
+        }
       },
       borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+        lg: "0.5rem",
+        md: "0.375rem",
+        sm: "0.25rem"
       },
       fontFamily: {
         "work-sans": ["var(--font-work-sans)", "ui-sans-serif", "system-ui", "sans-serif"],
