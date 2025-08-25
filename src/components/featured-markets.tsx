@@ -168,7 +168,7 @@ export function FeaturedMarkets() {
       </section>
 
       {/* Betting Modal */}
-      {selectedMarket && (
+      {showBettingModal && selectedMarket && (
         <BettingModal
           isOpen={showBettingModal}
           onClose={() => {

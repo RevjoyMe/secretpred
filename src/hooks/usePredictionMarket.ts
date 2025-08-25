@@ -5,7 +5,7 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { parseEther, formatEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 
-// ABI для основных функций контракта
+// Упрощенный ABI для тестирования без FHE
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -15,14 +15,9 @@ const PREDICTION_MARKET_ABI = [
         "type": "uint256"
       },
       {
-        "internalType": "bytes",
-        "name": "encryptedAmount",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "encryptedOutcome",
-        "type": "bytes"
+        "internalType": "bool",
+        "name": "outcome",
+        "type": "bool"
       }
     ],
     "name": "placeBet",
@@ -135,7 +130,7 @@ export function usePredictionMarket() {
     hash: betData,
   })
 
-  // Функция для размещения ставки с Zama Relayer SDK
+  // Упрощенная функция для размещения ставки (без FHE для тестирования)
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -146,31 +141,14 @@ export function usePredictionMarket() {
     }
 
     try {
-      // Для демонстрации используем простые зашифрованные данные
-      // В реальном приложении здесь была бы FHE шифрация через Relayer SDK
+      console.log('Placing bet:', { marketId, outcome, amount })
       
-      // Имитируем данные от Relayer SDK
-      const encryptedAmount = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
-      const encryptedOutcome = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
-
-      // В реальном приложении здесь был бы код:
-      /*
-      import { createInstance, SepoliaConfig } from "@zama-fhe/relayer-sdk";
-      
-      const instance = await createInstance(SepoliaConfig);
-      const input = await instance.createEncryptedInput(contractAddress, address);
-      input.add64(BigInt(parseFloat(amount) * 1e18)); // Convert to wei
-      input.addBool(outcome);
-      const encryptedData = await input.encrypt();
-      
-      // Используем encryptedData.handles[0] и encryptedData.inputProof
-      */
-
+      // Используем упрощенную версию без FHE для тестирования
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
-        args: [BigInt(marketId), encryptedAmount, encryptedOutcome],
+        args: [BigInt(marketId), outcome],
         value: parseEther(amount),
       })
     } catch (error) {
