@@ -4,7 +4,6 @@ import { DM_Sans } from "next/font/google"
 import { Providers } from "@/components/providers/Providers"
 import { Toaster } from "sonner"
 import "./globals.css"
-import "./test-styles.css"
 
 const dmSans = DM_Sans({
   subsets: ["latin"],
@@ -42,7 +41,7 @@ body {
   line-height: 1.6;
 }
 
-/* Ensure Tailwind classes work */
+/* Ensure critical Tailwind classes work */
 .bg-white { background-color: #ffffff !important; }
 .bg-gray-50 { background-color: #f9fafb !important; }
 .text-gray-900 { color: #111827 !important; }
