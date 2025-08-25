@@ -47,56 +47,80 @@ export function FeaturedMarkets() {
   ]
 
   return (
-    <section className="py-16">
+    <section className="py-16" style={{ backgroundColor: '#ffffff' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
-          <h2 className="font-work-sans font-bold text-3xl text-foreground mb-4">Featured Markets</h2>
-          <p className="text-muted-foreground text-lg">
+          <h2 className="font-work-sans font-bold text-3xl mb-4" style={{ color: '#164e63' }}>Featured Markets</h2>
+          <p className="text-lg" style={{ color: '#6b7280' }}>
             Most popular prediction markets with high volume and active trading.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {markets.map((market) => (
-            <Card key={market.id} className="hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-4">
+            <div 
+              key={market.id} 
+              className="hover:shadow-lg transition-shadow rounded-lg p-6"
+              style={{ 
+                backgroundColor: '#ffffff',
+                border: '1px solid #d1d5db',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <div className="pb-4">
                 <div className="flex items-center justify-between mb-2">
-                  <Badge variant="secondary" className="text-xs">
+                  <span 
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{ 
+                      backgroundColor: '#8b5cf6',
+                      color: '#ffffff'
+                    }}
+                  >
                     {market.category}
-                  </Badge>
-                  <span className="text-sm text-muted-foreground">{market.timeLeft}</span>
+                  </span>
+                  <span className="text-sm" style={{ color: '#6b7280' }}>{market.timeLeft}</span>
                 </div>
-                <CardTitle className="font-work-sans text-xl leading-tight">{market.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <p className="text-muted-foreground text-sm leading-relaxed">{market.description}</p>
+                <h3 className="font-work-sans text-xl leading-tight mb-4" style={{ color: '#164e63' }}>{market.title}</h3>
+              </div>
+              <div className="space-y-4">
+                <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>{market.description}</p>
 
-                <div className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
+                <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: '#f1f5f9' }}>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-green-600">{market.yesPrice}¢</div>
-                    <div className="text-sm text-muted-foreground">YES</div>
+                    <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{market.yesPrice}¢</div>
+                    <div className="text-sm" style={{ color: '#6b7280' }}>YES</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-2xl font-bold text-red-600">{market.noPrice}¢</div>
-                    <div className="text-sm text-muted-foreground">NO</div>
+                    <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{market.noPrice}¢</div>
+                    <div className="text-sm" style={{ color: '#6b7280' }}>NO</div>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between">
-                  <span className="text-sm text-muted-foreground">Volume: {market.volume}</span>
-                  <Button size="sm" className="px-6">
+                  <span className="text-sm" style={{ color: '#6b7280' }}>Volume: {market.volume}</span>
+                  <button 
+                    className="px-6 py-2 text-sm rounded-md text-white"
+                    style={{ backgroundColor: '#164e63' }}
+                  >
                     Trade
-                  </Button>
+                  </button>
                 </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           ))}
         </div>
 
         <div className="text-center mt-12">
-          <Button variant="outline" size="lg">
+          <button 
+            className="px-6 py-3 text-lg rounded-lg border transition-colors"
+            style={{ 
+              borderColor: '#d1d5db',
+              color: '#164e63',
+              backgroundColor: 'transparent'
+            }}
+          >
             View All Markets
-          </Button>
+          </button>
         </div>
       </div>
     </section>
