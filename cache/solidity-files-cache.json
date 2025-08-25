@@ -303,8 +303,8 @@
       ]
     },
     "C:\\Users\\mozga\\Desktop\\taptap\\Giga\\Zama\\Dev Programm\\secret-predictions\\contracts\\PredictionMarket.sol": {
-      "lastModificationDate": 1756054525626,
-      "contentHash": "a08598c3a55b255c909022b01dac1e72",
+      "lastModificationDate": 1756143133258,
+      "contentHash": "64bfddd62633e93f77687ce52a35361e",
       "sourceName": "contracts/PredictionMarket.sol",
       "solcConfig": {
         "version": "0.8.24",
@@ -343,8 +343,8 @@
       ]
     },
     "C:\\Users\\mozga\\Desktop\\taptap\\Giga\\Zama\\Dev Programm\\secret-predictions\\contracts\\SimpleTest.sol": {
-      "lastModificationDate": 1756051995781,
-      "contentHash": "27fec824c62c780abb6b074cf315127f",
+      "lastModificationDate": 1756066124545,
+      "contentHash": "32b0405a9fbd00cf4ec3778a83bf8a3e",
       "sourceName": "contracts/SimpleTest.sol",
       "solcConfig": {
         "version": "0.8.24",

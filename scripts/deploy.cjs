@@ -7,40 +7,45 @@ async function main() {
   // Get the deployer account
   const [deployer] = await ethers.getSigners();
   console.log("📝 Deploying contracts with account:", deployer.address);
-  console.log("💰 Account balance:", (await deployer.getBalance()).toString());
+  
+  // Get balance using provider
+  const balance = await ethers.provider.getBalance(deployer.address);
+  console.log("💰 Account balance:", ethers.formatEther(balance), "ETH");
 
   // Deploy BettingVault
   console.log("\n📦 Deploying BettingVault...");
   const BettingVault = await ethers.getContractFactory("BettingVault");
   const bettingVault = await BettingVault.deploy();
-  await bettingVault.deployed();
-  console.log("✅ BettingVault deployed to:", bettingVault.address);
+  await bettingVault.waitForDeployment();
+  const bettingVaultAddress = await bettingVault.getAddress();
+  console.log("✅ BettingVault deployed to:", bettingVaultAddress);
 
   // Deploy PredictionMarket
   console.log("\n📦 Deploying PredictionMarket...");
   const PredictionMarket = await ethers.getContractFactory("PredictionMarket");
   const predictionMarket = await PredictionMarket.deploy();
-  await predictionMarket.deployed();
-  console.log("✅ PredictionMarket deployed to:", predictionMarket.address);
+  await predictionMarket.waitForDeployment();
+  const predictionMarketAddress = await predictionMarket.getAddress();
+  console.log("✅ PredictionMarket deployed to:", predictionMarketAddress);
 
   // Wait for confirmations
   console.log("\n⏳ Waiting for confirmations...");
-  await bettingVault.deployTransaction.wait(5);
-  await predictionMarket.deployTransaction.wait(5);
+  await bettingVault.deploymentTransaction().wait(5);
+  await predictionMarket.deploymentTransaction().wait(5);
 
   console.log("🎉 Deployment completed successfully!");
   console.log("\n📋 Contract Addresses:");
-  console.log("BettingVault:", bettingVault.address);
-  console.log("PredictionMarket:", predictionMarket.address);
+  console.log("BettingVault:", bettingVaultAddress);
+  console.log("PredictionMarket:", predictionMarketAddress);
   console.log("\n🔗 Sepolia Etherscan:");
-  console.log("BettingVault:", `https://sepolia.etherscan.io/address/${bettingVault.address}`);
-  console.log("PredictionMarket:", `https://sepolia.etherscan.io/address/${predictionMarket.address}`);
+  console.log("BettingVault:", `https://sepolia.etherscan.io/address/${bettingVaultAddress}`);
+  console.log("PredictionMarket:", `https://sepolia.etherscan.io/address/${predictionMarketAddress}`);
 
   // Verify contracts on Etherscan
   console.log("\n🔍 Verifying contracts on Etherscan...");
   try {
     await hre.run("verify:verify", {
-      address: bettingVault.address,
+      address: bettingVaultAddress,
       constructorArguments: [],
     });
     console.log("✅ BettingVault verified on Etherscan!");
@@ -50,7 +55,7 @@ async function main() {
 
   try {
     await hre.run("verify:verify", {
-      address: predictionMarket.address,
+      address: predictionMarketAddress,
       constructorArguments: [],
     });
     console.log("✅ PredictionMarket verified on Etherscan!");
@@ -66,13 +71,11 @@ async function main() {
     contracts: {
       bettingVault: {
         name: "BettingVault",
-        address: bettingVault.address,
-        blockNumber: bettingVault.deployTransaction.blockNumber,
+        address: bettingVaultAddress,
       },
       predictionMarket: {
         name: "PredictionMarket",
-        address: predictionMarket.address,
-        blockNumber: predictionMarket.deployTransaction.blockNumber,
+        address: predictionMarketAddress,
       },
     },
   };
@@ -82,8 +85,8 @@ async function main() {
   // Instructions for next steps
   console.log("\n📝 Next steps:");
   console.log("1. Update .env.local with contract addresses:");
-  console.log(`   NEXT_PUBLIC_BETTING_VAULT_ADDRESS=${bettingVault.address}`);
-  console.log(`   NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS=${predictionMarket.address}`);
+  console.log(`   NEXT_PUBLIC_BETTING_VAULT_ADDRESS=${bettingVaultAddress}`);
+  console.log(`   NEXT_PUBLIC_PREDICTION_MARKET_ADDRESS=${predictionMarketAddress}`);
   console.log("2. Test the contracts with: npm run test:e2e");
   console.log("3. Start the frontend with: npm run dev");
   console.log("4. Start a betting session with: startSession(duration)");

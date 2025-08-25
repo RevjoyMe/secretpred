@@ -162,7 +162,11 @@ export function usePredictionMarket() {
         outcome
       )
       
-      console.log('Real encrypted data:', encryptedData)
+      console.log('Real encrypted data:', {
+        amountPreview: encryptedData.encryptedAmount.slice(0, 10) + '...',
+        outcomePreview: encryptedData.encryptedOutcome.slice(0, 10) + '...',
+        proofPreview: encryptedData.attestationProof.slice(0, 10) + '...'
+      })
       
       // Вызываем контракт с реальными зашифрованными данными
       await writeContract({
@@ -173,12 +177,28 @@ export function usePredictionMarket() {
           BigInt(marketId), 
           encryptedData.encryptedAmount,    // externalEuint64
           encryptedData.encryptedOutcome,   // externalEbool
-          encryptedData.attestationProof    // inputProof - ОБЯЗАТЕЛЬНО
+          encryptedData.attestationProof    // attestation - ОБЯЗАТЕЛЬНО
         ],
         value: parseEther(amount),
       })
     } catch (error) {
-      console.error('Error placing bet with FHE:', error)
+      console.error('placeBet failed:', error)
+      
+      // Расширенная диагностика ошибок
+      if (error && typeof error === 'object' && 'data' in error) {
+        try {
+          // Попытка декодировать ошибку контракта
+          const { decodeErrorResult } = await import('viem')
+          const decodedError = decodeErrorResult({ 
+            abi: PREDICTION_MARKET_ABI, 
+            data: (error as any).data 
+          })
+          console.error('Decoded contract error:', decodedError)
+        } catch (decodeError) {
+          console.error('Failed to decode error:', decodeError)
+        }
+      }
+      
       throw error
     }
   }

@@ -146,24 +146,24 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Place an encrypted bet on a market
+     * @dev Place a bet on a market
      * @param marketId The market to bet on
      * @param encryptedAmount Encrypted bet amount
      * @param encryptedOutcome Encrypted outcome (true = YES, false = NO)
+     * @param attestation Attestation proof for encrypted data
      */
     function placeBet(
         uint256 marketId,
         externalEuint64 encryptedAmount,
-        externalEbool encryptedOutcome
+        externalEbool encryptedOutcome,
+        bytes calldata attestation
     ) external payable validMarket(marketId) marketActive(marketId) nonReentrant {
         require(msg.value >= MIN_BET && msg.value <= MAX_BET, "Invalid bet amount");
+        require(msg.value > 0, "Must send ETH to bet");
 
-        // Convert external encrypted inputs to internal types
-        euint64 amount = FHE.fromExternal(encryptedAmount, "");
-        ebool outcome = FHE.fromExternal(encryptedOutcome, "");
-
-        // Note: In a real FHE implementation, validation would be handled differently
-        // For now, we proceed assuming the amounts match
+        // Convert external encrypted inputs to internal types with attestation
+        euint64 amount = FHE.fromExternal(encryptedAmount, attestation);
+        ebool outcome = FHE.fromExternal(encryptedOutcome, attestation);
 
         // Update user position
         _updatePosition(marketId, msg.sender, amount, outcome);
@@ -171,7 +171,7 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
         // Update market pool
         markets[marketId].totalPool += msg.value;
 
-        emit BetPlaced(marketId, msg.sender, block.timestamp);
+        emit BetPlaced(marketId, msg.sender, msg.value);
     }
 
     /**

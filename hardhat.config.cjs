@@ -15,12 +15,12 @@ module.exports = {
   },
   networks: {
     sepolia: {
-      url: process.env.SEPOLIA_RPC_URL || "",
+      url: process.env.SEPOLIA_RPC_URL || "https://eth-sepolia.g.alchemy.com/v2/demo",
       accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : [],
       chainId: 11155111,
     },
     "fhe-sepolia": {
-      url: "https://rpc.fhe-sepolia.zama.ai", // Правильный RPC для FHE Sepolia
+      url: "https://fhe-sepolia.zama.ai", // Альтернативный RPC для FHE Sepolia
       accounts: process.env.SEPOLIA_PRIVATE_KEY ? [process.env.SEPOLIA_PRIVATE_KEY] : [],
       chainId: 11155420, // Правильный chain ID для FHE Sepolia
       gasPrice: 1000000000, // 1 gwei
