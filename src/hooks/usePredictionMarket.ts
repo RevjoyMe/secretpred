@@ -166,8 +166,8 @@ export function usePredictionMarket() {
         functionName: 'placeBet',
         args: [
           BigInt(marketId), 
-          encryptedData.encryptedAmount,
-          encryptedData.attestationProof
+          encryptedData.encryptedAmount,    // externalEuint64
+          encryptedData.encryptedOutcome    // externalEbool
         ],
         value: parseEther(amount),
       })
