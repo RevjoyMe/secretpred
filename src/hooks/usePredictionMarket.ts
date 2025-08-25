@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { parseEther, formatEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
+import { createEncryptedBetData } from '@/lib/fhe-utils'
 
 // Правильный ABI для FHE контракта с externalEuint64 и externalEbool
 const PREDICTION_MARKET_ABI = [
@@ -135,7 +136,7 @@ export function usePredictionMarket() {
     hash: betData,
   })
 
-  // Функция для размещения ставки с правильной FHE логикой
+  // Функция для размещения ставки с реальным Zama Relayer SDK
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -146,40 +147,32 @@ export function usePredictionMarket() {
     }
 
     try {
-      console.log('Placing bet with FHE:', { marketId, outcome, amount })
+      console.log('Placing bet with real FHE:', { marketId, outcome, amount })
       
-      // Временная версия без SDK для тестирования
-      // В реальном приложении здесь был бы код:
-      /*
-      const { createInstance, SepoliaConfig } = await import('@zama-fhe/relayer-sdk')
-      const instance = await createInstance(SepoliaConfig)
-      const input = await instance.createEncryptedInput(PREDICTION_MARKET_ADDRESS, address)
-      input.add64(BigInt(parseFloat(amount) * 1e18))
-      input.addBool(outcome)
-      const encryptedData = await input.encrypt()
-      */
+      // Создаем зашифрованные данные через FHE утилиты
+      const encryptedData = await createEncryptedBetData(
+        PREDICTION_MARKET_ADDRESS as `0x${string}`,
+        address,
+        amount,
+        outcome
+      )
       
-      // Временные placeholder данные для тестирования
-      const encryptedAmount = ('0x' + '0'.repeat(64)) as `0x${string}`
-      const encryptedOutcome = ('0x' + '0'.repeat(64)) as `0x${string}`
-      const attestationProof = ('0x' + '0'.repeat(128)) as `0x${string}`
+      console.log('Real encrypted data:', encryptedData)
       
-      console.log('Using placeholder encrypted data for testing')
-      
-      // Вызываем контракт с placeholder данными
+      // Вызываем контракт с реальными зашифрованными данными
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
         args: [
           BigInt(marketId), 
-          encryptedAmount,    // placeholder для encryptedAmount
-          attestationProof   // placeholder для attestation proof
+          encryptedData.encryptedAmount,
+          encryptedData.attestationProof
         ],
         value: parseEther(amount),
       })
     } catch (error) {
-      console.error('Error placing bet:', error)
+      console.error('Error placing bet with FHE:', error)
       throw error
     }
   }
