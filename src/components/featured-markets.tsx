@@ -8,6 +8,7 @@ export function FeaturedMarkets() {
   const { isConnected } = useWallet()
   const [showBettingModal, setShowBettingModal] = useState(false)
   const [selectedMarket, setSelectedMarket] = useState<any>(null)
+  const [selectedOutcome, setSelectedOutcome] = useState<'yes' | 'no' | null>(null)
 
   const markets = [
     {
@@ -52,13 +53,14 @@ export function FeaturedMarkets() {
     },
   ]
 
-  const handleTrade = (market: any) => {
+  const handleBetClick = (market: any, outcome: 'yes' | 'no') => {
     if (!isConnected) {
       alert('Please connect your wallet first to start trading!')
       return
     }
     
     setSelectedMarket(market)
+    setSelectedOutcome(outcome)
     setShowBettingModal(true)
   }
 
@@ -82,7 +84,7 @@ export function FeaturedMarkets() {
             {markets.map((market) => (
               <div 
                 key={market.id} 
-                className="hover:shadow-lg transition-shadow rounded-lg p-6 cursor-pointer"
+                className="hover:shadow-lg transition-shadow rounded-lg p-6"
                 style={{ 
                   backgroundColor: '#ffffff',
                   border: '1px solid #d1d5db',
@@ -107,26 +109,42 @@ export function FeaturedMarkets() {
                 <div className="space-y-4">
                   <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>{market.description}</p>
 
-                  <div className="flex items-center justify-between p-4 rounded-lg" style={{ backgroundColor: '#f1f5f9' }}>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{market.yesPrice}¢</div>
-                      <div className="text-sm" style={{ color: '#6b7280' }}>YES</div>
-                    </div>
-                    <div className="text-center">
-                      <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{market.noPrice}¢</div>
-                      <div className="text-sm" style={{ color: '#6b7280' }}>NO</div>
-                    </div>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => handleBetClick(market, 'yes')}
+                      className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
+                      style={{ 
+                        backgroundColor: '#f1f5f9',
+                        borderColor: '#d1d5db'
+                      }}
+                    >
+                      <div className="text-center">
+                        <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{market.yesPrice}¢</div>
+                        <div className="text-sm font-medium" style={{ color: '#6b7280' }}>YES</div>
+                        <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => handleBetClick(market, 'no')}
+                      className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
+                      style={{ 
+                        backgroundColor: '#f1f5f9',
+                        borderColor: '#d1d5db'
+                      }}
+                    >
+                      <div className="text-center">
+                        <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{market.noPrice}¢</div>
+                        <div className="text-sm font-medium" style={{ color: '#6b7280' }}>NO</div>
+                        <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
+                      </div>
+                    </button>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span className="text-sm" style={{ color: '#6b7280' }}>Volume: {market.volume}</span>
-                    <button 
-                      onClick={() => handleTrade(market)}
-                      className="px-6 py-2 text-sm rounded-md text-white hover:opacity-90 transition-opacity"
-                      style={{ backgroundColor: '#164e63' }}
-                    >
-                      Trade
-                    </button>
+                    <div className="text-xs" style={{ color: '#6b7280' }}>
+                      Click YES or NO to place your bet
+                    </div>
                   </div>
                 </div>
               </div>
@@ -156,11 +174,13 @@ export function FeaturedMarkets() {
           onClose={() => {
             setShowBettingModal(false)
             setSelectedMarket(null)
+            setSelectedOutcome(null)
           }}
           marketId={selectedMarket.id}
           marketTitle={selectedMarket.title}
           yesPrice={selectedMarket.yesPrice}
           noPrice={selectedMarket.noPrice}
+          preSelectedOutcome={selectedOutcome}
         />
       )}
     </>

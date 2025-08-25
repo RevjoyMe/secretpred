@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { usePredictionMarket } from '@/hooks/usePredictionMarket'
 
 interface BettingModalProps {
@@ -10,13 +10,29 @@ interface BettingModalProps {
   marketTitle: string
   yesPrice: number
   noPrice: number
+  preSelectedOutcome?: 'yes' | 'no' | null
 }
 
-export function BettingModal({ isOpen, onClose, marketId, marketTitle, yesPrice, noPrice }: BettingModalProps) {
+export function BettingModal({ 
+  isOpen, 
+  onClose, 
+  marketId, 
+  marketTitle, 
+  yesPrice, 
+  noPrice, 
+  preSelectedOutcome 
+}: BettingModalProps) {
   const { handlePlaceBet, isPlacingBet, isWaitingForBet, betSuccess, betError } = usePredictionMarket()
   const [betAmount, setBetAmount] = useState('0.01')
   const [selectedOutcome, setSelectedOutcome] = useState<'yes' | 'no' | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  // Устанавливаем предварительно выбранный исход при открытии модального окна
+  useEffect(() => {
+    if (isOpen && preSelectedOutcome) {
+      setSelectedOutcome(preSelectedOutcome)
+    }
+  }, [isOpen, preSelectedOutcome])
 
   const handleBet = async () => {
     if (!selectedOutcome) {
@@ -48,18 +64,18 @@ export function BettingModal({ isOpen, onClose, marketId, marketTitle, yesPrice,
 
   return (
     <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-lg p-6 max-w-md w-full mx-4"
+        className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
           <h3 className="text-lg font-semibold" style={{ color: '#164e63' }}>Place Your Bet</h3>
           <button 
             onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 text-xl"
           >
             ✕
           </button>
