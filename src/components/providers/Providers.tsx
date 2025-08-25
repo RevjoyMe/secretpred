@@ -3,8 +3,9 @@
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit'
 import '@rainbow-me/rainbowkit/styles.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { WagmiProvider } from 'wagmi'
+import { WagmiProvider, useAccount, useConnect, useDisconnect } from 'wagmi'
 import { config, chains } from '@/lib/wagmi'
+import { createContext, useContext, useState } from 'react'
 
 const { wallets } = getDefaultWallets({
   appName: 'Secret Predictions',
@@ -51,6 +52,53 @@ const queryClient = new QueryClient({
   },
 })
 
+// Wallet context
+const WalletContext = createContext<any>(null)
+
+export const useWallet = () => {
+  const context = useContext(WalletContext)
+  if (!context) {
+    throw new Error("useWallet must be used within WalletProvider")
+  }
+  return context
+}
+
+function WalletProvider({ children }: { children: React.ReactNode }) {
+  const { address, isConnected } = useAccount()
+  const { connect, connectors } = useConnect()
+  const { disconnect } = useDisconnect()
+  const [balance, setBalance] = useState<string>('0')
+
+  const handleConnect = async () => {
+    try {
+      // Try to connect with MetaMask first
+      const metaMaskConnector = connectors.find(c => c.id === 'metaMask')
+      if (metaMaskConnector) {
+        await connect({ connector: metaMaskConnector })
+      } else {
+        // Fallback to first available connector
+        await connect({ connector: connectors[0] })
+      }
+    } catch (error) {
+      console.error('Failed to connect wallet:', error)
+    }
+  }
+
+  const value = {
+    isConnected,
+    address,
+    balance,
+    connect: handleConnect,
+    disconnect,
+  }
+
+  return (
+    <WalletContext.Provider value={value}>
+      {children}
+    </WalletContext.Provider>
+  )
+}
+
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <WagmiProvider config={config}>
@@ -62,7 +110,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
           showRecentTransactions={false}
           locale="en-US"
         >
-          {children}
+          <WalletProvider>
+            {children}
+          </WalletProvider>
         </RainbowKitProvider>
       </QueryClientProvider>
     </WagmiProvider>

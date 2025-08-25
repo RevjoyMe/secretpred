@@ -1,4 +1,10 @@
+"use client"
+
+import { useWallet } from '@/components/providers/Providers'
+
 export function FeaturedMarkets() {
+  const { isConnected } = useWallet()
+
   const markets = [
     {
       id: 1,
@@ -42,8 +48,23 @@ export function FeaturedMarkets() {
     },
   ]
 
+  const handleTrade = (marketId: number) => {
+    if (!isConnected) {
+      alert('Please connect your wallet first to start trading!')
+      return
+    }
+    
+    // Here you would typically open a trading modal
+    alert(`Trading on market ${marketId} - Coming soon!`)
+  }
+
+  const handleViewAllMarkets = () => {
+    // Could navigate to a markets page
+    alert('View all markets - Coming soon!')
+  }
+
   return (
-    <section className="py-16" style={{ backgroundColor: '#ffffff' }}>
+    <section className="py-16" style={{ backgroundColor: '#ffffff' }} data-section="markets">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-12">
           <h2 className="font-work-sans font-bold text-3xl mb-4" style={{ color: '#164e63' }}>Featured Markets</h2>
@@ -56,7 +77,7 @@ export function FeaturedMarkets() {
           {markets.map((market) => (
             <div 
               key={market.id} 
-              className="hover:shadow-lg transition-shadow rounded-lg p-6"
+              className="hover:shadow-lg transition-shadow rounded-lg p-6 cursor-pointer"
               style={{ 
                 backgroundColor: '#ffffff',
                 border: '1px solid #d1d5db',
@@ -95,7 +116,8 @@ export function FeaturedMarkets() {
                 <div className="flex items-center justify-between">
                   <span className="text-sm" style={{ color: '#6b7280' }}>Volume: {market.volume}</span>
                   <button 
-                    className="px-6 py-2 text-sm rounded-md text-white"
+                    onClick={() => handleTrade(market.id)}
+                    className="px-6 py-2 text-sm rounded-md text-white hover:opacity-90 transition-opacity"
                     style={{ backgroundColor: '#164e63' }}
                   >
                     Trade
@@ -108,7 +130,8 @@ export function FeaturedMarkets() {
 
         <div className="text-center mt-12">
           <button 
-            className="px-6 py-3 text-lg rounded-lg border transition-colors"
+            onClick={handleViewAllMarkets}
+            className="px-6 py-3 text-lg rounded-lg border transition-colors hover:opacity-80"
             style={{ 
               borderColor: '#d1d5db',
               color: '#164e63',

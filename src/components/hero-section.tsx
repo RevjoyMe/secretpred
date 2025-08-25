@@ -1,4 +1,23 @@
+"use client"
+
+import { useRouter } from 'next/navigation'
+
 export function HeroSection() {
+  const router = useRouter()
+
+  const handleStartPredicting = () => {
+    // Scroll to markets section
+    const marketsSection = document.querySelector('[data-section="markets"]')
+    if (marketsSection) {
+      marketsSection.scrollIntoView({ behavior: 'smooth' })
+    }
+  }
+
+  const handleLearnMore = () => {
+    // Could navigate to a learn page or show a modal
+    alert('Learn more about SecretPredictions - Coming soon!')
+  }
+
   return (
     <section className="py-20 lg:py-32" style={{ background: 'linear-gradient(135deg, #ffffff 0%, #ecfeff 50%, #f1f5f9 100%)' }}>
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
@@ -20,7 +39,8 @@ export function HeroSection() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
-              className="px-8 py-3 text-lg font-semibold rounded-lg text-white shadow-lg hover:shadow-xl transition-all duration-200"
+              onClick={handleStartPredicting}
+              className="px-8 py-3 text-lg font-semibold rounded-lg text-white shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105"
               style={{ 
                 background: 'linear-gradient(135deg, #164e63 0%, #8b5cf6 100%)',
                 border: 'none'
@@ -29,7 +49,8 @@ export function HeroSection() {
               Start Predicting
             </button>
             <button 
-              className="px-8 py-3 text-lg font-semibold rounded-lg border-2 transition-all duration-200"
+              onClick={handleLearnMore}
+              className="px-8 py-3 text-lg font-semibold rounded-lg border-2 transition-all duration-200 hover:scale-105"
               style={{ 
                 borderColor: '#164e63',
                 color: '#164e63',
