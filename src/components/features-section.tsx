@@ -1,6 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { TrendingUp, Users, Shield } from "lucide-react"
-
 export function FeaturesSection() {
   const features = [
     {
