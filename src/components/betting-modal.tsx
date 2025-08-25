@@ -74,7 +74,8 @@ export function BettingModal({
       onClick={handleClose}
     >
       <div 
-        className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto mx-4"
+        className="bg-red-500 rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto mx-4"
+        style={{ backgroundColor: '#ff0000', border: '5px solid yellow' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">
