@@ -10,26 +10,8 @@ import { createEncryptedBetData } from '@/lib/fhe-utils'
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      },
-      {
-        "internalType": "bytes",
-        "name": "encryptedAmount",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "encryptedOutcome",
-        "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "inputProof",
-        "type": "bytes"
-      }
+      { "internalType": "uint256", "name": "marketId", "type": "uint256" },
+      { "internalType": "bool", "name": "outcome", "type": "bool" }
     ],
     "name": "placeBet",
     "outputs": [],
@@ -38,64 +20,57 @@ const PREDICTION_MARKET_ABI = [
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "marketId", "type": "uint256" }
+    ],
+    "name": "claimPayout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "marketId", "type": "uint256" }
     ],
     "name": "getMarket",
     "outputs": [
-      {
-        "internalType": "string",
-        "name": "question",
-        "type": "string"
-      },
-      {
-        "internalType": "string",
-        "name": "description",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "endTime",
-        "type": "uint256"
-      },
-      {
-        "internalType": "enum PredictionMarket.MarketState",
-        "name": "state",
-        "type": "uint8"
-      },
-      {
-        "internalType": "bool",
-        "name": "outcome",
-        "type": "bool"
-      },
-      {
-        "internalType": "uint256",
-        "name": "totalPool",
-        "type": "uint256"
-      },
-      {
-        "internalType": "address",
-        "name": "creator",
-        "type": "address"
-      }
+      { "internalType": "string", "name": "title", "type": "string" },
+      { "internalType": "uint256", "name": "endTime", "type": "uint256" },
+      { "internalType": "uint256", "name": "totalPool", "type": "uint256" },
+      { "internalType": "enum PredictionMarket.MarketState", "name": "state", "type": "uint8" },
+      { "internalType": "bool", "name": "outcome", "type": "bool" },
+      { "internalType": "uint256", "name": "resolutionTime", "type": "uint256" },
+      { "internalType": "address", "name": "oracle", "type": "address" }
     ],
     "stateMutability": "view",
     "type": "function"
   },
   {
     "inputs": [
-      {
-        "internalType": "uint256",
-        "name": "marketId",
-        "type": "uint256"
-      }
+      { "internalType": "uint256", "name": "marketId", "type": "uint256" },
+      { "internalType": "address", "name": "user", "type": "address" }
     ],
-    "name": "claimPayout",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "getUserPosition",
+    "outputs": [
+      { "internalType": "uint256", "name": "yesAmount", "type": "uint256" },
+      { "internalType": "uint256", "name": "noAmount", "type": "uint256" },
+      { "internalType": "uint256", "name": "betCount", "type": "uint256" },
+      { "internalType": "bool", "name": "hasPosition", "type": "bool" },
+      { "internalType": "bool", "name": "hasClaimed", "type": "bool" }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      { "internalType": "uint256", "name": "marketId", "type": "uint256" }
+    ],
+    "name": "getMarketStats",
+    "outputs": [
+      { "internalType": "uint256", "name": "totalYesPool", "type": "uint256" },
+      { "internalType": "uint256", "name": "totalNoPool", "type": "uint256" },
+      { "internalType": "uint256", "name": "totalBetters", "type": "uint256" }
+    ],
+    "stateMutability": "view",
     "type": "function"
   }
 ] as const
@@ -141,7 +116,7 @@ export function usePredictionMarket() {
     hash: betData,
   })
 
-  // Функция для размещения ставки с реальным Zama Relayer SDK
+  // Функция для размещения ставки (TEMPORARY: No FHE)
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -152,32 +127,16 @@ export function usePredictionMarket() {
     }
 
     try {
-      console.log('Placing bet with real FHE:', { marketId, outcome, amount })
+      console.log('Placing bet (temporary no FHE):', { marketId, outcome, amount })
       
-      // Создаем зашифрованные данные через FHE утилиты
-      const encryptedData = await createEncryptedBetData(
-        PREDICTION_MARKET_ADDRESS as `0x${string}`,
-        address,
-        amount,
-        outcome
-      )
-      
-      console.log('Real encrypted data:', {
-        amountPreview: encryptedData.encryptedAmount.slice(0, 10) + '...',
-        outcomePreview: encryptedData.encryptedOutcome.slice(0, 10) + '...',
-        proofPreview: encryptedData.attestationProof.slice(0, 10) + '...'
-      })
-      
-      // Вызываем контракт с реальными зашифрованными данными
+      // ВРЕМЕННО: Прямой вызов без FHE для тестирования
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
         args: [
           BigInt(marketId), 
-          encryptedData.encryptedAmount,    // externalEuint64
-          encryptedData.encryptedOutcome,   // externalEbool
-          encryptedData.attestationProof    // attestation - ОБЯЗАТЕЛЬНО
+          outcome  // Просто boolean вместо зашифрованных данных
         ],
         value: parseEther(amount),
       })

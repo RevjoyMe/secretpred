@@ -19,5 +19,5 @@ export const config = getDefaultConfig({
 export { chains }
 
 // Contract addresses - Sepolia addresses
-export const BETTING_VAULT_ADDRESS = "0x2580c5f459D1f47AEE6eE0463e0264BD11afA96A"
-export const PREDICTION_MARKET_ADDRESS = "0xDb6cA3Ef51E85A66A0eA51B559FBbaa3b08958a8"
+export const BETTING_VAULT_ADDRESS = "0x0e5BA52c58e710eA19D8aDcdCAB41d4886b40dF6"
+export const PREDICTION_MARKET_ADDRESS = "0xd15579d5Aae0763186Fa22E74ddd88d64d4e8A6b"

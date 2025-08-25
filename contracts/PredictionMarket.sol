@@ -1,111 +1,72 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
 
-import { FHE, euint64, euint32, ebool, externalEuint64, externalEbool } from '@fhevm/solidity/lib/FHE.sol';
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 /**
  * @title PredictionMarket
- * @dev Privacy-preserving prediction market using Zama FHEVM
- * @notice All betting amounts and outcomes remain encrypted until market resolution
+ * @dev A prediction market contract for betting on outcomes
+ * TEMPORARY VERSION: No FHE for testing on regular Sepolia
  */
-contract PredictionMarket is Ownable, ReentrancyGuard {
-    // Market states
-    enum MarketState {
-        Active,      // Market is open for betting
-        Locked,      // Market is locked, waiting for resolution
-        Resolved,    // Market is resolved, payouts available
-        Cancelled    // Market was cancelled
-    }
+contract PredictionMarket is ReentrancyGuard, Ownable {
+    // Events
+    event MarketCreated(uint256 indexed marketId, string title, uint256 endTime);
+    event BetPlaced(uint256 indexed marketId, address indexed bettor, uint256 value);
+    event MarketResolved(uint256 indexed marketId, bool outcome, uint256 timestamp);
+    event OracleSet(uint256 indexed marketId, address indexed oracle);
 
-    // Market structure
+    // Structs
     struct Market {
-        uint256 id;
-        string question;
-        string description;
+        string title;
         uint256 endTime;
-        uint256 resolutionTime;
-        MarketState state;
-        bool outcome;  // true = YES, false = NO
-        address oracle;
         uint256 totalPool;
-        uint256 creationTime;
-        address creator;
-        uint256 fee;  // Fee in basis points (100 = 1%)
+        MarketState state;
+        bool outcome;
+        uint256 resolutionTime;
+        address oracle;
     }
 
-    // Encrypted position data
-    struct EncryptedPosition {
-        euint64 yesAmount;      // Encrypted amount bet on YES
-        euint64 noAmount;       // Encrypted amount bet on NO
-        euint32 betCount;       // Encrypted number of bets
-        ebool hasPosition;      // Encrypted flag for position existence
-        ebool hasClaimed;       // Encrypted flag for payout claimed
+    struct Position {
+        uint256 yesAmount;
+        uint256 noAmount;
+        uint256 betCount;
+        bool hasPosition;
+        bool hasClaimed;
     }
 
-    // Market betting data
     struct MarketBetting {
-        euint64 totalYesPool;   // Encrypted total YES bets
-        euint64 totalNoPool;    // Encrypted total NO bets
-        euint32 totalBetters;   // Encrypted number of unique bettors
-        mapping(address => EncryptedPosition) positions;
+        uint256 totalYesPool;
+        uint256 totalNoPool;
+        uint256 totalBetters;
+        mapping(address => Position) positions;
     }
+
+    // Enums
+    enum MarketState { Active, Resolved, Cancelled }
+
+    // Constants
+    uint256 public constant MIN_BET = 0.001 ether;
+    uint256 public constant MAX_BET = 10 ether;
 
     // State variables
+    uint256 public marketCount;
     mapping(uint256 => Market) public markets;
-    mapping(uint256 => MarketBetting) private marketBets;
-    mapping(address => bool) public authorizedOracles;
-    
-    uint256 public nextMarketId = 1;
-    uint256 public constant MARKET_FEE = 300; // 3% platform fee
-    uint256 public constant MIN_BET = 1e16; // 0.01 ETH minimum
-    uint256 public constant MAX_BET = 10e18; // 10 ETH maximum
+    mapping(uint256 => MarketBetting) public marketBets;
 
-    // Events
-    event MarketCreated(
-        uint256 indexed marketId,
-        string question,
-        uint256 endTime,
-        address indexed creator
-    );
-    
-    event BetPlaced(
-        uint256 indexed marketId,
-        address indexed user,
-        uint256 timestamp
-    );
-    
-    event MarketResolved(
-        uint256 indexed marketId,
-        bool outcome,
-        uint256 timestamp
-    );
-    
-    event PayoutClaimed(
-        uint256 indexed marketId,
-        address indexed user,
-        uint256 amount,
-        uint256 timestamp
-    );
-
-    modifier onlyOracle(uint256 marketId) {
-        require(
-            msg.sender == markets[marketId].oracle || 
-            authorizedOracles[msg.sender], 
-            "Not authorized oracle"
-        );
-        _;
-    }
-
+    // Modifiers
     modifier validMarket(uint256 marketId) {
-        require(marketId > 0 && marketId < nextMarketId, "Invalid market");
+        require(marketId > 0 && marketId <= marketCount, "Invalid market ID");
         _;
     }
 
     modifier marketActive(uint256 marketId) {
         require(markets[marketId].state == MarketState.Active, "Market not active");
-        require(block.timestamp < markets[marketId].endTime, "Market ended");
+        _;
+    }
+
+    modifier onlyOracle(uint256 marketId) {
+        require(markets[marketId].oracle == msg.sender || owner() == msg.sender, "Not authorized");
         _;
     }
 
@@ -113,60 +74,50 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
 
     /**
      * @dev Create a new prediction market
+     * @param title Market title
+     * @param duration Duration in seconds
+     * @param oracle Oracle address for resolution
      */
     function createMarket(
-        string memory question,
-        string memory description,
-        uint256 endTime,
-        address oracle,
-        uint256 fee
-    ) external returns (uint256 marketId) {
-        require(endTime > block.timestamp, "End time must be in future");
+        string memory title,
+        uint256 duration,
+        address oracle
+    ) external onlyOwner {
+        require(bytes(title).length > 0, "Title cannot be empty");
+        require(duration > 0, "Duration must be positive");
         require(oracle != address(0), "Invalid oracle address");
-        require(fee <= 1000, "Fee too high"); // Max 10%
 
-        marketId = nextMarketId++;
+        marketCount++;
+        uint256 endTime = block.timestamp + duration;
 
-        markets[marketId] = Market({
-            id: marketId,
-            question: question,
-            description: description,
+        markets[marketCount] = Market({
+            title: title,
             endTime: endTime,
-            resolutionTime: 0,
+            totalPool: 0,
             state: MarketState.Active,
             outcome: false,
-            oracle: oracle,
-            totalPool: 0,
-            creationTime: block.timestamp,
-            creator: msg.sender,
-            fee: fee
+            resolutionTime: 0,
+            oracle: oracle
         });
 
-        emit MarketCreated(marketId, question, endTime, msg.sender);
+        emit MarketCreated(marketCount, title, endTime);
+        emit OracleSet(marketCount, oracle);
     }
 
     /**
-     * @dev Place a bet on a market
+     * @dev Place a bet on a market (TEMPORARY: No FHE)
      * @param marketId The market to bet on
-     * @param encryptedAmount Encrypted bet amount
-     * @param encryptedOutcome Encrypted outcome (true = YES, false = NO)
-     * @param attestation Attestation proof for encrypted data
+     * @param outcome Bet outcome (true = YES, false = NO)
      */
     function placeBet(
         uint256 marketId,
-        externalEuint64 encryptedAmount,
-        externalEbool encryptedOutcome,
-        bytes calldata attestation
+        bool outcome
     ) external payable validMarket(marketId) marketActive(marketId) nonReentrant {
         require(msg.value >= MIN_BET && msg.value <= MAX_BET, "Invalid bet amount");
         require(msg.value > 0, "Must send ETH to bet");
 
-        // Convert external encrypted inputs to internal types with attestation
-        euint64 amount = FHE.fromExternal(encryptedAmount, attestation);
-        ebool outcome = FHE.fromExternal(encryptedOutcome, attestation);
-
         // Update user position
-        _updatePosition(marketId, msg.sender, amount, outcome);
+        _updatePosition(marketId, msg.sender, msg.value, outcome);
 
         // Update market pool
         markets[marketId].totalPool += msg.value;
@@ -175,38 +126,38 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Update user's encrypted position
+     * @dev Update user's position
      */
     function _updatePosition(
         uint256 marketId,
         address user,
-        euint64 amount,
-        ebool outcome
+        uint256 amount,
+        bool outcome
     ) internal {
         MarketBetting storage marketBet = marketBets[marketId];
-        EncryptedPosition storage position = marketBet.positions[user];
+        Position storage position = marketBet.positions[user];
 
         // Check if this is user's first bet
-        ebool isNewBetter = FHE.not(position.hasPosition);
+        bool isNewBetter = !position.hasPosition;
 
         // Update bet count
-        position.betCount = FHE.add(position.betCount, FHE.asEuint32(1));
+        position.betCount++;
 
         // Update position amounts based on outcome
-        euint64 yesAddition = FHE.select(outcome, amount, FHE.asEuint64(0));
-        euint64 noAddition = FHE.select(outcome, FHE.asEuint64(0), amount);
-
-        position.yesAmount = FHE.add(position.yesAmount, yesAddition);
-        position.noAmount = FHE.add(position.noAmount, noAddition);
-        position.hasPosition = FHE.asEbool(true);
-
-        // Update market totals
-        marketBet.totalYesPool = FHE.add(marketBet.totalYesPool, yesAddition);
-        marketBet.totalNoPool = FHE.add(marketBet.totalNoPool, noAddition);
+        if (outcome) {
+            position.yesAmount += amount;
+            marketBet.totalYesPool += amount;
+        } else {
+            position.noAmount += amount;
+            marketBet.totalNoPool += amount;
+        }
+        
+        position.hasPosition = true;
 
         // Update total betters if this is a new better
-        euint32 betterIncrement = FHE.select(isNewBetter, FHE.asEuint32(1), FHE.asEuint32(0));
-        marketBet.totalBetters = FHE.add(marketBet.totalBetters, betterIncrement);
+        if (isNewBetter) {
+            marketBet.totalBetters++;
+        }
     }
 
     /**
@@ -229,68 +180,94 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
 
     /**
      * @dev Claim payout for winning positions
-     * Note: This is a simplified version. In a real FHE implementation,
-     * payout calculation would need to be done using FHE operations
      */
     function claimPayout(uint256 marketId) external validMarket(marketId) nonReentrant {
         Market storage market = markets[marketId];
         require(market.state == MarketState.Resolved, "Market not resolved");
 
-        EncryptedPosition storage position = marketBets[marketId].positions[msg.sender];
+        Position storage position = marketBets[marketId].positions[msg.sender];
+        require(position.hasPosition, "No position to claim");
+        require(!position.hasClaimed, "Already claimed");
+
+        uint256 payout = 0;
         
-        // Note: In a real FHE implementation, these checks would be done differently
-        // For now, we'll use a simplified approach where users can claim if they have a position
-        
-        // Calculate payout based on final outcome using FHE operations
-        // Note: In a real FHE implementation, fee calculation and payout would be done differently
-        // For now, we'll use a placeholder approach
-        
+        if (market.outcome) {
+            // YES won
+            if (position.yesAmount > 0) {
+                payout = _calculatePayout(marketId, position.yesAmount, true);
+            }
+        } else {
+            // NO won
+            if (position.noAmount > 0) {
+                payout = _calculatePayout(marketId, position.noAmount, false);
+            }
+        }
+
+        require(payout > 0, "No payout available");
+
         // Mark as claimed
-        position.hasClaimed = FHE.asEbool(true);
+        position.hasClaimed = true;
 
-        // For demonstration, we'll transfer a small amount
-        uint256 demoPayout = 1e16; // 0.01 ETH demo payout
-        (bool success, ) = payable(msg.sender).call{value: demoPayout}("");
-        require(success, "Payout transfer failed");
+        // Transfer payout
+        (bool success, ) = msg.sender.call{value: payout}("");
+        require(success, "Transfer failed");
+    }
 
-        emit PayoutClaimed(marketId, msg.sender, demoPayout, block.timestamp);
+    /**
+     * @dev Calculate payout for a winning position
+     */
+    function _calculatePayout(
+        uint256 marketId,
+        uint256 betAmount,
+        bool outcome
+    ) internal view returns (uint256) {
+        MarketBetting storage marketBet = marketBets[marketId];
+        uint256 totalPool = markets[marketId].totalPool;
+        
+        if (totalPool == 0) return 0;
+
+        uint256 winningPool = outcome ? marketBet.totalYesPool : marketBet.totalNoPool;
+        if (winningPool == 0) return 0;
+
+        // Simple proportional payout (no fees for now)
+        return (betAmount * totalPool) / winningPool;
     }
 
     /**
      * @dev Get market information
      */
     function getMarket(uint256 marketId) external view validMarket(marketId) returns (
-        string memory question,
-        string memory description,
+        string memory title,
         uint256 endTime,
+        uint256 totalPool,
         MarketState state,
         bool outcome,
-        uint256 totalPool,
-        address creator
+        uint256 resolutionTime,
+        address oracle
     ) {
         Market storage market = markets[marketId];
         return (
-            market.question,
-            market.description,
+            market.title,
             market.endTime,
+            market.totalPool,
             market.state,
             market.outcome,
-            market.totalPool,
-            market.creator
+            market.resolutionTime,
+            market.oracle
         );
     }
 
     /**
-     * @dev Get encrypted position for a user
+     * @dev Get user position for a market
      */
-    function getEncryptedPosition(uint256 marketId, address user) external view validMarket(marketId) returns (
-        euint64 yesAmount,
-        euint64 noAmount,
-        euint32 betCount,
-        ebool hasPosition,
-        ebool hasClaimed
+    function getUserPosition(uint256 marketId, address user) external view validMarket(marketId) returns (
+        uint256 yesAmount,
+        uint256 noAmount,
+        uint256 betCount,
+        bool hasPosition,
+        bool hasClaimed
     ) {
-        EncryptedPosition storage position = marketBets[marketId].positions[user];
+        Position storage position = marketBets[marketId].positions[user];
         return (
             position.yesAmount,
             position.noAmount,
@@ -301,12 +278,12 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
     }
 
     /**
-     * @dev Get encrypted market totals
+     * @dev Get market betting statistics
      */
-    function getEncryptedMarketTotals(uint256 marketId) external view validMarket(marketId) returns (
-        euint64 totalYesPool,
-        euint64 totalNoPool,
-        euint32 totalBetters
+    function getMarketStats(uint256 marketId) external view validMarket(marketId) returns (
+        uint256 totalYesPool,
+        uint256 totalNoPool,
+        uint256 totalBetters
     ) {
         MarketBetting storage marketBet = marketBets[marketId];
         return (
@@ -316,41 +293,10 @@ contract PredictionMarket is Ownable, ReentrancyGuard {
         );
     }
 
-    /**
-     * @dev Make market totals publicly decryptable
-     */
-    function makeMarketTotalsPublic(uint256 marketId) external validMarket(marketId) onlyOracle(marketId) {
-        MarketBetting storage marketBet = marketBets[marketId];
-        FHE.makePubliclyDecryptable(marketBet.totalYesPool);
-        FHE.makePubliclyDecryptable(marketBet.totalNoPool);
-        FHE.makePubliclyDecryptable(marketBet.totalBetters);
-    }
-
-    /**
-     * @dev Add authorized oracle
-     */
-    function addOracle(address oracle) external onlyOwner {
-        authorizedOracles[oracle] = true;
-    }
-
-    /**
-     * @dev Remove authorized oracle
-     */
-    function removeOracle(address oracle) external onlyOwner {
-        authorizedOracles[oracle] = false;
-    }
-
-    /**
-     * @dev Withdraw platform fees
-     */
-    function withdrawFees() external onlyOwner {
-        (bool success, ) = payable(owner()).call{value: address(this).balance}("");
-        require(success, "Fee withdrawal failed");
-    }
-
     // Emergency functions
-    function emergencyPause(uint256 marketId) external onlyOwner validMarket(marketId) {
-        markets[marketId].state = MarketState.Cancelled;
+    function emergencyWithdraw() external onlyOwner {
+        (bool success, ) = owner().call{value: address(this).balance}("");
+        require(success, "Transfer failed");
     }
 
     receive() external payable {}
