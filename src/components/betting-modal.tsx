@@ -70,12 +70,16 @@ export function BettingModal({
   return (
     <div 
       className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      style={{ zIndex: 9999 }}
+      style={{ zIndex: 999999 }}
       onClick={handleClose}
     >
       <div 
-        className="bg-red-500 rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto mx-4"
-        style={{ backgroundColor: '#ff0000', border: '5px solid yellow' }}
+        className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto mx-4"
+        style={{ 
+          backgroundColor: '#ffffff',
+          border: '1px solid #d1d5db',
+          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)'
+        }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex justify-between items-center mb-4">

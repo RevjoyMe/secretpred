@@ -5,7 +5,7 @@ import { useAccount, useReadContract, useWriteContract, useWaitForTransactionRec
 import { parseEther, formatEther } from 'viem'
 import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 
-// Упрощенный ABI для тестирования без FHE
+// ABI для FHE контракта
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -15,9 +15,14 @@ const PREDICTION_MARKET_ABI = [
         "type": "uint256"
       },
       {
-        "internalType": "bool",
-        "name": "outcome",
-        "type": "bool"
+        "internalType": "bytes",
+        "name": "encryptedAmount",
+        "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "encryptedOutcome",
+        "type": "bytes"
       }
     ],
     "name": "placeBet",
@@ -130,7 +135,7 @@ export function usePredictionMarket() {
     hash: betData,
   })
 
-  // Упрощенная функция для размещения ставки (без FHE для тестирования)
+  // Функция для размещения ставки с Zama Relayer SDK
   const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
     if (!isConnected || !address) {
       throw new Error('Please connect your wallet first')
@@ -141,14 +146,39 @@ export function usePredictionMarket() {
     }
 
     try {
-      console.log('Placing bet:', { marketId, outcome, amount })
+      console.log('Placing bet with FHE:', { marketId, outcome, amount })
       
-      // Используем упрощенную версию без FHE для тестирования
+      // Динамический импорт Zama Relayer SDK
+      const { createInstance, SepoliaConfig } = await import('@zama-fhe/relayer-sdk')
+      
+      // Создаем инстанс SDK
+      const instance = await createInstance(SepoliaConfig)
+      
+      // Создаем зашифрованный input
+      const input = await instance.createEncryptedInput(
+        PREDICTION_MARKET_ADDRESS as `0x${string}`, 
+        address
+      )
+      
+      // Добавляем данные для шифрования
+      input.add64(BigInt(parseFloat(amount) * 1e18)) // Convert to wei
+      input.addBool(outcome)
+      
+      // Шифруем данные
+      const encryptedData = await input.encrypt()
+      
+      console.log('Encrypted data:', encryptedData)
+      
+      // Вызываем контракт с зашифрованными данными
       await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
-        args: [BigInt(marketId), outcome],
+        args: [
+          BigInt(marketId), 
+          encryptedData.handles[0], 
+          encryptedData.inputProof
+        ],
         value: parseEther(amount),
       })
     } catch (error) {

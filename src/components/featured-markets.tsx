@@ -55,7 +55,6 @@ export function FeaturedMarkets() {
 
   const handleBetClick = (market: any, outcome: 'yes' | 'no') => {
     console.log('Button clicked:', { market, outcome, isConnected })
-    alert(`Button clicked! Market: ${market.title}, Outcome: ${outcome}`)
     
     if (!isConnected) {
       alert('Please connect your wallet first to start trading!')
