@@ -1,14 +1,13 @@
 "use client"
 
-import { useState } from 'react'
 import { useWallet } from '@/components/providers/Providers'
-import { BettingModal } from './betting-modal'
 
-export function FeaturedMarkets() {
+interface FeaturedMarketsProps {
+  onBetClick: (market: any, outcome: 'yes' | 'no') => void
+}
+
+export function FeaturedMarkets({ onBetClick }: FeaturedMarketsProps) {
   const { isConnected } = useWallet()
-  const [showBettingModal, setShowBettingModal] = useState(false)
-  const [selectedMarket, setSelectedMarket] = useState<any>(null)
-  const [selectedOutcome, setSelectedOutcome] = useState<'yes' | 'no' | null>(null)
 
   const markets = [
     {
@@ -61,11 +60,8 @@ export function FeaturedMarkets() {
       return
     }
     
-    console.log('Setting modal state:', { market, outcome })
-    setSelectedMarket(market)
-    setSelectedOutcome(outcome)
-    setShowBettingModal(true)
-    console.log('Modal should be open now')
+    console.log('Calling parent onBetClick:', { market, outcome })
+    onBetClick(market, outcome)
   }
 
   const handleViewAllMarkets = () => {
@@ -74,119 +70,100 @@ export function FeaturedMarkets() {
   }
 
   return (
-    <>
-      <section className="py-16" style={{ backgroundColor: '#ffffff' }} data-section="markets">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mb-12">
-            <h2 className="font-work-sans font-bold text-3xl mb-4" style={{ color: '#164e63' }}>Featured Markets</h2>
-            <p className="text-lg" style={{ color: '#6b7280' }}>
-              Most popular prediction markets with high volume and active trading.
-            </p>
-          </div>
+    <section className="py-16" style={{ backgroundColor: '#ffffff' }} data-section="markets">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="mb-12">
+          <h2 className="font-work-sans font-bold text-3xl mb-4" style={{ color: '#164e63' }}>Featured Markets</h2>
+          <p className="text-lg" style={{ color: '#6b7280' }}>
+            Most popular prediction markets with high volume and active trading.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {markets.map((market) => (
-              <div 
-                key={market.id} 
-                className="hover:shadow-lg transition-shadow rounded-lg p-6"
-                style={{ 
-                  backgroundColor: '#ffffff',
-                  border: '1px solid #d1d5db',
-                  boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
-                }}
-              >
-                <div className="pb-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span 
-                      className="text-xs px-2 py-1 rounded-full"
-                      style={{ 
-                        backgroundColor: '#8b5cf6',
-                        color: '#ffffff'
-                      }}
-                    >
-                      {market.category}
-                    </span>
-                    <span className="text-sm" style={{ color: '#6b7280' }}>{market.timeLeft}</span>
-                  </div>
-                  <h3 className="font-work-sans text-xl leading-tight mb-4" style={{ color: '#164e63' }}>{market.title}</h3>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          {markets.map((market) => (
+            <div 
+              key={market.id} 
+              className="hover:shadow-lg transition-shadow rounded-lg p-6"
+              style={{ 
+                backgroundColor: '#ffffff',
+                border: '1px solid #d1d5db',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.1)'
+              }}
+            >
+              <div className="pb-4">
+                <div className="flex items-center justify-between mb-2">
+                  <span 
+                    className="text-xs px-2 py-1 rounded-full"
+                    style={{ 
+                      backgroundColor: '#8b5cf6',
+                      color: '#ffffff'
+                    }}
+                  >
+                    {market.category}
+                  </span>
+                  <span className="text-sm" style={{ color: '#6b7280' }}>{market.timeLeft}</span>
                 </div>
-                <div className="space-y-4">
-                  <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>{market.description}</p>
+                <h3 className="font-work-sans text-xl leading-tight mb-4" style={{ color: '#164e63' }}>{market.title}</h3>
+              </div>
+              <div className="space-y-4">
+                <p className="text-sm leading-relaxed" style={{ color: '#6b7280' }}>{market.description}</p>
 
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      onClick={() => handleBetClick(market, 'yes')}
-                      className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
-                      style={{ 
-                        backgroundColor: '#f1f5f9',
-                        borderColor: '#d1d5db'
-                      }}
-                    >
-                      <div className="text-center">
-                        <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{market.yesPrice}¢</div>
-                        <div className="text-sm font-medium" style={{ color: '#6b7280' }}>YES</div>
-                        <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
-                      </div>
-                    </button>
-                    <button
-                      onClick={() => handleBetClick(market, 'no')}
-                      className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
-                      style={{ 
-                        backgroundColor: '#f1f5f9',
-                        borderColor: '#d1d5db'
-                      }}
-                    >
-                      <div className="text-center">
-                        <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{market.noPrice}¢</div>
-                        <div className="text-sm font-medium" style={{ color: '#6b7280' }}>NO</div>
-                        <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
-                      </div>
-                    </button>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm" style={{ color: '#6b7280' }}>Volume: {market.volume}</span>
-                    <div className="text-xs" style={{ color: '#6b7280' }}>
-                      Click YES or NO to place your bet
+                <div className="grid grid-cols-2 gap-3">
+                  <button
+                    onClick={() => handleBetClick(market, 'yes')}
+                    className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
+                    style={{ 
+                      backgroundColor: '#f1f5f9',
+                      borderColor: '#d1d5db'
+                    }}
+                  >
+                    <div className="text-center">
+                      <div className="text-2xl font-bold" style={{ color: '#10b981' }}>{market.yesPrice}¢</div>
+                      <div className="text-sm font-medium" style={{ color: '#6b7280' }}>YES</div>
+                      <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
                     </div>
+                  </button>
+                  <button
+                    onClick={() => handleBetClick(market, 'no')}
+                    className="p-4 rounded-lg border-2 transition-all duration-200 hover:scale-105 hover:shadow-md"
+                    style={{ 
+                      backgroundColor: '#f1f5f9',
+                      borderColor: '#d1d5db'
+                    }}
+                  >
+                    <div className="text-center">
+                      <div className="text-2xl font-bold" style={{ color: '#ef4444' }}>{market.noPrice}¢</div>
+                      <div className="text-sm font-medium" style={{ color: '#6b7280' }}>NO</div>
+                      <div className="text-xs mt-1" style={{ color: '#6b7280' }}>Click to bet</div>
+                    </div>
+                  </button>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <span className="text-sm" style={{ color: '#6b7280' }}>Volume: {market.volume}</span>
+                  <div className="text-xs" style={{ color: '#6b7280' }}>
+                    Click YES or NO to place your bet
                   </div>
                 </div>
               </div>
-            ))}
-          </div>
-
-          <div className="text-center mt-12">
-            <button 
-              onClick={handleViewAllMarkets}
-              className="px-6 py-3 text-lg rounded-lg border transition-colors hover:opacity-80"
-              style={{ 
-                borderColor: '#d1d5db',
-                color: '#164e63',
-                backgroundColor: 'transparent'
-              }}
-            >
-              View All Markets
-            </button>
-          </div>
+            </div>
+          ))}
         </div>
-      </section>
 
-      {/* Betting Modal */}
-      {showBettingModal && selectedMarket && (
-        <BettingModal
-          isOpen={showBettingModal}
-          onClose={() => {
-            setShowBettingModal(false)
-            setSelectedMarket(null)
-            setSelectedOutcome(null)
-          }}
-          marketId={selectedMarket.id}
-          marketTitle={selectedMarket.title}
-          yesPrice={selectedMarket.yesPrice}
-          noPrice={selectedMarket.noPrice}
-          preSelectedOutcome={selectedOutcome}
-        />
-      )}
-    </>
+        <div className="text-center mt-12">
+          <button 
+            onClick={handleViewAllMarkets}
+            className="px-6 py-3 text-lg rounded-lg border transition-colors hover:opacity-80"
+            style={{ 
+              borderColor: '#d1d5db',
+              color: '#164e63',
+              backgroundColor: 'transparent'
+            }}
+          >
+            View All Markets
+          </button>
+        </div>
+      </div>
+    </section>
   )
 }
