@@ -54,14 +54,18 @@ export function FeaturedMarkets() {
   ]
 
   const handleBetClick = (market: any, outcome: 'yes' | 'no') => {
+    console.log('Button clicked:', { market, outcome, isConnected })
+    
     if (!isConnected) {
       alert('Please connect your wallet first to start trading!')
       return
     }
     
+    console.log('Setting modal state:', { market, outcome })
     setSelectedMarket(market)
     setSelectedOutcome(outcome)
     setShowBettingModal(true)
+    console.log('Modal should be open now')
   }
 
   const handleViewAllMarkets = () => {

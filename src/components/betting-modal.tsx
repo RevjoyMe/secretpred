@@ -60,7 +60,12 @@ export function BettingModal({
     onClose()
   }
 
-  if (!isOpen) return null
+  if (!isOpen) {
+    console.log('Modal not open, returning null')
+    return null
+  }
+
+  console.log('Rendering modal with props:', { isOpen, marketId, marketTitle, yesPrice, noPrice, preSelectedOutcome })
 
   return (
     <div 
