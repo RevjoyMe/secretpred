@@ -1,11 +1,11 @@
 "use client"
 
-import { useContractWrite, useWaitForTransactionReceipt, useAccount } from 'wagmi'
-import { parseEther } from 'viem'
-import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 import { useState, useEffect } from 'react'
+import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
+import { parseEther, formatEther } from 'viem'
+import { PREDICTION_MARKET_ADDRESS } from '@/lib/wagmi'
 
-// ABI for placeBet function with correct FHE types
+// ABI для основных функций контракта
 const PREDICTION_MARKET_ABI = [
   {
     "inputs": [
@@ -23,123 +23,199 @@ const PREDICTION_MARKET_ABI = [
         "internalType": "bytes",
         "name": "encryptedOutcome",
         "type": "bytes"
-      },
-      {
-        "internalType": "bytes",
-        "name": "inputProof",
-        "type": "bytes"
       }
     ],
     "name": "placeBet",
     "outputs": [],
     "stateMutability": "payable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getMarket",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "question",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "endTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "enum PredictionMarket.MarketState",
+        "name": "state",
+        "type": "uint8"
+      },
+      {
+        "internalType": "bool",
+        "name": "outcome",
+        "type": "bool"
+      },
+      {
+        "internalType": "uint256",
+        "name": "totalPool",
+        "type": "uint256"
+      },
+      {
+        "internalType": "address",
+        "name": "creator",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "marketId",
+        "type": "uint256"
+      }
+    ],
+    "name": "claimPayout",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   }
 ] as const
 
-export function usePlaceBet(marketId: number, betAmount: string, side: "yes" | "no") {
-  const { isConnected, address } = useAccount()
-  const [manualError, setManualError] = useState<string | null>(null)
+export interface MarketData {
+  id: number
+  question: string
+  description: string
+  endTime: bigint
+  state: number
+  outcome: boolean
+  totalPool: bigint
+  creator: string
+}
 
-  console.log('[HOOK] usePlaceBet called with:', { marketId, betAmount, side, isConnected })
+export function usePredictionMarket() {
+  const { address, isConnected } = useAccount()
+  const [selectedMarket, setSelectedMarket] = useState<number | null>(null)
+  const [betAmount, setBetAmount] = useState<string>('0.01')
+  const [betOutcome, setBetOutcome] = useState<boolean | null>(null)
 
-  const { data, writeContract, isPending, error: writeError, reset } = useContractWrite()
-
-  console.log('[HOOK] useContractWrite result:', { 
-    data, 
-    writeContract: !!writeContract, 
-    isPending, 
-    writeError: writeError?.message 
+  // Чтение данных рынка
+  const { data: marketData, refetch: refetchMarket } = useReadContract({
+    address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
+    abi: PREDICTION_MARKET_ABI,
+    functionName: 'getMarket',
+    args: selectedMarket ? [BigInt(selectedMarket)] : undefined,
+    query: {
+      enabled: !!selectedMarket,
+    },
   })
 
-  const { isLoading: isConfirming, isSuccess, error: confirmError } = useWaitForTransactionReceipt({
-    hash: data,
+  // Функция для размещения ставки
+  const { 
+    data: betData, 
+    writeContract, 
+    isPending: isPlacingBet,
+    error: betError 
+  } = useWriteContract()
+
+  // Ожидание транзакции
+  const { isLoading: isWaitingForBet, isSuccess: betSuccess } = useWaitForTransactionReceipt({
+    hash: betData,
   })
 
-  console.log('[HOOK] useWaitForTransactionReceipt result:', { 
-    isConfirming, 
-    isSuccess, 
-    confirmError: confirmError?.message,
-    hash: data 
-  })
-
-  const placeBet = async () => {
-    console.log('[PLACEBET] Function called')
-    
-    if (typeof window === 'undefined' || typeof window.ethereum === 'undefined') {
-      console.error('[PLACEBET] Window or ethereum not available')
-      setManualError("Wallet not available in this environment")
-      return
+  // Функция для размещения ставки
+  const handlePlaceBet = async (marketId: number, outcome: boolean, amount: string) => {
+    if (!isConnected || !address) {
+      throw new Error('Please connect your wallet first')
     }
 
-    if (!isConnected) {
-      console.error('[PLACEBET] Wallet not connected')
-      setManualError("Please connect your wallet first")
-      return
-    }
-
-    if (!writeContract) {
-      console.error('[PLACEBET] Write function not available')
-      setManualError("Contract write function not available")
-      return
-    }
-
-    if (!betAmount || parseFloat(betAmount) <= 0) {
-      console.error('[PLACEBET] Invalid bet amount:', betAmount)
-      setManualError("Please enter a valid bet amount")
-      return
+    if (!amount || parseFloat(amount) <= 0) {
+      throw new Error('Please enter a valid bet amount')
     }
 
     try {
-      setManualError(null)
-      console.log(`[PLACEBET] Attempting to place bet:`, {
-        marketId,
-        betAmount,
-        side,
-        value: parseEther(betAmount).toString()
-      })
+      // Для демонстрации используем простые зашифрованные данные
+      // В реальном приложении здесь была бы FHE шифрация
+      const encryptedAmount = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
+      const encryptedOutcome = ('0x' + '0'.repeat(64)) as `0x${string}` // Placeholder
 
-      // For now, use placeholder encrypted data
-      // In a real implementation, this would use the Zama FHE SDK
-      const encryptedAmount = ("0x" + "00".repeat(32)) as `0x${string}`
-      const encryptedOutcome = ("0x" + "00".repeat(32)) as `0x${string}`
-      const inputProof = ("0x" + "00".repeat(32)) as `0x${string}`
-
-      // Call write function with placeholder encrypted data
-      writeContract({
+      await writeContract({
         address: PREDICTION_MARKET_ADDRESS as `0x${string}`,
         abi: PREDICTION_MARKET_ABI,
         functionName: 'placeBet',
-        args: [
-          BigInt(marketId),
-          encryptedAmount,
-          encryptedOutcome,
-          inputProof
-        ],
-        value: parseEther(betAmount)
+        args: [BigInt(marketId), encryptedAmount, encryptedOutcome],
+        value: parseEther(amount),
       })
-      
-      console.log('[PLACEBET] Write function called successfully')
     } catch (error) {
-      console.error('[PLACEBET] Error calling write:', error)
-      setManualError(`Failed to initiate transaction: ${error instanceof Error ? error.message : 'Unknown error'}`)
+      console.error('Error placing bet:', error)
+      throw error
     }
   }
 
-  // Reset errors when parameters change
-  const resetErrors = () => {
-    console.log('[HOOK] Resetting errors')
-    setManualError(null)
-    reset()
+  // Функция для получения данных рынка
+  const getMarketData = async (marketId: number): Promise<MarketData | null> => {
+    try {
+      // В реальном приложении здесь был бы вызов контракта
+      // Для демонстрации возвращаем моковые данные
+      return {
+        id: marketId,
+        question: "Demo Market Question",
+        description: "This is a demo market for testing",
+        endTime: BigInt(Math.floor(Date.now() / 1000) + 86400), // 24 hours from now
+        state: 0, // Active
+        outcome: false,
+        totalPool: parseEther('0.1'),
+        creator: '0x0000000000000000000000000000000000000000'
+      }
+    } catch (error) {
+      console.error('Error fetching market data:', error)
+      return null
+    }
   }
 
+  // Эффект для обновления данных после успешной ставки
+  useEffect(() => {
+    if (betSuccess && selectedMarket) {
+      refetchMarket()
+      setBetAmount('0.01')
+      setBetOutcome(null)
+    }
+  }, [betSuccess, selectedMarket, refetchMarket])
+
   return {
-    placeBet,
-    resetErrors,
-    isLoading: isPending || isConfirming,
-    isSuccess,
-    error: manualError || writeError || confirmError,
-    hash: data,
-    fheReady: true, // Simplified for now
+    // Состояние
+    selectedMarket,
+    betAmount,
+    betOutcome,
+    isConnected,
+    address,
+    
+    // Данные
+    marketData,
+    
+    // Функции
+    setSelectedMarket,
+    setBetAmount,
+    setBetOutcome,
+    handlePlaceBet,
+    getMarketData,
+    
+    // Статус транзакций
+    isPlacingBet,
+    isWaitingForBet,
+    betSuccess,
+    betError,
   }
 }
