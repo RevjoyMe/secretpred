@@ -24,6 +24,11 @@ const PREDICTION_MARKET_ABI = [
         "internalType": "bytes",
         "name": "encryptedOutcome",
         "type": "bytes"
+      },
+      {
+        "internalType": "bytes",
+        "name": "inputProof",
+        "type": "bytes"
       }
     ],
     "name": "placeBet",
@@ -167,7 +172,8 @@ export function usePredictionMarket() {
         args: [
           BigInt(marketId), 
           encryptedData.encryptedAmount,    // externalEuint64
-          encryptedData.encryptedOutcome    // externalEbool
+          encryptedData.encryptedOutcome,   // externalEbool
+          encryptedData.attestationProof    // inputProof - ОБЯЗАТЕЛЬНО
         ],
         value: parseEther(amount),
       })
