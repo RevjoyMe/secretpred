@@ -2,64 +2,55 @@
 
 import { useState } from 'react';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
-import { Search, Menu, X } from 'lucide-react';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
 
   const navigation = [
-    { name: 'Home', href: '/' },
-    { name: 'Markets', href: '/markets' },
-    { name: 'Leaders', href: '/leaders' },
-    { name: 'News', href: '/news' },
-    { name: 'About', href: '/about' },
+    { name: 'Markets', href: '/', active: true },
+    { name: 'Portfolio', href: '/portfolio' },
+    { name: 'History', href: '/history' },
+    { name: 'Analytics', href: '/analytics' },
   ];
 
   return (
-    <header className="glass sticky top-0 z-50 border-b border-white/10">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+    <header className="header-minimal">
+      <div className="main-content">
+        <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center">
-            <div className="flex-shrink-0">
-              <h1 className="text-2xl font-bold gradient-text">
-                SecretPredictions
-              </h1>
-            </div>
+            <h1 className="text-accent font-semibold text-xl">
+              SecretPredictions
+            </h1>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex header-nav">
             {navigation.map((item) => (
               <a
                 key={item.name}
                 href={item.href}
-                className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+                className={item.active ? 'active' : ''}
               >
                 {item.name}
               </a>
             ))}
           </nav>
 
-          {/* Search Bar */}
-          <div className="hidden lg:flex items-center flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+          {/* User Profile & Actions */}
+          <div className="flex items-center gap-16">
+            {/* User Profile */}
+            <div className="hidden md:flex user-profile">
+              <div className="user-avatar">
+                U
               </div>
-              <input
-                type="text"
-                placeholder="Search markets..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="input-field pl-10 pr-4 w-full"
-              />
+              <div className="user-balance">
+                <div className="balance-amount">2.45 ETH</div>
+                <div className="balance-label">Balance</div>
+              </div>
             </div>
-          </div>
 
-          {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
+            {/* Connect Button */}
             <ConnectButton />
           </div>
 
@@ -67,42 +58,24 @@ export default function Header() {
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="text-gray-300 hover:text-white transition-colors duration-200"
+              className="btn-minimal"
             >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
+              {isMenuOpen ? '✕' : '☰'}
             </button>
-          </div>
-        </div>
-
-        {/* Mobile Search */}
-        <div className="lg:hidden pb-4">
-          <div className="relative">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <Search className="h-5 w-5 text-gray-400" />
-            </div>
-            <input
-              type="text"
-              placeholder="Search markets..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="input-field pl-10 pr-4 w-full"
-            />
           </div>
         </div>
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden pb-4 border-t border-white/10">
+          <div className="md:hidden mt-4 pb-4 border-t border-border">
             <div className="pt-4 space-y-2">
               {navigation.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className="block px-3 py-2 text-gray-300 hover:text-white hover:bg-white/5 rounded-lg transition-colors duration-200 font-medium"
+                  className={`block py-2 text-secondary hover:text-accent transition-colors ${
+                    item.active ? 'text-accent' : ''
+                  }`}
                   onClick={() => setIsMenuOpen(false)}
                 >
                   {item.name}

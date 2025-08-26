@@ -2,9 +2,7 @@
 
 import { useState } from 'react';
 import Header from '@/components/header';
-import HeroSection from '@/components/hero-section';
-import CategoriesSection from '@/components/categories-section';
-import FeaturedMarkets from '@/components/featured-markets';
+import BetFeed from '@/components/bet-feed';
 import BettingModal from '@/components/betting-modal';
 import { usePredictionMarket } from '@/hooks/usePredictionMarket';
 
@@ -39,13 +37,11 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background to-card">
+    <div className="min-h-screen bg-background">
       <Header />
       
       <main>
-        <HeroSection />
-        <CategoriesSection />
-        <FeaturedMarkets onBetClick={handleOpenBettingModal} />
+        <BetFeed onBetClick={handleOpenBettingModal} />
       </main>
 
       {/* Betting Modal */}
