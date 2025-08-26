@@ -11,7 +11,7 @@ interface BettingModalProps {
   onPlaceBet: (amount: string, outcome: boolean) => void;
 }
 
-export default function BettingModal({ 
+function BettingModal({ 
   isOpen, 
   onClose, 
   market, 
@@ -26,6 +26,39 @@ export default function BettingModal({
       setAmount('0.01');
     }
   }, [isOpen]);
+
+  // Add custom slider styles on client side
+  useEffect(() => {
+    if (typeof document !== 'undefined') {
+      const style = document.createElement('style');
+      style.textContent = `
+        .slider::-webkit-slider-thumb {
+          appearance: none;
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00d4aa, #8b5cf6);
+          cursor: pointer;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+        
+        .slider::-moz-range-thumb {
+          height: 20px;
+          width: 20px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #00d4aa, #8b5cf6);
+          cursor: pointer;
+          border: none;
+          box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        }
+      `;
+      document.head.appendChild(style);
+      
+      return () => {
+        document.head.removeChild(style);
+      };
+    }
+  }, []);
 
   const handleAmountChange = (value: string) => {
     const numValue = parseFloat(value);
@@ -212,27 +245,5 @@ export default function BettingModal({
   );
 }
 
-// Custom slider styles
-const style = document.createElement('style');
-style.textContent = `
-  .slider::-webkit-slider-thumb {
-    appearance: none;
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #00d4aa, #8b5cf6);
-    cursor: pointer;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-  
-  .slider::-moz-range-thumb {
-    height: 20px;
-    width: 20px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #00d4aa, #8b5cf6);
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-  }
-`;
-document.head.appendChild(style);
+export { BettingModal };
+export default BettingModal;
