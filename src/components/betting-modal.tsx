@@ -1,210 +1,238 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from 'react'
-import { usePredictionMarket } from '@/hooks/usePredictionMarket'
+import { useState, useEffect } from 'react';
+import { X, DollarSign, TrendingUp, AlertCircle } from 'lucide-react';
 
 interface BettingModalProps {
-  isOpen: boolean
-  onClose: () => void
-  marketId: number
-  marketTitle: string
-  yesPrice: number
-  noPrice: number
-  preSelectedOutcome?: 'yes' | 'no' | null
+  isOpen: boolean;
+  onClose: () => void;
+  market: any;
+  selectedOutcome: boolean;
+  onPlaceBet: (amount: string, outcome: boolean) => void;
 }
 
-export function BettingModal({ 
+export default function BettingModal({ 
   isOpen, 
   onClose, 
-  marketId, 
-  marketTitle, 
-  yesPrice, 
-  noPrice, 
-  preSelectedOutcome 
+  market, 
+  selectedOutcome, 
+  onPlaceBet 
 }: BettingModalProps) {
-  const { handlePlaceBet, isPlacingBet, isWaitingForBet, betSuccess, betError } = usePredictionMarket()
-  const [betAmount, setBetAmount] = useState('0.01')
-  const [selectedOutcome, setSelectedOutcome] = useState<'yes' | 'no' | null>(null)
-  const [error, setError] = useState<string | null>(null)
+  const [amount, setAmount] = useState('0.01');
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Устанавливаем предварительно выбранный исход при открытии модального окна
   useEffect(() => {
-    if (isOpen && preSelectedOutcome) {
-      setSelectedOutcome(preSelectedOutcome)
+    if (isOpen) {
+      setAmount('0.01');
     }
-  }, [isOpen, preSelectedOutcome])
+  }, [isOpen]);
 
-  const handleBet = async () => {
-    if (!selectedOutcome) {
-      setError('Please select YES or NO')
-      return
+  const handleAmountChange = (value: string) => {
+    const numValue = parseFloat(value);
+    if (numValue >= 0.001 && numValue <= 100) {
+      setAmount(value);
+    }
+  };
+
+  const calculatePotentialWinnings = () => {
+    const betAmount = parseFloat(amount);
+    const probability = selectedOutcome ? market.yesProbability : (100 - market.yesProbability);
+    const payoutRatio = 100 / probability;
+    return (betAmount * payoutRatio - betAmount).toFixed(4);
+  };
+
+  const handlePlaceBet = async () => {
+    if (!amount || parseFloat(amount) < 0.001) {
+      alert('Please enter a valid amount (minimum 0.001 ETH)');
+      return;
     }
 
-    if (!betAmount || parseFloat(betAmount) <= 0) {
-      setError('Please enter a valid bet amount')
-      return
-    }
-
+    setIsLoading(true);
     try {
-      setError(null)
-      await handlePlaceBet(marketId, selectedOutcome === 'yes', betAmount)
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to place bet')
+      await onPlaceBet(amount, selectedOutcome);
+      onClose();
+    } catch (error) {
+      console.error('Bet placement failed:', error);
+    } finally {
+      setIsLoading(false);
     }
-  }
+  };
 
-  const handleClose = () => {
-    setBetAmount('0.01')
-    setSelectedOutcome(null)
-    setError(null)
-    onClose()
-  }
-
-  if (!isOpen) {
-    console.log('Modal not open, returning null')
-    return null
-  }
-
-  console.log('Rendering modal with props:', { isOpen, marketId, marketTitle, yesPrice, noPrice, preSelectedOutcome })
+  if (!isOpen) return null;
 
   return (
-    <div 
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
-      style={{ zIndex: 999999 }}
-      onClick={handleClose}
-    >
-      <div 
-        className="bg-white rounded-lg p-6 max-w-md w-full max-h-[90vh] overflow-y-auto mx-4"
-        style={{ 
-          backgroundColor: '#ffffff',
-          border: '1px solid #d1d5db',
-          boxShadow: '0 10px 25px rgba(0, 0, 0, 0.3)'
-        }}
-        onClick={(e) => e.stopPropagation()}
-      >
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-semibold" style={{ color: '#164e63' }}>Place Your Bet</h3>
-          <button 
-            onClick={handleClose}
-            className="text-gray-500 hover:text-gray-700 text-xl"
+    <div className="modal-overlay" onClick={onClose}>
+      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+        {/* Header */}
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-2xl font-bold text-white">Place Your Bet</h2>
+          <button
+            onClick={onClose}
+            className="text-gray-400 hover:text-white transition-colors duration-200"
           >
-            ✕
+            <X className="h-6 w-6" />
           </button>
         </div>
 
-        <div className="mb-4">
-          <h4 className="font-medium mb-2" style={{ color: '#164e63' }}>{marketTitle}</h4>
-          <div className="flex justify-between text-sm" style={{ color: '#6b7280' }}>
-            <span>YES: {yesPrice}¢</span>
-            <span>NO: {noPrice}¢</span>
+        {/* Market Info */}
+        <div className="mb-6 p-4 rounded-lg bg-white/5 border border-white/10">
+          <div className="flex items-start justify-between mb-3">
+            <span className="category-pill">{market.category}</span>
+            <span className="text-gray-400 text-sm">Ends {market.endDate}</span>
+          </div>
+          <h3 className="text-lg font-semibold text-white mb-2">
+            {market.title}
+          </h3>
+          <p className="text-gray-400 text-sm">
+            {market.description}
+          </p>
+        </div>
+
+        {/* Current Odds */}
+        <div className="mb-6">
+          <h4 className="text-white font-semibold mb-3">Current Odds</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <div className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+              selectedOutcome 
+                ? 'border-primary bg-primary/10' 
+                : 'border-white/20 bg-white/5'
+            }`}>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-primary">{market.yesProbability}%</div>
+                <div className="text-sm text-gray-400">YES</div>
+              </div>
+            </div>
+            <div className={`p-4 rounded-lg border-2 transition-all duration-200 ${
+              !selectedOutcome 
+                ? 'border-secondary bg-secondary/10' 
+                : 'border-white/20 bg-white/5'
+            }`}>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-secondary">{100 - market.yesProbability}%</div>
+                <div className="text-sm text-gray-400">NO</div>
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" style={{ color: '#164e63' }}>
-            Select Outcome
-          </label>
-          <div className="grid grid-cols-2 gap-3">
-            <button
-              onClick={() => setSelectedOutcome('yes')}
-              className={`p-3 rounded-lg border-2 transition-colors ${
-                selectedOutcome === 'yes' 
-                  ? 'border-green-500 bg-green-50' 
-                  : 'border-gray-300 hover:border-green-300'
-              }`}
-            >
-              <div className="text-center">
-                <div className="text-lg font-bold" style={{ color: '#10b981' }}>YES</div>
-                <div className="text-sm" style={{ color: '#6b7280' }}>{yesPrice}¢</div>
-              </div>
-            </button>
-            <button
-              onClick={() => setSelectedOutcome('no')}
-              className={`p-3 rounded-lg border-2 transition-colors ${
-                selectedOutcome === 'no' 
-                  ? 'border-red-500 bg-red-50' 
-                  : 'border-gray-300 hover:border-red-300'
-              }`}
-            >
-              <div className="text-center">
-                <div className="text-lg font-bold" style={{ color: '#ef4444' }}>NO</div>
-                <div className="text-sm" style={{ color: '#6b7280' }}>{noPrice}¢</div>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <div className="mb-4">
-          <label className="block text-sm font-medium mb-2" style={{ color: '#164e63' }}>
+        {/* Bet Amount */}
+        <div className="mb-6">
+          <label className="block text-white font-semibold mb-3">
             Bet Amount (ETH)
           </label>
-          <input
-            type="number"
-            value={betAmount}
-            onChange={(e) => setBetAmount(e.target.value)}
-            min="0.01"
-            max="10"
-            step="0.01"
-            className="w-full p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-            style={{ borderColor: '#d1d5db' }}
-            placeholder="0.01"
-          />
-          <div className="text-xs mt-1" style={{ color: '#6b7280' }}>
-            Min: 0.01 ETH | Max: 10 ETH
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <DollarSign className="h-5 w-5 text-gray-400" />
+            </div>
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              min="0.001"
+              max="100"
+              step="0.001"
+              className="input-field pl-10"
+              placeholder="0.01"
+            />
+          </div>
+          
+          {/* Amount Slider */}
+          <div className="mt-4">
+            <input
+              type="range"
+              min="0.001"
+              max="1"
+              step="0.001"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
+            />
+            <div className="flex justify-between text-xs text-gray-400 mt-2">
+              <span>0.001 ETH</span>
+              <span>1 ETH</span>
+            </div>
           </div>
         </div>
 
-        {error && (
-          <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: '#fef2f2', color: '#dc2626' }}>
-            {error}
+        {/* Potential Winnings */}
+        <div className="mb-6 p-4 rounded-lg bg-gradient-to-r from-primary/10 to-secondary/10 border border-primary/20">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <TrendingUp className="h-5 w-5 text-primary" />
+              <span className="text-white font-semibold">Potential Winnings</span>
+            </div>
+            <div className="text-right">
+              <div className="text-xl font-bold text-primary">
+                {calculatePotentialWinnings()} ETH
+              </div>
+              <div className="text-sm text-gray-400">
+                If {selectedOutcome ? 'YES' : 'NO'} wins
+              </div>
+            </div>
           </div>
-        )}
+        </div>
 
-        {betError && (
-          <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: '#fef2f2', color: '#dc2626' }}>
-            {betError.message}
+        {/* Warning */}
+        <div className="mb-6 p-3 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
+          <div className="flex items-start space-x-2">
+            <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5" />
+            <div className="text-sm text-yellow-200">
+              <strong>Privacy Notice:</strong> Your bet amount and outcome choice are encrypted using FHE technology. 
+              No one can see your position until the market resolves.
+            </div>
           </div>
-        )}
+        </div>
 
-        {betSuccess && (
-          <div className="mb-4 p-3 rounded-lg" style={{ backgroundColor: '#f0fdf4', color: '#16a34a' }}>
-            Bet placed successfully! Transaction confirmed.
-          </div>
-        )}
-
-        <div className="flex gap-3">
+        {/* Action Buttons */}
+        <div className="flex space-x-3">
           <button
-            onClick={handleClose}
-            className="flex-1 px-4 py-2 border rounded-lg transition-colors"
-            style={{ 
-              borderColor: '#d1d5db',
-              color: '#6b7280'
-            }}
+            onClick={onClose}
+            className="btn-outline flex-1"
+            disabled={isLoading}
           >
             Cancel
           </button>
           <button
-            onClick={handleBet}
-            disabled={isPlacingBet || isWaitingForBet || !selectedOutcome}
-            className="flex-1 px-4 py-2 rounded-lg text-white transition-colors disabled:opacity-50"
-            style={{ backgroundColor: '#164e63' }}
+            onClick={handlePlaceBet}
+            disabled={isLoading}
+            className="btn-primary flex-1 flex items-center justify-center"
           >
-            {isPlacingBet || isWaitingForBet ? 'Placing Bet...' : 'Place Bet'}
+            {isLoading ? (
+              <>
+                <div className="loading-spinner mr-2"></div>
+                Processing...
+              </>
+            ) : (
+              `Bet ${selectedOutcome ? 'YES' : 'NO'}`
+            )}
           </button>
         </div>
-
-        {betSuccess && (
-          <div className="mt-4 text-center">
-            <button
-              onClick={handleClose}
-              className="px-4 py-2 rounded-lg text-white"
-              style={{ backgroundColor: '#10b981' }}
-            >
-              Close
-            </button>
-          </div>
-        )}
       </div>
     </div>
-  )
+  );
 }
+
+// Custom slider styles
+const style = document.createElement('style');
+style.textContent = `
+  .slider::-webkit-slider-thumb {
+    appearance: none;
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4aa, #8b5cf6);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+  
+  .slider::-moz-range-thumb {
+    height: 20px;
+    width: 20px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #00d4aa, #8b5cf6);
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  }
+`;
+document.head.appendChild(style);
