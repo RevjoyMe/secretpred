@@ -45,7 +45,7 @@ export default function Header() {
                 U
               </div>
               <div className="user-balance">
-                <div className="balance-amount">2.45 ETH</div>
+                <div className="balance-amount">5.7407 ETH</div>
                 <div className="balance-label">Balance</div>
               </div>
             </div>
