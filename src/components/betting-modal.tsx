@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { X, TrendingUp, Info } from 'lucide-react';
+import { X, Info } from 'lucide-react';
 
 interface BettingModalProps {
   isOpen: boolean;
@@ -96,76 +96,58 @@ function BettingModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* Header */}
+        {/* ШАГ 1: Шапка модального окна */}
         <div className="flex items-center justify-between mb-8">
-          <h2 className="text-3xl font-bold text-white text-left">Place Your Bet</h2>
+          <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
           <button
             onClick={onClose}
-            className="text-gray-400 hover:text-white transition-colors duration-200 p-2"
+            className="w-8 h-8 rounded-full bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition-colors duration-200"
           >
-            <X className="h-6 w-6" />
+            <X className="h-5 w-5 text-gray-300" />
           </button>
         </div>
 
-        {/* Market Title and Category */}
+        {/* ШАГ 2: Информация о ставке */}
         <div className="mb-8">
-          <h3 className="text-xl font-bold text-white mb-3 text-left leading-relaxed">
-            {market.title}
+          <h3 className="text-xl font-bold text-white mb-3">
+            Who will be the next Prime Minister of Canada?
           </h3>
-          <div className="flex items-center justify-between">
-            <span className="inline-block px-3 py-1 bg-[#00F5FF] text-black text-xs font-medium rounded-full">
-              {market.category}
-            </span>
-            <span className="text-gray-400 text-sm">Ends {market.endDate}</span>
-          </div>
+          <span className="inline-block px-3 py-1 bg-[#00F5FF] text-black text-xs font-medium rounded-full">
+            politicsEnds
+          </span>
         </div>
 
-        {/* Current Odds - Redesigned */}
+        {/* ШАГ 3: Блок шансов "Current Odds" */}
         <div className="mb-8">
-          <h4 className="text-white font-semibold mb-4 text-lg text-left">Current Odds</h4>
-          <div className="grid grid-cols-2 gap-4">
-            <div className={`p-6 rounded-lg border-2 transition-all duration-200 ${
-              selectedOutcome 
-                ? 'border-[#00F5FF] bg-[#00F5FF]/10' 
-                : 'border-white/20 bg-white/5'
-            }`}>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[#00F5FF] mb-2">{market.yesProbability}%</div>
-                <div className="text-sm text-gray-400 font-medium">YES</div>
-              </div>
+          <div className="flex">
+            <div className="flex-1 text-center">
+              <div className="text-4xl font-bold text-white mb-2">55%</div>
+              <div className="text-sm text-gray-400">YES</div>
             </div>
-            <div className={`p-6 rounded-lg border-2 transition-all duration-200 ${
-              !selectedOutcome 
-                ? 'border-[#6A0DAD] bg-[#6A0DAD]/10' 
-                : 'border-white/20 bg-white/5'
-            }`}>
-              <div className="text-center">
-                <div className="text-4xl font-bold text-[#6A0DAD] mb-2">{100 - market.yesProbability}%</div>
-                <div className="text-sm text-gray-400 font-medium">NO</div>
-              </div>
+            <div className="flex-1 text-center">
+              <div className="text-4xl font-bold text-white mb-2">45%</div>
+              <div className="text-sm text-gray-400">NO</div>
             </div>
           </div>
         </div>
 
-        {/* Bet Amount - Redesigned */}
+        {/* ШАГ 4: Блок ввода суммы "Bet Amount" */}
         <div className="mb-8">
-          <label className="block text-white font-semibold mb-4 text-lg text-left">
+          <label className="block text-white font-semibold mb-4 text-lg">
             Bet Amount (ETH)
           </label>
-          <div className="relative mb-4">
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => handleAmountChange(e.target.value)}
-              min="0.001"
-              max="100"
-              step="0.001"
-              className="input-field text-lg"
-              placeholder="0.01"
-            />
-          </div>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => handleAmountChange(e.target.value)}
+            min="0.001"
+            max="100"
+            step="0.001"
+            className="w-full p-4 bg-transparent border border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200"
+            placeholder="0.01"
+          />
           
-          {/* Amount Slider */}
+          {/* Слайдер */}
           <div className="mt-6">
             <input
               type="range"
@@ -174,47 +156,36 @@ function BettingModal({
               step="0.001"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full h-2 bg-white/20 rounded-lg appearance-none cursor-pointer slider"
+              className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
             />
-            <div className="flex justify-between text-xs text-gray-400 mt-3">
-              <span>0.001 ETH</span>
-              <span>1 ETH</span>
+            <div className="text-center text-sm text-gray-400 mt-3">
+              0.001 ETH
             </div>
           </div>
         </div>
 
-        {/* Potential Winnings - Redesigned */}
-        <div className="mb-8 p-6 rounded-lg bg-gradient-to-r from-[#00F5FF]/10 to-[#6A0DAD]/10 border border-[#00F5FF]/20">
-          <div className="flex items-center space-x-3 mb-3">
-            <TrendingUp className="h-6 w-6 text-[#00F5FF]" />
-            <span className="text-white font-semibold text-lg">Potential Winnings</span>
+        {/* ШАГ 5: Блок результата "Potential Winnings" */}
+        <div className="mb-8 flex items-center justify-between">
+          <span className="text-gray-400 font-medium">Potential Winnings</span>
+          <span className="text-2xl font-bold text-[#00F5FF]">0.0082 ETH</span>
+        </div>
+
+        {/* ШАГ 6: Блок уведомления "Privacy Notice" */}
+        <div className="mb-8 flex items-start space-x-3">
+          <div className="w-5 h-5 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <Info className="h-3 w-3 text-gray-300" />
           </div>
-          <div className="text-center">
-            <div className="text-3xl font-bold text-[#00F5FF] mb-2">
-              {calculatePotentialWinnings()} ETH
-            </div>
-            <div className="text-sm text-gray-400 font-medium">
-              if {selectedOutcome ? 'YES' : 'NO'} wins
-            </div>
+          <div className="text-sm text-gray-400 leading-relaxed">
+            Your bet amount and outcome choice are encrypted using FHE technology. 
+            No one can see your position until the market resolves.
           </div>
         </div>
 
-        {/* Privacy Notice - Redesigned */}
-        <div className="mb-8 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
-          <div className="flex items-start space-x-3">
-            <Info className="h-4 w-4 text-yellow-500 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-yellow-200 leading-relaxed text-left">
-              <strong>Privacy Notice:</strong> Your bet amount and outcome choice are encrypted using FHE technology. 
-              No one can see your position until the market resolves.
-            </div>
-          </div>
-        </div>
-
-        {/* Action Buttons - Redesigned */}
+        {/* ШАГ 7: Блок кнопок действий */}
         <div className="flex space-x-4">
           <button
             onClick={onClose}
-            className="btn-outline"
+            className="flex-1 h-14 bg-transparent border border-gray-600 text-gray-400 rounded-lg font-semibold text-lg hover:border-gray-500 hover:text-gray-300 transition-colors duration-200"
             disabled={isLoading}
           >
             Cancel
@@ -222,16 +193,9 @@ function BettingModal({
           <button
             onClick={handlePlaceBet}
             disabled={isLoading}
-            className="btn-primary flex items-center justify-center"
+            className="flex-1 h-14 bg-[#00F5FF] text-black rounded-lg font-bold text-lg hover:bg-[#00E6F2] transition-colors duration-200"
           >
-            {isLoading ? (
-              <>
-                <div className="loading-spinner mr-2"></div>
-                Processing...
-              </>
-            ) : (
-              `Bet ${selectedOutcome ? 'YES' : 'NO'}`
-            )}
+            {isLoading ? 'Processing...' : 'Bet YES'}
           </button>
         </div>
       </div>
