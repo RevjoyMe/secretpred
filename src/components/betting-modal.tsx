@@ -95,34 +95,36 @@ function BettingModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content p-8" onClick={(e) => e.stopPropagation()}>
+      <div className="modal-content p-8 relative" onClick={(e) => e.stopPropagation()}>
+        {/* Кнопка закрытия в верхнем правом углу */}
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors z-10"
+        >
+          <X className="h-6 w-6 text-white" />
+        </button>
+
         {/* [1. БЛОК: ШАПКА] */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
-          <button
-            onClick={onClose}
-            className="w-8 h-8 bg-white rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
-          >
-            <X className="h-5 w-5 text-black" />
-          </button>
         </div>
         
         {/* Разделитель под шапкой */}
-        <hr className="border-gray-600 mb-8" />
+        <hr className="border-gray-600 mb-12" />
 
         {/* [2. БЛОК: ЗАГОЛОВОК СТАВКИ] */}
-        <div className="mb-12">
+        <div className="mb-16">
           <h3 className="text-2xl font-bold text-white leading-relaxed">
             Who will be the next Prime Minister of Canada?
           </h3>
         </div>
 
         {/* [3. БЛОК: ШАНСЫ "CURRENT ODDS"] */}
-        <div className="mb-8">
-          <h4 className="text-lg font-semibold text-white mb-6">Current Odds</h4>
+        <div className="mb-12">
+          <h4 className="text-lg font-semibold text-white mb-8">Current Odds</h4>
           
           {/* Ряд для YES */}
-          <div className="flex items-center mb-4">
+          <div className="flex items-center mb-6">
             <span className="text-gray-400 font-medium">YES</span>
             <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
             <span className="text-3xl font-bold text-white">55%</span>
@@ -137,7 +139,7 @@ function BettingModal({
         </div>
 
         {/* [4. БЛОК: ВВОД СУММЫ] */}
-        <hr className="border-gray-600 mb-8" />
+        <hr className="border-gray-600 mb-12" />
         
         <div className="mb-8">
           <label className="block text-white font-semibold text-lg mb-4">
@@ -162,31 +164,40 @@ function BettingModal({
             step="0.001"
             value={amount}
             onChange={(e) => setAmount(e.target.value)}
-            className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+            className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider mb-6"
           />
+
+          {/* Текст о шифровании */}
+          <div className="flex items-start space-x-3 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
+            <Info className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
+            <div className="text-sm text-gray-400 leading-relaxed">
+              Your bet amount and outcome choice are encrypted using FHE technology. 
+              No one can see your position until the market resolves.
+            </div>
+          </div>
         </div>
 
         {/* [5. БЛОК: РЕЗУЛЬТАТ "POTENTIAL WINNINGS"] */}
-        <hr className="border-gray-600 mb-8" />
+        <hr className="border-gray-600 mb-16" />
         
-        <div className="flex items-center justify-between mb-12">
+        <div className="flex items-center justify-between mb-16">
           <span className="text-gray-400 font-medium text-lg">Potential Winnings</span>
           <span className="text-4xl font-bold text-[#00F5FF]">0.0082 ETH</span>
         </div>
 
         {/* [6. БЛОК: КНОПКИ ДЕЙСТВИЙ] */}
-        <div className="space-y-4">
+        <div className="flex flex-col items-center space-y-6">
           <button
             onClick={handlePlaceBet}
             disabled={isLoading}
-            className="w-full h-16 bg-[#00F5FF] text-black rounded-lg font-bold text-xl hover:bg-[#00E6F2] transition-colors duration-200"
+            className="w-3/4 h-20 bg-green-600 text-white rounded-lg font-bold text-2xl hover:bg-green-700 transition-colors duration-200"
           >
             {isLoading ? 'Processing...' : 'Bet YES'}
           </button>
           
           <button
             onClick={onClose}
-            className="w-full h-16 bg-transparent border-2 border-gray-600 text-gray-400 rounded-lg font-semibold text-xl hover:border-gray-500 hover:text-gray-300 transition-colors duration-200"
+            className="w-3/4 h-20 bg-red-600 text-white rounded-lg font-bold text-2xl hover:bg-red-700 transition-colors duration-200"
             disabled={isLoading}
           >
             Cancel
