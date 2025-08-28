@@ -107,23 +107,23 @@ function BettingModal({
           </button>
         </div>
 
-        {/* Market Info - Enhanced layout */}
+        {/* Market Info - Left-aligned text */}
         <div className="mb-8 p-6 rounded-lg bg-white/5 border border-white/10">
           <div className="flex items-start justify-between mb-4">
             <span className="category-pill">{market.category}</span>
             <span className="text-gray-400 text-sm">Ends {market.endDate}</span>
           </div>
-          <h3 className="text-xl font-semibold text-white mb-3 leading-relaxed">
+          <h3 className="text-xl font-semibold text-white mb-3 leading-relaxed text-left">
             {market.title}
           </h3>
-          <p className="text-gray-400 text-sm leading-relaxed">
+          <p className="text-gray-400 text-sm leading-relaxed text-left">
             {market.description}
           </p>
         </div>
 
-        {/* Current Odds - Enhanced styling */}
+        {/* Current Odds - Left-aligned labels */}
         <div className="mb-8">
-          <h4 className="text-white font-semibold mb-4 text-lg">Current Odds</h4>
+          <h4 className="text-white font-semibold mb-4 text-lg text-left">Current Odds</h4>
           <div className="grid grid-cols-2 gap-4">
             <div className={`p-6 rounded-lg border-2 transition-all duration-200 ${
               selectedOutcome 
@@ -148,9 +148,9 @@ function BettingModal({
           </div>
         </div>
 
-        {/* Bet Amount - Enhanced layout */}
+        {/* Bet Amount - Left-aligned label */}
         <div className="mb-8">
-          <label className="block text-white font-semibold mb-4 text-lg">
+          <label className="block text-white font-semibold mb-4 text-lg text-left">
             Bet Amount (ETH)
           </label>
           <div className="relative mb-4">
@@ -187,7 +187,7 @@ function BettingModal({
           </div>
         </div>
 
-        {/* Potential Winnings - Enhanced styling */}
+        {/* Potential Winnings - Left-aligned */}
         <div className="mb-8 p-6 rounded-lg bg-gradient-to-r from-[#00F5FF]/10 to-[#6A0DAD]/10 border border-[#00F5FF]/20">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
@@ -205,11 +205,11 @@ function BettingModal({
           </div>
         </div>
 
-        {/* Warning - Enhanced styling */}
+        {/* Warning - Left-aligned */}
         <div className="mb-8 p-4 rounded-lg bg-yellow-500/10 border border-yellow-500/20">
           <div className="flex items-start space-x-3">
             <AlertCircle className="h-5 w-5 text-yellow-500 mt-0.5 flex-shrink-0" />
-            <div className="text-sm text-yellow-200 leading-relaxed">
+            <div className="text-sm text-yellow-200 leading-relaxed text-left">
               <strong>Privacy Notice:</strong> Your bet amount and outcome choice are encrypted using FHE technology. 
               No one can see your position until the market resolves.
             </div>

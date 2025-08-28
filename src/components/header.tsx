@@ -17,47 +17,44 @@ export default function Header() {
     <header className="header-minimal">
       <div className="main-content">
         <div className="flex items-center justify-between">
-          {/* Logo */}
+          {/* Logo - Left */}
           <div className="flex items-center">
-            <h1 className="text-accent font-semibold text-xl">
+            <h1 className="text-accent font-bold text-2xl tracking-tight">
               SecretPredictions
             </h1>
           </div>
 
-          {/* Desktop Navigation - Moved to right side */}
-          <div className="hidden md:flex items-center gap-8">
-            {/* Navigation Links */}
-            <nav className="header-nav">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={item.active ? 'active' : ''}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden md:flex header-nav">
+            {navigation.map((item) => (
+              <a
+                key={item.name}
+                href={item.href}
+                className={item.active ? 'active' : ''}
+              >
+                {item.name}
+              </a>
+            ))}
+          </nav>
 
-            {/* User Profile & Wallet */}
-            <div className="flex items-center gap-4">
-              {/* User Profile */}
-              <div className="user-profile">
-                <div className="user-avatar">
-                  U
-                </div>
-                <div className="user-balance">
-                  <div className="balance-amount">5.7407 ETH</div>
-                  <div className="balance-label">0x89...53ef</div>
-                </div>
+          {/* User Profile & Wallet - Right */}
+          <div className="hidden md:flex items-center gap-4">
+            {/* User Profile */}
+            <div className="user-profile">
+              <div className="user-avatar">
+                U
               </div>
-
-              {/* Connect Button */}
-              <ConnectButton />
+              <div className="user-balance">
+                <div className="balance-amount">5.7407 ETH</div>
+                <div className="balance-label">0x89...53ef</div>
+              </div>
             </div>
+
+            {/* Connect Button */}
+            <ConnectButton />
           </div>
 
-          {/* Mobile menu button - Simplified */}
+          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -68,7 +65,7 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation - Simplified */}
+        {/* Mobile Navigation */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-border">
             <div className="pt-4 space-y-3">

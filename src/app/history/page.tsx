@@ -68,8 +68,8 @@ export default function History() {
         <h1 className="page-title">Betting History</h1>
         
         {/* Stats Overview - Enhanced styling */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Overview</h2>
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="text-secondary text-sm mb-2 font-medium">Total Bets</div>
@@ -91,8 +91,8 @@ export default function History() {
         </div>
 
         {/* Bet History Table - Enhanced styling */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Recent Bets</h2>
+        <div className="mb-12">
+          <h2 className="section-header">Recent Bets</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -144,8 +144,8 @@ export default function History() {
         </div>
 
         {/* Chart Placeholder - Enhanced styling */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Performance Over Time</h2>
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Performance Over Time</h2>
           <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
             <div className="text-secondary text-center">
               <div className="text-4xl mb-4">📊</div>

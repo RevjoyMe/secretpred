@@ -70,8 +70,8 @@ export default function Analytics() {
         <h1 className="page-title">Analytics</h1>
         
         {/* Platform Stats - Enhanced styling */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Platform Overview</h2>
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Platform Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="text-secondary text-sm mb-2 font-medium">Total Markets</div>
@@ -93,8 +93,8 @@ export default function Analytics() {
         </div>
 
         {/* Market Categories - Enhanced styling */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Market Categories</h2>
+        <div className="mb-12">
+          <h2 className="section-header">Market Categories</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -140,8 +140,8 @@ export default function Analytics() {
         </div>
 
         {/* Top Markets - Enhanced styling */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Top Markets by Volume</h2>
+        <div className="mb-12">
+          <h2 className="section-header">Top Markets by Volume</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -181,9 +181,9 @@ export default function Analytics() {
         </div>
 
         {/* Charts Placeholder - Enhanced styling */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
           <div className="p-8 border border-border rounded-lg bg-white/5">
-            <h2 className="text-xl font-semibold text-white mb-6">Volume Over Time</h2>
+            <h2 className="section-header">Volume Over Time</h2>
             <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-secondary text-center">
                 <div className="text-4xl mb-4">📈</div>
@@ -194,7 +194,7 @@ export default function Analytics() {
           </div>
           
           <div className="p-8 border border-border rounded-lg bg-white/5">
-            <h2 className="text-xl font-semibold text-white mb-6">Category Distribution</h2>
+            <h2 className="section-header">Category Distribution</h2>
             <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-secondary text-center">
                 <div className="text-4xl mb-4">🥧</div>
@@ -206,8 +206,8 @@ export default function Analytics() {
         </div>
 
         {/* Insights - Enhanced styling */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Market Insights</h2>
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Market Insights</h2>
           <div className="space-y-6">
             <div className="p-6 bg-muted rounded-lg border border-border/50">
               <div className="text-accent font-semibold mb-3 text-lg">🔥 Trending</div>

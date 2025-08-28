@@ -38,8 +38,8 @@ export default function Portfolio() {
         <h1 className="page-title">Portfolio</h1>
         
         {/* Balance Section - Enhanced styling */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Account Overview</h2>
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Account Overview</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
               <div className="text-secondary text-sm mb-2 font-medium">Total Balance</div>
@@ -57,8 +57,8 @@ export default function Portfolio() {
         </div>
 
         {/* Active Bets - Enhanced table styling */}
-        <div className="mb-8">
-          <h2 className="text-xl font-semibold text-white mb-6">Active Bets</h2>
+        <div className="mb-12">
+          <h2 className="section-header">Active Bets</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -103,9 +103,9 @@ export default function Portfolio() {
           </table>
         </div>
 
-        {/* Performance Chart - Removed placeholder */}
-        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="text-xl font-semibold text-white mb-6">Performance</h2>
+        {/* Performance Chart - Enhanced styling */}
+        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="section-header">Performance</h2>
           <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
             <div className="text-secondary text-center">
               <div className="text-4xl mb-4">📈</div>
