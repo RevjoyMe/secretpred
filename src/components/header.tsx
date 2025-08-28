@@ -1,16 +1,18 @@
 'use client';
 
 import { useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const pathname = usePathname();
 
   const navigation = [
-    { name: 'Markets', href: '/', active: true },
-    { name: 'Portfolio', href: '/portfolio' },
-    { name: 'History', href: '/history' },
-    { name: 'Analytics', href: '/analytics' },
+    { name: 'Markets', href: '/', active: pathname === '/' },
+    { name: 'Portfolio', href: '/portfolio', active: pathname === '/portfolio' },
+    { name: 'History', href: '/history', active: pathname === '/history' },
+    { name: 'Analytics', href: '/analytics', active: pathname === '/analytics' },
   ];
 
   return (

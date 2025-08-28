@@ -67,90 +67,95 @@ export default function History() {
       <div className="main-content">
         <h1 className="page-title">Betting History</h1>
         
-        {/* Stats Overview - Enhanced styling */}
-        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="section-header">Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div>
-              <div className="text-secondary text-sm mb-2 font-medium">Total Bets</div>
-              <div className="text-3xl font-bold text-white">{totalBets}</div>
-            </div>
-            <div>
-              <div className="text-secondary text-sm mb-2 font-medium">Win Rate</div>
-              <div className="text-3xl font-bold text-accent">{winRate}%</div>
-            </div>
-            <div>
-              <div className="text-secondary text-sm mb-2 font-medium">Wins</div>
-              <div className="text-3xl font-bold text-accent">{totalWon}</div>
-            </div>
-            <div>
-              <div className="text-secondary text-sm mb-2 font-medium">Losses</div>
-              <div className="text-3xl font-bold text-destructive">{totalBets - totalWon}</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Bet History Table - Enhanced styling */}
-        <div className="mb-12">
-          <h2 className="section-header">Recent Bets</h2>
-          <table className="bet-feed">
-            <thead>
-              <tr>
-                <th>Market</th>
-                <th>Your Bet</th>
-                <th>Amount</th>
-                <th>Outcome</th>
-                <th>Profit/Loss</th>
-                <th>Date</th>
-              </tr>
-            </thead>
-            <tbody>
-              {betHistory.map((bet) => (
-                <tr key={bet.id} className="fade-in">
-                  <td>
-                    <div className="market-title">
-                      {bet.market}
-                    </div>
-                  </td>
-                  <td>
-                    <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-[#6A0DAD]'}`}>
-                      {bet.bet}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="volume">
-                      {bet.amount}
-                    </div>
-                  </td>
-                  <td>
-                    <div className={`font-semibold ${bet.outcome === 'Won' ? 'text-accent' : 'text-destructive'}`}>
-                      {bet.outcome}
-                    </div>
-                  </td>
-                  <td>
-                    <div className={`font-semibold ${bet.profit.startsWith('+') ? 'text-accent' : 'text-destructive'}`}>
-                      {bet.profit}
-                    </div>
-                  </td>
-                  <td>
-                    <div className="volume">
-                      {bet.date}
-                    </div>
-                  </td>
+        <div className="two-column-layout">
+          {/* Main Column - Recent Bets Table */}
+          <div className="main-column">
+            <h2 className="section-header">Recent Bets</h2>
+            <table className="bet-feed">
+              <thead>
+                <tr>
+                  <th>Market</th>
+                  <th>Your Bet</th>
+                  <th>Amount</th>
+                  <th>Outcome</th>
+                  <th>Profit/Loss</th>
+                  <th>Date</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody>
+                {betHistory.map((bet) => (
+                  <tr key={bet.id} className="fade-in">
+                    <td>
+                      <div className="market-title">
+                        {bet.market}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-[#6A0DAD]'}`}>
+                        {bet.bet}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="volume">
+                        {bet.amount}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={`font-semibold ${bet.outcome === 'Won' ? 'text-accent' : 'text-destructive'}`}>
+                        {bet.outcome}
+                      </div>
+                    </td>
+                    <td>
+                      <div className={`font-semibold ${bet.profit.startsWith('+') ? 'text-accent' : 'text-destructive'}`}>
+                        {bet.profit}
+                      </div>
+                    </td>
+                    <td>
+                      <div className="volume">
+                        {bet.date}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
-        {/* Chart Placeholder - Enhanced styling */}
-        <div className="mb-12 p-8 border border-border rounded-lg bg-white/5">
-          <h2 className="section-header">Performance Over Time</h2>
-          <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
-            <div className="text-secondary text-center">
-              <div className="text-4xl mb-4">📊</div>
-              <div className="text-lg font-medium">Performance chart coming soon</div>
-              <div className="text-sm mt-2">Historical performance tracking and analytics will be available soon</div>
+          {/* Sidebar Column - Overview & Performance */}
+          <div className="sidebar-column">
+            {/* Stats Overview */}
+            <div className="sidebar-card">
+              <h3 className="section-header">Overview</h3>
+              <div className="space-y-6">
+                <div>
+                  <div className="text-secondary text-sm mb-2 font-medium">Total Bets</div>
+                  <div className="text-3xl font-bold text-white">{totalBets}</div>
+                </div>
+                <div>
+                  <div className="text-secondary text-sm mb-2 font-medium">Win Rate</div>
+                  <div className="text-3xl font-bold text-accent">{winRate}%</div>
+                </div>
+                <div>
+                  <div className="text-secondary text-sm mb-2 font-medium">Wins</div>
+                  <div className="text-3xl font-bold text-accent">{totalWon}</div>
+                </div>
+                <div>
+                  <div className="text-secondary text-sm mb-2 font-medium">Losses</div>
+                  <div className="text-3xl font-bold text-destructive">{totalBets - totalWon}</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Performance Chart */}
+            <div className="sidebar-card">
+              <h3 className="section-header">Performance Over Time</h3>
+              <div className="h-48 bg-muted rounded-lg flex items-center justify-center">
+                <div className="text-secondary text-center">
+                  <div className="text-3xl mb-3">📊</div>
+                  <div className="text-base font-medium">Performance chart coming soon</div>
+                  <div className="text-xs mt-2">Historical performance tracking and analytics will be available soon</div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
