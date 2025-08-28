@@ -96,28 +96,25 @@ function BettingModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* ШАГ 1: Шапка модального окна */}
+        {/* БЛОК 1: Шапка (1 ряд, 2 элемента) */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-gray-600 hover:bg-gray-700 flex items-center justify-center transition-colors duration-200"
+            className="w-8 h-8 bg-white rounded flex items-center justify-center"
           >
-            <X className="h-5 w-5 text-gray-300" />
+            <X className="h-5 w-5 text-black" />
           </button>
         </div>
 
-        {/* ШАГ 2: Информация о ставке */}
+        {/* БЛОК 2: Заголовок Ставки (1 ряд) */}
         <div className="mb-8">
-          <h3 className="text-xl font-bold text-white mb-3">
+          <h3 className="text-xl font-bold text-white">
             Who will be the next Prime Minister of Canada?
           </h3>
-          <span className="inline-block px-3 py-1 bg-[#00F5FF] text-black text-xs font-medium rounded-full">
-            politicsEnds
-          </span>
         </div>
 
-        {/* ШАГ 3: Блок шансов "Current Odds" */}
+        {/* БЛОК 3: Шансы (1 ряд, 2 КОЛОНКИ) */}
         <div className="mb-8">
           <div className="flex">
             <div className="flex-1 text-center">
@@ -131,24 +128,37 @@ function BettingModal({
           </div>
         </div>
 
-        {/* ШАГ 4: Блок ввода суммы "Bet Amount" */}
+        {/* БЛОК 4: Потенциальный Выигрыш (1 ряд, 2 элемента) */}
+        <div className="mb-8 flex items-center justify-between">
+          <span className="text-gray-400">Potential Winnings</span>
+          <span className="text-2xl font-bold text-[#00F5FF]">0.0082 ETH</span>
+        </div>
+
+        {/* БЛОК 5: Ввод Суммы (несколько рядов) */}
         <div className="mb-8">
-          <label className="block text-white font-semibold mb-4 text-lg">
-            Bet Amount (ETH)
-          </label>
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => handleAmountChange(e.target.value)}
-            min="0.001"
-            max="100"
-            step="0.001"
-            className="w-full p-4 bg-transparent border border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200"
-            placeholder="0.01"
-          />
+          {/* Ряд 1: Текст "Bet Amount (ETH)" */}
+          <div className="mb-4">
+            <label className="block text-white font-semibold text-lg">
+              Bet Amount (ETH)
+            </label>
+          </div>
           
-          {/* Слайдер */}
-          <div className="mt-6">
+          {/* Ряд 2: Поле для ввода "0.01" */}
+          <div className="mb-6">
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              min="0.001"
+              max="100"
+              step="0.001"
+              className="w-full p-4 bg-transparent border border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200"
+              placeholder="0.01"
+            />
+          </div>
+          
+          {/* Ряд 3: Слайдер */}
+          <div>
             <input
               type="range"
               min="0.001"
@@ -158,19 +168,10 @@ function BettingModal({
               onChange={(e) => setAmount(e.target.value)}
               className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
             />
-            <div className="text-center text-sm text-gray-400 mt-3">
-              0.001 ETH
-            </div>
           </div>
         </div>
 
-        {/* ШАГ 5: Блок результата "Potential Winnings" */}
-        <div className="mb-8 flex items-center justify-between">
-          <span className="text-gray-400 font-medium">Potential Winnings</span>
-          <span className="text-2xl font-bold text-[#00F5FF]">0.0082 ETH</span>
-        </div>
-
-        {/* ШАГ 6: Блок уведомления "Privacy Notice" */}
+        {/* БЛОК 6: Уведомление (1 ряд) */}
         <div className="mb-8 flex items-start space-x-3">
           <div className="w-5 h-5 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0 mt-0.5">
             <Info className="h-3 w-3 text-gray-300" />
@@ -181,7 +182,7 @@ function BettingModal({
           </div>
         </div>
 
-        {/* ШАГ 7: Блок кнопок действий */}
+        {/* БЛОК 7: Кнопки (1 ряд, 2 элемента) */}
         <div className="flex space-x-4">
           <button
             onClick={onClose}
