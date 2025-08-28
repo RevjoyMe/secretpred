@@ -95,108 +95,101 @@ function BettingModal({
 
   return (
     <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        {/* БЛОК 1: Шапка (1 ряд, 2 элемента) */}
-        <div className="flex items-center justify-between mb-8">
+      <div className="modal-content p-8" onClick={(e) => e.stopPropagation()}>
+        {/* [1. БЛОК: ШАПКА] */}
+        <div className="flex items-center justify-between mb-6">
           <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 bg-white rounded flex items-center justify-center"
+            className="w-8 h-8 bg-white rounded flex items-center justify-center hover:bg-gray-100 transition-colors"
           >
             <X className="h-5 w-5 text-black" />
           </button>
         </div>
+        
+        {/* Разделитель под шапкой */}
+        <hr className="border-gray-600 mb-8" />
 
-        {/* БЛОК 2: Заголовок Ставки (1 ряд) */}
-        <div className="mb-8">
-          <h3 className="text-xl font-bold text-white">
+        {/* [2. БЛОК: ЗАГОЛОВОК СТАВКИ] */}
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-white leading-relaxed">
             Who will be the next Prime Minister of Canada?
           </h3>
         </div>
 
-        {/* БЛОК 3: Шансы (1 ряд, 2 КОЛОНКИ) */}
+        {/* [3. БЛОК: ШАНСЫ "CURRENT ODDS"] */}
         <div className="mb-8">
-          <div className="flex">
-            <div className="flex-1 text-center">
-              <div className="text-4xl font-bold text-white mb-2">55%</div>
-              <div className="text-sm text-gray-400">YES</div>
-            </div>
-            <div className="flex-1 text-center">
-              <div className="text-4xl font-bold text-white mb-2">45%</div>
-              <div className="text-sm text-gray-400">NO</div>
-            </div>
-          </div>
-        </div>
-
-        {/* БЛОК 4: Потенциальный Выигрыш (1 ряд, 2 элемента) */}
-        <div className="mb-8 flex items-center justify-between">
-          <span className="text-gray-400">Potential Winnings</span>
-          <span className="text-2xl font-bold text-[#00F5FF]">0.0082 ETH</span>
-        </div>
-
-        {/* БЛОК 5: Ввод Суммы (несколько рядов) */}
-        <div className="mb-8">
-          {/* Ряд 1: Текст "Bet Amount (ETH)" */}
-          <div className="mb-4">
-            <label className="block text-white font-semibold text-lg">
-              Bet Amount (ETH)
-            </label>
+          <h4 className="text-lg font-semibold text-white mb-6">Current Odds</h4>
+          
+          {/* Ряд для YES */}
+          <div className="flex items-center mb-4">
+            <span className="text-gray-400 font-medium">YES</span>
+            <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
+            <span className="text-3xl font-bold text-white">55%</span>
           </div>
           
-          {/* Ряд 2: Поле для ввода "0.01" */}
-          <div className="mb-6">
-            <input
-              type="number"
-              value={amount}
-              onChange={(e) => handleAmountChange(e.target.value)}
-              min="0.001"
-              max="100"
-              step="0.001"
-              className="w-full p-4 bg-transparent border border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200"
-              placeholder="0.01"
-            />
+          {/* Ряд для NO */}
+          <div className="flex items-center">
+            <span className="text-gray-400 font-medium">NO</span>
+            <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
+            <span className="text-3xl font-bold text-white">45%</span>
           </div>
+        </div>
+
+        {/* [4. БЛОК: ВВОД СУММЫ] */}
+        <hr className="border-gray-600 mb-8" />
+        
+        <div className="mb-8">
+          <label className="block text-white font-semibold text-lg mb-4">
+            Bet Amount (ETH)
+          </label>
           
-          {/* Ряд 3: Слайдер */}
-          <div>
-            <input
-              type="range"
-              min="0.001"
-              max="1"
-              step="0.001"
-              value={amount}
-              onChange={(e) => setAmount(e.target.value)}
-              className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
-            />
-          </div>
+          <input
+            type="number"
+            value={amount}
+            onChange={(e) => handleAmountChange(e.target.value)}
+            min="0.001"
+            max="100"
+            step="0.001"
+            className="w-full p-4 bg-transparent border-2 border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200 mb-6"
+            placeholder="0.01"
+          />
+          
+          <input
+            type="range"
+            min="0.001"
+            max="1"
+            step="0.001"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider"
+          />
         </div>
 
-        {/* БЛОК 6: Уведомление (1 ряд) */}
-        <div className="mb-8 flex items-start space-x-3">
-          <div className="w-5 h-5 rounded-full bg-gray-600 flex items-center justify-center flex-shrink-0 mt-0.5">
-            <Info className="h-3 w-3 text-gray-300" />
-          </div>
-          <div className="text-sm text-gray-400 leading-relaxed">
-            Your bet amount and outcome choice are encrypted using FHE technology. 
-            No one can see your position until the market resolves.
-          </div>
+        {/* [5. БЛОК: РЕЗУЛЬТАТ "POTENTIAL WINNINGS"] */}
+        <hr className="border-gray-600 mb-8" />
+        
+        <div className="flex items-center justify-between mb-12">
+          <span className="text-gray-400 font-medium text-lg">Potential Winnings</span>
+          <span className="text-4xl font-bold text-[#00F5FF]">0.0082 ETH</span>
         </div>
 
-        {/* БЛОК 7: Кнопки (1 ряд, 2 элемента) */}
-        <div className="flex space-x-4">
-          <button
-            onClick={onClose}
-            className="flex-1 h-14 bg-transparent border border-gray-600 text-gray-400 rounded-lg font-semibold text-lg hover:border-gray-500 hover:text-gray-300 transition-colors duration-200"
-            disabled={isLoading}
-          >
-            Cancel
-          </button>
+        {/* [6. БЛОК: КНОПКИ ДЕЙСТВИЙ] */}
+        <div className="space-y-4">
           <button
             onClick={handlePlaceBet}
             disabled={isLoading}
-            className="flex-1 h-14 bg-[#00F5FF] text-black rounded-lg font-bold text-lg hover:bg-[#00E6F2] transition-colors duration-200"
+            className="w-full h-16 bg-[#00F5FF] text-black rounded-lg font-bold text-xl hover:bg-[#00E6F2] transition-colors duration-200"
           >
             {isLoading ? 'Processing...' : 'Bet YES'}
+          </button>
+          
+          <button
+            onClick={onClose}
+            className="w-full h-16 bg-transparent border-2 border-gray-600 text-gray-400 rounded-lg font-semibold text-xl hover:border-gray-500 hover:text-gray-300 transition-colors duration-200"
+            disabled={isLoading}
+          >
+            Cancel
           </button>
         </div>
       </div>
