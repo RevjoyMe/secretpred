@@ -37,28 +37,28 @@ export default function Portfolio() {
       <div className="main-content">
         <h1 className="page-title">Portfolio</h1>
         
-        {/* Balance Section */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Account Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Balance Section - Enhanced styling */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Account Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div>
-              <div className="text-secondary text-sm mb-1">Total Balance</div>
-              <div className="text-2xl font-bold text-accent">5.7407 ETH</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Total Balance</div>
+              <div className="text-3xl font-bold text-accent">5.7407 ETH</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Active Bets</div>
-              <div className="text-2xl font-bold text-foreground">3</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Active Bets</div>
+              <div className="text-3xl font-bold text-white">3</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Total Staked</div>
-              <div className="text-2xl font-bold text-foreground">1.0 ETH</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Total Staked</div>
+              <div className="text-3xl font-bold text-white">1.0 ETH</div>
             </div>
           </div>
         </div>
 
-        {/* Active Bets */}
+        {/* Active Bets - Enhanced table styling */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Active Bets</h2>
+          <h2 className="text-xl font-semibold text-white mb-6">Active Bets</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -78,7 +78,7 @@ export default function Portfolio() {
                     </div>
                   </td>
                   <td>
-                    <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-destructive'}`}>
+                    <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-[#6A0DAD]'}`}>
                       {bet.bet}
                     </div>
                   </td>
@@ -103,13 +103,14 @@ export default function Portfolio() {
           </table>
         </div>
 
-        {/* Performance Chart Placeholder */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Performance</h2>
-          <div className="h-64 bg-muted rounded flex items-center justify-center">
+        {/* Performance Chart - Removed placeholder */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Performance</h2>
+          <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
             <div className="text-secondary text-center">
-              <div className="text-2xl mb-2">📈</div>
-              <div>Performance chart coming soon</div>
+              <div className="text-4xl mb-4">📈</div>
+              <div className="text-lg font-medium">Performance chart coming soon</div>
+              <div className="text-sm mt-2">Detailed analytics and performance tracking will be available soon</div>
             </div>
           </div>
         </div>

@@ -69,32 +69,32 @@ export default function Analytics() {
       <div className="main-content">
         <h1 className="page-title">Analytics</h1>
         
-        {/* Platform Stats */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Platform Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Platform Stats - Enhanced styling */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Platform Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="text-secondary text-sm mb-1">Total Markets</div>
-              <div className="text-2xl font-bold text-foreground">197</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Total Markets</div>
+              <div className="text-3xl font-bold text-white">197</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Total Volume</div>
-              <div className="text-2xl font-bold text-accent">$69.3M</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Total Volume</div>
+              <div className="text-3xl font-bold text-accent">$69.3M</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Active Users</div>
-              <div className="text-2xl font-bold text-foreground">45.2K</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Active Users</div>
+              <div className="text-3xl font-bold text-white">45.2K</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Avg Probability</div>
-              <div className="text-2xl font-bold text-foreground">55.6%</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Avg Probability</div>
+              <div className="text-3xl font-bold text-white">55.6%</div>
             </div>
           </div>
         </div>
 
-        {/* Market Categories */}
+        {/* Market Categories - Enhanced styling */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Market Categories</h2>
+          <h2 className="text-xl font-semibold text-white mb-6">Market Categories</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -139,9 +139,9 @@ export default function Analytics() {
           </table>
         </div>
 
-        {/* Top Markets */}
+        {/* Top Markets - Enhanced styling */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Top Markets by Volume</h2>
+          <h2 className="text-xl font-semibold text-white mb-6">Top Markets by Volume</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -180,44 +180,46 @@ export default function Analytics() {
           </table>
         </div>
 
-        {/* Charts Placeholder */}
+        {/* Charts Placeholder - Enhanced styling */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-          <div className="p-6 border border-border rounded">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Volume Over Time</h2>
-            <div className="h-64 bg-muted rounded flex items-center justify-center">
+          <div className="p-8 border border-border rounded-lg bg-white/5">
+            <h2 className="text-xl font-semibold text-white mb-6">Volume Over Time</h2>
+            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-secondary text-center">
-                <div className="text-2xl mb-2">📈</div>
-                <div>Volume chart coming soon</div>
+                <div className="text-4xl mb-4">📈</div>
+                <div className="text-lg font-medium">Volume chart coming soon</div>
+                <div className="text-sm mt-2">Historical volume tracking will be available soon</div>
               </div>
             </div>
           </div>
           
-          <div className="p-6 border border-border rounded">
-            <h2 className="text-xl font-semibold text-foreground mb-4">Category Distribution</h2>
-            <div className="h-64 bg-muted rounded flex items-center justify-center">
+          <div className="p-8 border border-border rounded-lg bg-white/5">
+            <h2 className="text-xl font-semibold text-white mb-6">Category Distribution</h2>
+            <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
               <div className="text-secondary text-center">
-                <div className="text-2xl mb-2">🥧</div>
-                <div>Pie chart coming soon</div>
+                <div className="text-4xl mb-4">🥧</div>
+                <div className="text-lg font-medium">Pie chart coming soon</div>
+                <div className="text-sm mt-2">Category distribution analysis will be available soon</div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Insights */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Market Insights</h2>
-          <div className="space-y-4">
-            <div className="p-4 bg-muted rounded">
-              <div className="text-accent font-semibold mb-2">🔥 Trending</div>
-              <div className="text-secondary">Crypto markets showing increased volatility with 23% higher volume this week.</div>
+        {/* Insights - Enhanced styling */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Market Insights</h2>
+          <div className="space-y-6">
+            <div className="p-6 bg-muted rounded-lg border border-border/50">
+              <div className="text-accent font-semibold mb-3 text-lg">🔥 Trending</div>
+              <div className="text-secondary leading-relaxed">Crypto markets showing increased volatility with 23% higher volume this week.</div>
             </div>
-            <div className="p-4 bg-muted rounded">
-              <div className="text-accent font-semibold mb-2">📊 High Confidence</div>
-              <div className="text-secondary">Technology markets have the highest average probability at 61%, indicating strong consensus.</div>
+            <div className="p-6 bg-muted rounded-lg border border-border/50">
+              <div className="text-accent font-semibold mb-3 text-lg">📊 High Confidence</div>
+              <div className="text-secondary leading-relaxed">Technology markets have the highest average probability at 61%, indicating strong consensus.</div>
             </div>
-            <div className="p-4 bg-muted rounded">
-              <div className="text-accent font-semibold mb-2">🎯 Opportunity</div>
-              <div className="text-secondary">Politics category shows the most balanced probabilities, offering good risk/reward ratios.</div>
+            <div className="p-6 bg-muted rounded-lg border border-border/50">
+              <div className="text-accent font-semibold mb-3 text-lg">🎯 Opportunity</div>
+              <div className="text-secondary leading-relaxed">Politics category shows the most balanced probabilities, offering good risk/reward ratios.</div>
             </div>
           </div>
         </div>

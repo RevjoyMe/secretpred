@@ -24,37 +24,40 @@ export default function Header() {
             </h1>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:flex header-nav">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={item.active ? 'active' : ''}
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
+          {/* Desktop Navigation - Moved to right side */}
+          <div className="hidden md:flex items-center gap-8">
+            {/* Navigation Links */}
+            <nav className="header-nav">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={item.active ? 'active' : ''}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </nav>
 
-          {/* User Profile & Actions */}
-          <div className="flex items-center gap-16">
-            {/* User Profile */}
-            <div className="hidden md:flex user-profile">
-              <div className="user-avatar">
-                U
+            {/* User Profile & Wallet */}
+            <div className="flex items-center gap-4">
+              {/* User Profile */}
+              <div className="user-profile">
+                <div className="user-avatar">
+                  U
+                </div>
+                <div className="user-balance">
+                  <div className="balance-amount">5.7407 ETH</div>
+                  <div className="balance-label">0x89...53ef</div>
+                </div>
               </div>
-              <div className="user-balance">
-                <div className="balance-amount">5.7407 ETH</div>
-                <div className="balance-label">Balance</div>
-              </div>
+
+              {/* Connect Button */}
+              <ConnectButton />
             </div>
-
-            {/* Connect Button */}
-            <ConnectButton />
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - Simplified */}
           <div className="md:hidden">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -65,15 +68,15 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
+        {/* Mobile Navigation - Simplified */}
         {isMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-border">
-            <div className="pt-4 space-y-2">
+            <div className="pt-4 space-y-3">
               {navigation.map((item) => (
                 <a
                   key={item.name}
                   href={item.href}
-                  className={`block py-2 text-secondary hover:text-accent transition-colors ${
+                  className={`block py-3 text-secondary hover:text-accent transition-colors ${
                     item.active ? 'text-accent' : ''
                   }`}
                   onClick={() => setIsMenuOpen(false)}
@@ -81,7 +84,7 @@ export default function Header() {
                   {item.name}
                 </a>
               ))}
-              <div className="pt-4">
+              <div className="pt-4 border-t border-border">
                 <ConnectButton />
               </div>
             </div>

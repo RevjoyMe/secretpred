@@ -158,15 +158,15 @@ export function MarketCard({ market, onPlaceBet, showOracleInfo = false }: Marke
               <Progress value={market.yesPrice} className="w-20 h-2" />
             </div>
 
-            {/* Yes/No Buttons */}
+            {/* Yes/No Buttons - Enhanced styling */}
             <div className="grid grid-cols-2 gap-3">
               <Button
                 variant="outline"
                 size="default"
                 className={`relative overflow-hidden transition-all duration-200 h-16 ${
                   hoveredSide === "yes"
-                    ? "bg-green-500/20 border-green-500 text-green-400"
-                    : "hover:bg-green-500/10 hover:border-green-500/50"
+                    ? "bg-[#00F5FF]/20 border-[#00F5FF] text-[#00F5FF]"
+                    : "hover:bg-[#00F5FF]/10 hover:border-[#00F5FF]/50"
                 }`}
                 onMouseEnter={() => setHoveredSide("yes")}
                 onMouseLeave={() => setHoveredSide(null)}
@@ -184,8 +184,8 @@ export function MarketCard({ market, onPlaceBet, showOracleInfo = false }: Marke
                 size="default"
                 className={`relative overflow-hidden transition-all duration-200 h-16 ${
                   hoveredSide === "no"
-                    ? "bg-red-500/20 border-red-500 text-red-400"
-                    : "hover:bg-red-500/10 hover:border-red-500/50"
+                    ? "bg-[#6A0DAD]/20 border-[#6A0DAD] text-[#6A0DAD]"
+                    : "hover:bg-[#6A0DAD]/10 hover:border-[#6A0DAD]/50"
                 }`}
                 onMouseEnter={() => setHoveredSide("no")}
                 onMouseLeave={() => setHoveredSide(null)}

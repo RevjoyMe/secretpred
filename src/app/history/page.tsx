@@ -67,32 +67,32 @@ export default function History() {
       <div className="main-content">
         <h1 className="page-title">Betting History</h1>
         
-        {/* Stats Overview */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Overview</h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        {/* Stats Overview - Enhanced styling */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Overview</h2>
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
-              <div className="text-secondary text-sm mb-1">Total Bets</div>
-              <div className="text-2xl font-bold text-foreground">{totalBets}</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Total Bets</div>
+              <div className="text-3xl font-bold text-white">{totalBets}</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Win Rate</div>
-              <div className="text-2xl font-bold text-accent">{winRate}%</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Win Rate</div>
+              <div className="text-3xl font-bold text-accent">{winRate}%</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Wins</div>
-              <div className="text-2xl font-bold text-accent">{totalWon}</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Wins</div>
+              <div className="text-3xl font-bold text-accent">{totalWon}</div>
             </div>
             <div>
-              <div className="text-secondary text-sm mb-1">Losses</div>
-              <div className="text-2xl font-bold text-destructive">{totalBets - totalWon}</div>
+              <div className="text-secondary text-sm mb-2 font-medium">Losses</div>
+              <div className="text-3xl font-bold text-destructive">{totalBets - totalWon}</div>
             </div>
           </div>
         </div>
 
-        {/* Bet History Table */}
+        {/* Bet History Table - Enhanced styling */}
         <div className="mb-8">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Recent Bets</h2>
+          <h2 className="text-xl font-semibold text-white mb-6">Recent Bets</h2>
           <table className="bet-feed">
             <thead>
               <tr>
@@ -113,7 +113,7 @@ export default function History() {
                     </div>
                   </td>
                   <td>
-                    <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-destructive'}`}>
+                    <div className={`probability ${bet.bet === 'Yes' ? 'text-accent' : 'text-[#6A0DAD]'}`}>
                       {bet.bet}
                     </div>
                   </td>
@@ -143,13 +143,14 @@ export default function History() {
           </table>
         </div>
 
-        {/* Chart Placeholder */}
-        <div className="mb-8 p-6 border border-border rounded">
-          <h2 className="text-xl font-semibold text-foreground mb-4">Performance Over Time</h2>
-          <div className="h-64 bg-muted rounded flex items-center justify-center">
+        {/* Chart Placeholder - Enhanced styling */}
+        <div className="mb-8 p-8 border border-border rounded-lg bg-white/5">
+          <h2 className="text-xl font-semibold text-white mb-6">Performance Over Time</h2>
+          <div className="h-64 bg-muted rounded-lg flex items-center justify-center">
             <div className="text-secondary text-center">
-              <div className="text-2xl mb-2">📊</div>
-              <div>Performance chart coming soon</div>
+              <div className="text-4xl mb-4">📊</div>
+              <div className="text-lg font-medium">Performance chart coming soon</div>
+              <div className="text-sm mt-2">Historical performance tracking and analytics will be available soon</div>
             </div>
           </div>
         </div>
