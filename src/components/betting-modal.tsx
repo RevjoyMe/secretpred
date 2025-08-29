@@ -97,18 +97,18 @@ function BettingModal({
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content p-8 relative" onClick={(e) => e.stopPropagation()}>
         {/* Close button in top-right corner */}
-        <button
-          onClick={onClose}
+          <button
+            onClick={onClose}
           className="absolute top-4 right-4 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors z-10"
-        >
+          >
           <X className="h-6 w-6 text-white" />
-        </button>
+          </button>
 
         {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
         </div>
-        
+
         {/* Header separator */}
         <hr className="border-gray-600 mb-12" />
 
@@ -148,24 +148,24 @@ function BettingModal({
             Bet Amount (ETH)
           </label>
           
-          <input
-            type="number"
-            value={amount}
-            onChange={(e) => handleAmountChange(e.target.value)}
-            min="0.001"
-            max="100"
-            step="0.001"
+            <input
+              type="number"
+              value={amount}
+              onChange={(e) => handleAmountChange(e.target.value)}
+              min="0.001"
+              max="100"
+              step="0.001"
             className="w-full p-4 bg-transparent border-2 border-gray-600 rounded-lg text-white text-lg focus:border-[#00F5FF] focus:outline-none transition-colors duration-200 mb-6"
-            placeholder="0.01"
-          />
+              placeholder="0.01"
+            />
           
-          <input
-            type="range"
-            min="0.001"
-            max="1"
-            step="0.001"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
+            <input
+              type="range"
+              min="0.001"
+              max="1"
+              step="0.001"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
             className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider mb-6"
           />
 
