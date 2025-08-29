@@ -96,7 +96,7 @@ function BettingModal({
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content p-8 relative" onClick={(e) => e.stopPropagation()}>
-        {/* Кнопка закрытия в верхнем правом углу */}
+        {/* Close button in top-right corner */}
         <button
           onClick={onClose}
           className="absolute top-4 right-4 w-10 h-10 bg-red-600 rounded-full flex items-center justify-center hover:bg-red-700 transition-colors z-10"
@@ -104,41 +104,43 @@ function BettingModal({
           <X className="h-6 w-6 text-white" />
         </button>
 
-        {/* [1. БЛОК: ШАПКА] */}
+        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h2 className="text-3xl font-bold text-white">Place Your Bet</h2>
         </div>
         
-        {/* Разделитель под шапкой */}
+        {/* Header separator */}
         <hr className="border-gray-600 mb-12" />
 
-        {/* [2. БЛОК: ЗАГОЛОВОК СТАВКИ] */}
+        {/* Bet title */}
         <div className="mb-16">
           <h3 className="text-2xl font-bold text-white leading-relaxed">
             Who will be the next Prime Minister of Canada?
           </h3>
         </div>
 
-        {/* [3. БЛОК: ШАНСЫ "CURRENT ODDS"] */}
+        {/* Current Odds Section - Enhanced */}
         <div className="mb-12">
           <h4 className="text-lg font-semibold text-white mb-8">Current Odds</h4>
           
-          {/* Ряд для YES */}
-          <div className="flex items-center mb-6">
-            <span className="text-gray-400 font-medium">YES</span>
-            <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
-            <span className="text-3xl font-bold text-white">55%</span>
-          </div>
-          
-          {/* Ряд для NO */}
-          <div className="flex items-center">
-            <span className="text-gray-400 font-medium">NO</span>
-            <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
-            <span className="text-3xl font-bold text-white">45%</span>
+          <div className="space-y-4">
+            {/* YES row */}
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400 font-medium text-lg">YES</span>
+              <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
+              <span className="text-3xl font-bold text-green-400">55%</span>
+            </div>
+            
+            {/* NO row */}
+            <div className="flex items-center justify-between">
+              <span className="text-gray-400 font-medium text-lg">NO</span>
+              <div className="flex-1 mx-4 border-t border-dashed border-gray-600"></div>
+              <span className="text-3xl font-bold text-purple-400">45%</span>
+            </div>
           </div>
         </div>
 
-        {/* [4. БЛОК: ВВОД СУММЫ] */}
+        {/* Bet Amount Input */}
         <hr className="border-gray-600 mb-12" />
         
         <div className="mb-8">
@@ -167,7 +169,7 @@ function BettingModal({
             className="w-full h-2 bg-gray-600 rounded-lg appearance-none cursor-pointer slider mb-6"
           />
 
-          {/* Текст о шифровании */}
+          {/* Encryption notice */}
           <div className="flex items-start space-x-3 p-4 bg-gray-800/50 rounded-lg border border-gray-600">
             <Info className="h-5 w-5 text-gray-400 mt-0.5 flex-shrink-0" />
             <div className="text-sm text-gray-400 leading-relaxed">
@@ -177,7 +179,7 @@ function BettingModal({
           </div>
         </div>
 
-        {/* [5. БЛОК: РЕЗУЛЬТАТ "POTENTIAL WINNINGS"] */}
+        {/* Potential Winnings */}
         <hr className="border-gray-600 mb-16" />
         
         <div className="flex items-center justify-between mb-16">
@@ -185,19 +187,19 @@ function BettingModal({
           <span className="text-4xl font-bold text-[#00F5FF]">0.0082 ETH</span>
         </div>
 
-        {/* [6. БЛОК: КНОПКИ ДЕЙСТВИЙ] */}
-        <div className="flex flex-col items-center space-y-6">
+        {/* Action Buttons - Horizontal Layout */}
+        <div className="flex flex-row justify-center items-center space-x-6">
           <button
             onClick={handlePlaceBet}
             disabled={isLoading}
-            className="w-3/4 h-20 bg-green-600 text-white rounded-lg font-bold text-2xl hover:bg-green-700 transition-colors duration-200"
+            className="px-8 py-4 bg-green-500 text-white rounded-lg font-bold text-xl hover:bg-green-600 transition-colors duration-200 min-w-[140px]"
           >
             {isLoading ? 'Processing...' : 'Bet YES'}
           </button>
           
           <button
             onClick={onClose}
-            className="w-3/4 h-20 bg-red-600 text-white rounded-lg font-bold text-2xl hover:bg-red-700 transition-colors duration-200"
+            className="px-8 py-4 bg-red-600 text-white rounded-lg font-bold text-xl hover:bg-red-700 transition-colors duration-200 min-w-[140px]"
             disabled={isLoading}
           >
             Cancel
