@@ -3,7 +3,22 @@
 import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
-export default function Header() {
+interface HeaderProps {
+  activeFilter?: string;
+  onFilterChange?: (filter: string) => void;
+}
+
+const categories = [
+  { id: 'all', name: 'All' },
+  { id: 'politics', name: 'Politics' },
+  { id: 'crypto', name: 'Crypto' },
+  { id: 'finance', name: 'Finance' },
+  { id: 'technology', name: 'Technology' },
+  { id: 'sports', name: 'Sports' },
+  { id: 'culture', name: 'Culture' }
+];
+
+export default function Header({ activeFilter = 'all', onFilterChange }: HeaderProps) {
   const pathname = usePathname();
 
   const navigation = [
@@ -16,7 +31,8 @@ export default function Header() {
   return (
     <header className="header-minimal">
       <div className="main-content">
-        <div className="flex items-center justify-between">
+        {/* Top row: Logo, Navigation, Wallet */}
+        <div className="flex items-center justify-between mb-4">
           {/* Logo - Left */}
           <div className="flex items-center">
             <h1 className="text-accent font-bold text-2xl tracking-tight">
@@ -54,6 +70,23 @@ export default function Header() {
             <ConnectButton />
           </div>
         </div>
+
+        {/* Bottom row: Filters (only on Markets page) */}
+        {pathname === '/' && onFilterChange && (
+          <div className="filter-container">
+            <div className="filter-buttons">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => onFilterChange(category.id)}
+                  className={`filter-btn ${activeFilter === category.id ? 'active' : ''}`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </header>
   );

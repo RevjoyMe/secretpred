@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Header from '@/components/header';
 import BetFeed from '@/components/bet-feed';
 import BettingModal from '@/components/betting-modal';
-import StickyFilters from '@/components/sticky-filters';
 import { usePredictionMarket } from '@/hooks/usePredictionMarket';
 
 export default function Home() {
@@ -40,10 +39,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-      
-      {/* Sticky Filters */}
-      <StickyFilters 
+      <Header 
         activeFilter={activeFilter}
         onFilterChange={setActiveFilter}
       />
