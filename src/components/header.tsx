@@ -53,10 +53,10 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
             ))}
           </nav>
 
-          {/* User Profile & Wallet - Right */}
-          <div className="flex items-center gap-4">
-            {/* User Profile */}
-            <div className="user-profile">
+          {/* Wallet & User Info - Right */}
+          <div className="flex items-center gap-6">
+            {/* Wallet Balance */}
+            <div className="flex items-center gap-3">
               <div className="user-avatar">
                 U
               </div>
