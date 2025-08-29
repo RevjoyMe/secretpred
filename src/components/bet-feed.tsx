@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import Sparkline from './sparkline';
-import MarketFilters from './market-filters';
 
 const markets = [
   // Politics / Геополитика
@@ -216,11 +215,11 @@ const markets = [
 
 interface BetFeedProps {
   onBetClick: (market: any, outcome: boolean) => void;
+  activeFilter: string;
+  onFilterChange: (filter: string) => void;
 }
 
-export default function BetFeed({ onBetClick }: BetFeedProps) {
-  const [activeFilter, setActiveFilter] = useState('all');
-
+export default function BetFeed({ onBetClick, activeFilter, onFilterChange }: BetFeedProps) {
   const filteredMarkets = activeFilter === 'all' 
     ? markets 
     : markets.filter(market => market.category === activeFilter);
@@ -228,12 +227,6 @@ export default function BetFeed({ onBetClick }: BetFeedProps) {
   return (
     <div className="main-content">
       <h1 className="page-title">Markets</h1>
-      
-      {/* Filters */}
-      <MarketFilters 
-        activeFilter={activeFilter}
-        onFilterChange={setActiveFilter}
-      />
       
       <table className="bet-feed">
         <thead>

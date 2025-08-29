@@ -1,11 +1,9 @@
 'use client';
 
-import { useState } from 'react';
 import { usePathname } from 'next/navigation';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 
 export default function Header() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const pathname = usePathname();
 
   const navigation = [
@@ -27,7 +25,7 @@ export default function Header() {
           </div>
 
           {/* Desktop Navigation - Center */}
-          <nav className="hidden md:flex header-nav">
+          <nav className="flex header-nav">
             {navigation.map((item) => (
               <a
                 key={item.name}
@@ -40,7 +38,7 @@ export default function Header() {
           </nav>
 
           {/* User Profile & Wallet - Right */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="flex items-center gap-4">
             {/* User Profile */}
             <div className="user-profile">
               <div className="user-avatar">
@@ -55,40 +53,7 @@ export default function Header() {
             {/* Connect Button */}
             <ConnectButton />
           </div>
-
-          {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="btn-minimal"
-            >
-              {isMenuOpen ? '✕' : '☰'}
-            </button>
-          </div>
         </div>
-
-        {/* Mobile Navigation */}
-        {isMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-border">
-            <div className="pt-4 space-y-3">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={`block py-3 text-secondary hover:text-accent transition-colors ${
-                    item.active ? 'text-accent' : ''
-                  }`}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {item.name}
-                </a>
-              ))}
-              <div className="pt-4 border-t border-border">
-                <ConnectButton />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
     </header>
   );

@@ -4,12 +4,14 @@ import { useState } from 'react';
 import Header from '@/components/header';
 import BetFeed from '@/components/bet-feed';
 import BettingModal from '@/components/betting-modal';
+import StickyFilters from '@/components/sticky-filters';
 import { usePredictionMarket } from '@/hooks/usePredictionMarket';
 
 export default function Home() {
   const [showBettingModal, setShowBettingModal] = useState(false);
   const [selectedMarket, setSelectedMarket] = useState<any>(null);
   const [selectedOutcome, setSelectedOutcome] = useState<boolean>(true);
+  const [activeFilter, setActiveFilter] = useState('all');
   
   const { handlePlaceBet: placeBet, isPlacingBet } = usePredictionMarket();
 
@@ -40,8 +42,18 @@ export default function Home() {
     <div className="min-h-screen bg-background">
       <Header />
       
+      {/* Sticky Filters */}
+      <StickyFilters 
+        activeFilter={activeFilter}
+        onFilterChange={setActiveFilter}
+      />
+      
       <main>
-        <BetFeed onBetClick={handleOpenBettingModal} />
+        <BetFeed 
+          onBetClick={handleOpenBettingModal}
+          activeFilter={activeFilter}
+          onFilterChange={setActiveFilter}
+        />
       </main>
 
       {/* Betting Modal */}
