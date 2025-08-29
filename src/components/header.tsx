@@ -30,9 +30,10 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
 
   return (
     <header className="header-minimal">
-      <div className="main-content w-full">
+      {/* Новый контейнер для верхнего ряда на всю ширину */}
+      <div className="header-content">
         {/* Main header row with justify-between */}
-        <div className="flex items-center justify-between mb-4 w-full">
+        <div className="flex items-center justify-between w-full">
           {/* Left group: Logo + Navigation */}
           <div className="flex items-center gap-12">
             {/* Logo */}
@@ -71,9 +72,11 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
             <ConnectButton />
           </div>
         </div>
+      </div>
 
-        {/* Bottom row: Filters (only on Markets page) */}
-        {pathname === '/' && onFilterChange && (
+      {/* Фильтры остаются в main-content для центрирования */}
+      {pathname === '/' && onFilterChange && (
+        <div className="main-content w-full">
           <div className="filter-container">
             <div className="filter-buttons">
               {categories.map((category) => (
@@ -87,8 +90,8 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
               ))}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </header>
   );
 }
