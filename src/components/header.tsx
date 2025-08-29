@@ -30,7 +30,7 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
 
   return (
     <header className="header-minimal">
-      <div className="main-content">
+      <div className="main-content w-full">
         {/* Main header row with justify-between */}
         <div className="flex items-center justify-between mb-4 w-full">
           {/* Left group: Logo + Navigation */}
