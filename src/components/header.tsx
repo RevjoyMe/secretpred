@@ -31,29 +31,30 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
   return (
     <header className="header-minimal">
       <div className="main-content">
-        {/* Top row: Logo, Navigation, Wallet */}
+        {/* Main header row with justify-between */}
         <div className="flex items-center justify-between mb-4">
-          {/* Logo - Left */}
-          <div className="flex items-center">
+          {/* Left group: Logo + Navigation */}
+          <div className="flex items-center gap-12">
+            {/* Logo */}
             <h1 className="text-accent font-bold text-2xl tracking-tight">
               SecretPredictions
             </h1>
+
+            {/* Navigation */}
+            <nav className="flex header-nav">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={item.active ? 'active' : ''}
+                >
+                  {item.name}
+                </a>
+              ))}
+            </nav>
           </div>
 
-          {/* Desktop Navigation - Center */}
-          <nav className="flex header-nav">
-            {navigation.map((item) => (
-              <a
-                key={item.name}
-                href={item.href}
-                className={item.active ? 'active' : ''}
-              >
-                {item.name}
-              </a>
-            ))}
-          </nav>
-
-          {/* Wallet & User Info - Right */}
+          {/* Right group: Wallet & User Info */}
           <div className="flex items-center gap-6">
             {/* Wallet Balance */}
             <div className="flex items-center gap-3">
