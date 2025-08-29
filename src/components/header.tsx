@@ -30,32 +30,15 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
 
   return (
     <header className="header-minimal">
-      {/* Новый контейнер для верхнего ряда на всю ширину */}
+      {/* Верхний ряд: Логотип и кошелек */}
       <div className="header-content">
-        {/* Main header row with justify-between */}
         <div className="flex items-center justify-between w-full">
-          {/* Left group: Logo + Navigation */}
-          <div className="flex items-center gap-12">
-            {/* Logo */}
-            <h1 className="text-accent font-bold text-2xl tracking-tight">
-              SecretPredictions
-            </h1>
+          {/* Logo - Left */}
+          <h1 className="text-accent font-bold text-2xl tracking-tight">
+            SecretPredictions
+          </h1>
 
-            {/* Navigation */}
-            <nav className="flex header-nav">
-              {navigation.map((item) => (
-                <a
-                  key={item.name}
-                  href={item.href}
-                  className={item.active ? 'active' : ''}
-                >
-                  {item.name}
-                </a>
-              ))}
-            </nav>
-          </div>
-
-          {/* Right group: Wallet & User Info */}
+          {/* Wallet & User Info - Right */}
           <div className="flex items-center gap-6">
             {/* Wallet Balance */}
             <div className="flex items-center gap-3">
@@ -74,24 +57,46 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
         </div>
       </div>
 
-      {/* Фильтры остаются в main-content для центрирования */}
-      {pathname === '/' && onFilterChange && (
-        <div className="main-content w-full">
-          <div className="filter-container">
-            <div className="filter-buttons">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => onFilterChange(category.id)}
-                  className={`filter-btn ${activeFilter === category.id ? 'active' : ''}`}
+      {/* Нижний ряд: Навигация и фильтры */}
+      <div className="main-content w-full">
+        <div className="flex items-start gap-12">
+          {/* Левая колонка: Навигация */}
+          <div className="flex flex-col gap-4">
+            <nav className="flex flex-col gap-3">
+              {navigation.map((item) => (
+                <a
+                  key={item.name}
+                  href={item.href}
+                  className={`text-lg font-medium transition-colors ${
+                    item.active ? 'text-accent' : 'text-secondary hover:text-foreground'
+                  }`}
                 >
-                  {category.name}
-                </button>
+                  {item.name}
+                </a>
               ))}
-            </div>
+            </nav>
           </div>
+
+          {/* Правая колонка: Фильтры (только на Markets page) */}
+          {pathname === '/' && onFilterChange && (
+            <div className="flex-1">
+              <div className="filter-container">
+                <div className="filter-buttons">
+                  {categories.map((category) => (
+                    <button
+                      key={category.id}
+                      onClick={() => onFilterChange(category.id)}
+                      className={`filter-btn ${activeFilter === category.id ? 'active' : ''}`}
+                    >
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </header>
   );
 }
