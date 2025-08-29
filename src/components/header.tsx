@@ -32,7 +32,7 @@ export default function Header({ activeFilter = 'all', onFilterChange }: HeaderP
     <header className="header-minimal">
       <div className="main-content">
         {/* Main header row with justify-between */}
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center justify-between mb-4 w-full">
           {/* Left group: Logo + Navigation */}
           <div className="flex items-center gap-12">
             {/* Logo */}
